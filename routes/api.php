@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DistrictController;
 use App\Http\Controllers\Api\Master\ClassroomController;
 use App\Http\Controllers\Api\Master\EducationController;
 use App\Http\Controllers\Api\Master\EducationTypeController;
+use App\Http\Controllers\Api\Master\HostelController;
 use App\Http\Controllers\Api\Master\JobDesController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\VillageController;
@@ -32,6 +33,7 @@ Route::group(['prefix' => 'master'], function () {
     Route::apiResource('classroom', ClassroomController::class);
     Route::apiResource('education', EducationController::class);
     Route::apiResource('education-type', EducationTypeController::class);
+    Route::apiResource('hostel', HostelController::class);
 });
 
 Route::group(['prefix' => 'region'], function () {
