@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Api\Master;
 
-use App\Http\Controllers\Controller;
+use App\Http\Resources\EducationTypeResource;
 use Illuminate\Http\Request;
+use App\Models\EducationType;
+use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 class EducationTypeController extends Controller
 {
@@ -12,7 +16,14 @@ class EducationTypeController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $educationTypes = EducationType::all();
+            return new EducationTypeResource('Success', $educationTypes, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'No data found'], 404);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'An error occurred: ' . $th->getMessage()], 500);
+        }
     }
 
     /**
@@ -20,7 +31,25 @@ class EducationTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string|max:255',
+            ]);
+
+            $educationType = EducationType::create([
+                'name' => $request->name,
+                'description' => $request->description,
+            ]);
+
+            return new EducationTypeResource('Education Type created successfully', $educationType, 201);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'No data found'], 404);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Validation error: ' . $e->getMessage()], 422);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'An error occurred: ' . $th->getMessage()], 500);
+        }
     }
 
     /**

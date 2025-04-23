@@ -13,6 +13,15 @@ class Classroom extends Model
         'description',
     ];
 
+    public function parent()
+    {
+        return $this->belongsTo(Classroom::class, 'parent_id');
+    }
+    public function children()
+    {
+        return $this->hasMany(Classroom::class, 'parent_id');
+    }
+
     // public function students()
     // {
     //     return $this->hasMany(Student::class);
