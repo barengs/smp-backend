@@ -1,25 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Main;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class DistrictController extends Controller
+class ParentProfileController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        try {
-            $districts = \Laravolt\Indonesia\Models\District::all();
-            return response()->json($districts, 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch districts'], 500);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) {
-            return response()->json(['error' => 'Model not found'], 404);
-        }
+        //
     }
 
     /**

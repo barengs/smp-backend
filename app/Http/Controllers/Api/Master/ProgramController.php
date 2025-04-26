@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api\Master;
 
-use App\Http\Resources\EducationTypeResource;
+use App\Models\Program;
 use Illuminate\Http\Request;
-use App\Models\EducationType;
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Resources\ProgramResource;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class EducationTypeController extends Controller
+class ProgramController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,12 +17,12 @@ class EducationTypeController extends Controller
     public function index()
     {
         try {
-            $educationTypes = EducationType::all();
-            return new EducationTypeResource('Success', $educationTypes, 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'No data found'], 404);
-        } catch (\Throwable $th) {
-            return response()->json(['message' => 'An error occurred: ' . $th->getMessage()], 500);
+            $programs = Program::all();
+            return response()->json($programs, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch programs'], 500);
+        } catch (ModelNotFoundException $th) {
+            return response()->json(['error' => 'Model not found'], 404);
         }
     }
 
@@ -34,15 +34,13 @@ class EducationTypeController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'description' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
             ]);
-
-            $educationType = EducationType::create([
+            $program = Program::create([
                 'name' => $request->name,
                 'description' => $request->description,
             ]);
-
-            return new EducationTypeResource('Education Type created successfully', $educationType, 201);
+            return new ProgramResource('Program created successfully', $program, 201);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'No data found'], 404);
         } catch (ValidationException $e) {
@@ -68,13 +66,14 @@ class EducationTypeController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'description' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
             ]);
-
-            $educationType = EducationType::findOrFail($id);
-            $educationType->update($validated);
-
-            return new EducationTypeResource('Education Type updated successfully', $educationType, 200);
+            $program = Program::findOrFail($id);
+            $program->update([
+                'name' => $request->name,
+                'description' => $request->description,
+            ]);
+            return new ProgramResource('Program updated successfully', $program, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'No data found'], 404);
         } catch (ValidationException $e) {

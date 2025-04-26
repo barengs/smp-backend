@@ -12,7 +12,14 @@ class ProvinceController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $provinces = \Laravolt\Indonesia\Models\Province::all();
+            return response()->json($provinces, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch provinces'], 500);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) {
+            return response()->json(['error' => 'Model not found'], 404);
+        }
     }
 
     /**

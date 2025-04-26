@@ -18,6 +18,11 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             EmployeeSeeder::class,
             HostelSeeder::class,
+            EducationClassSeeder::class,
+            EducationSeeder::class,
+            OccupationSeeder::class,
+            ProgramSeeder::class,
+            MenuSeeder::class,
         ]);
     }
 }

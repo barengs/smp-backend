@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Laravolt\Indonesia\Models\Village;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VillageController extends Controller
 {
@@ -12,7 +14,14 @@ class VillageController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $villages = Village::all();
+            return response()->json($villages, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch villages'], 500);
+        } catch (ModelNotFoundException $th) {
+            return response()->json(['error' => 'Model not found'], 404);
+        }
     }
 
     /**

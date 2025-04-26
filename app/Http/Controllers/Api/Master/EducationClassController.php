@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Master;
 
 use Illuminate\Http\Request;
-use Laravolt\Indonesia\Models\City;
+use App\Models\EducationClass;
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\Model;
+use App\Http\Resources\EducationClassResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class CityController extends Controller
+class EducationClassController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,12 +16,24 @@ class CityController extends Controller
     public function index()
     {
         try {
-            $cities = City::all();
-            return response()->json($cities, 200);
+            $educationClasses = EducationClass::all();
+            return new EducationClassResource(
+                'Success',
+                $educationClasses,
+                200
+            );
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch cities'], 500);
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to retrieve data',
+                'error' => $e->getMessage(),
+            ], 500);
         } catch (ModelNotFoundException $th) {
-            return response()->json(['error' => 'Model not found'], 404);
+            return response()->json([
+                'status' => false,
+                'message' => 'Data not found',
+                'error' => $th->getMessage(),
+            ], 404);
         }
     }
 
