@@ -19,7 +19,7 @@ class OccupationController extends Controller
             // Fetch all occupations from the database
             $occupations = Occupation::all();
             // Return a successful response with the occupations
-            return OccupationResource::collection($occupations);
+            return new OccupationResource('Occupations retrieved successfully', $occupations, 200);
         } catch (\Exception $e) {
             // Handle any exceptions that occur during the process
             return response()->json([
@@ -65,7 +65,24 @@ class OccupationController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            // Find the occupation by ID
+            $occupation = Occupation::findOrFail($id);
+
+            // Return a successful response with the occupation
+            return new OccupationResource('Occupation retrieved successfully', $occupation, 200);
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the process
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch occupation: ' . $e->getMessage(),
+            ], 500);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed: ' . $e->getMessage(),
+            ], 422);
+        }
     }
 
     /**
