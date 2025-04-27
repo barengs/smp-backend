@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api\Main;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ParentResource;
 
 class ParentProfileController extends Controller
 {
@@ -12,7 +15,14 @@ class ParentProfileController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $user = User::whereHas('parentProfile')->with(['parentProfile', 'roles'])->get();
+            return new ParentResource('data ditemukan', $user, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ada', 404);
+        } catch (\Throwable $th) {
+            return response()->json('An error occurred: ' . $th->getMessage(), 500);
+        }
     }
 
     /**

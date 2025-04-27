@@ -31,7 +31,7 @@ class MenuSeeder extends Seeder
 
         // Insert each menu into the database
         foreach ($menus as $index => $menu) {
-            Menu::creaate([
+            Menu::create([
                 'name' => $menu['name'],
                 'description' => $menu['description'] ?? null,
                 'icon' => $menu['icon'] ?? null,

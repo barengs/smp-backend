@@ -19,12 +19,14 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $data = User::whereHas('employee')->with(['employee', 'roles'])->get();
-        // $data->roles = User::findOrFail($data->user_id)->getRoleNames();
-        if ($data->isEmpty()) {
-            return response()->json('data tidak ada', 404);
+        try {
+            $data = User::whereHas('employee')->with(['employee', 'roles'])->get();
+            return new EmployeeResource('data ditemukan', $data, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
         }
-        return new EmployeeResource('data ditemukan', $data, 200);
     }
 
     /**
