@@ -11,3 +11,21 @@ jobs:
 
     steps:
       - uses: actions/checkuot@v4
+
+      - name: Install Dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Deploy to Production
+        uses: easingthemes/ssh-deploy@v5.0.3
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: barengsaya.com
+          REMOTE_USER: bare3321
+          TARGET: /home/bare3321/public_html/smp
+          CRIPT_AFTER:
+            cd /home/bare3321/public_html/smp
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan optimize
+            chmod -R 775 storage bootstrap/cache
