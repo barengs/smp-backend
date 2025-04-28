@@ -24,13 +24,15 @@ class DatabaseSeeder extends Seeder
             VillagesSeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
-            EmployeeSeeder::class,
             HostelSeeder::class,
             EducationClassSeeder::class,
             EducationSeeder::class,
             OccupationSeeder::class,
             ProgramSeeder::class,
             MenuSeeder::class,
+            EmployeeSeeder::class,
+            ParentProfileSeeder::class,
+            StudentSeeder::class,
         ]);
     }
 }
