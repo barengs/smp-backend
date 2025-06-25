@@ -27,7 +27,7 @@ class ParentProfileSeeder extends Seeder
 
         foreach ($data as $item) {
             User::create([
-                'username' => $item['first_name'],
+                'name' => $item['first_name'],
                 'email' => $item['nik'],
                 'password' => Hash::make('password'),
             ]);

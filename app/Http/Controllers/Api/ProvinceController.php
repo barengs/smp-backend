@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Laravolt\Indonesia\Models\Province;
 
 class ProvinceController extends Controller
 {
@@ -13,7 +14,7 @@ class ProvinceController extends Controller
     public function index()
     {
         try {
-            $provinces = \Laravolt\Indonesia\Models\Province::all();
+            $provinces = Province::all();
             return response()->json($provinces, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch provinces'], 500);

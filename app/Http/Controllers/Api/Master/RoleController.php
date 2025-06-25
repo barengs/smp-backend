@@ -2,28 +2,25 @@
 
 namespace App\Http\Controllers\Api\Master;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
 
-class EducationalLevelController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // $data = EducationalLevel::all();
+        // Fetch all roles from the database
+        $roles = Role::all();
 
-        // if ($data->isEmpty()) {
-        //     return response()->json([
-        //         'message' => 'Data tidak ditemukan',
-        //     ], 404);
-        // }
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Data educational level',
-        //     'data' => $data,
-        // ]);
+        // Return a response with the roles
+        return response()->json([
+            'message' => 'Roles retrieved successfully',
+            'data' => $roles,
+        ]);
     }
 
     /**

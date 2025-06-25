@@ -17,7 +17,7 @@ class StudentSeeder extends Seeder
         $now = Carbon::now();
         $Csv = new CsvtoArray();
         $file = __DIR__ . '/../../public/csv/students.csv';
-        $header = ['nis', 'created_at', 'period', 'nik', 'kk', 'first_name', 'born_in', 'born_at', 'last_education', 'address', 'village', 'district', 'postal_code', 'parent_id', 'phone', 'hostel_id', 'education_type_id', 'status', 'user_id'];
+        $header = ['nis', 'created_at', 'period', 'nik', 'kk', 'first_name', 'born_in', 'born_at', 'last_education', 'address', 'village', 'district', 'postal_code', 'parent_id', 'phone', 'hostel_id', 'program_id', 'status', 'user_id'];
         $data = $Csv->csv_to_array($file, $header);
         $data = array_map(function ($arr) use ($now) {
             return $arr + ['updated_at' => $now];

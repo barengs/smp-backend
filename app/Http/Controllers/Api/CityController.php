@@ -16,7 +16,7 @@ class CityController extends Controller
     public function index()
     {
         try {
-            $cities = City::all();
+            $cities = City::with('province')->get();
             return response()->json($cities, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch cities'], 500);
