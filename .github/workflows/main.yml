@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkuot@v4
+      - uses: actions/checkout@v4
 
       - name: Install Dependencies
         run: composer install --no-dev --optimize-autoloader
@@ -22,7 +22,8 @@ jobs:
           REMOTE_HOST: barengsaya.com
           REMOTE_USER: bare3321
           TARGET: /home/bare3321/api.smp
-          CRIPT_AFTER: cd /home/bare3321/api.smp
+          SCRIPT_AFTER: |
+            cd /home/bare3321/api.smp
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache

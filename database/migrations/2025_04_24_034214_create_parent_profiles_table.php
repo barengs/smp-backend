@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('parent_profiles', function (Blueprint $table) {
-            $table->id();
+            // $table->id();
             $table->string('kk')->primary();
             $table->string('nik')->unique();
             $table->unsignedBigInteger('parent_id')->nullable();

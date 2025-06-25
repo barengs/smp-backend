@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->unique();
+            $table->string('name')->unique();
             $table->string('description')->nullable();
             $table->string('icon')->nullable();
             $table->string('route')->nullable();
