@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('title')->unique();
             $table->string('description')->nullable();
             $table->string('icon')->nullable();
             $table->string('route')->nullable();
@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->enum('type', ['link', 'dropdown', 'label'])->default('link');
             $table->enum('position', ['top', 'side'])->default('side');
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->integer('order')->default(1);
+            $table->integer('order')->nullable();
             $table->timestamps();
         });
         // Create pivot table for many-to-many relationship

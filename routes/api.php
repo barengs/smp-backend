@@ -9,16 +9,20 @@ use App\Http\Resources\EducationClassResource;
 use App\Http\Controllers\Api\VillageController;
 use App\Http\Controllers\Api\DistrictController;
 use App\Http\Controllers\Api\ProvinceController;
+use App\Http\Controllers\Api\Master\MenuController;
+use App\Http\Controllers\Api\Master\RoleController;
 use App\Http\Controllers\Api\Main\StudentController;
 use App\Http\Controllers\Api\Master\StudyController;
 use App\Http\Controllers\Api\Main\EmployeeController;
 use App\Http\Controllers\Api\Master\HostelController;
 use App\Http\Controllers\Api\Master\JobDesController;
+use App\Http\Controllers\Api\Main\DashboardController;
 use App\Http\Controllers\Api\Master\ProgramController;
 use App\Http\Controllers\Api\Master\ClassroomController;
 use App\Http\Controllers\Api\Master\EducationController;
 use App\Http\Controllers\Api\Main\RegistrationController;
 use App\Http\Controllers\Api\Master\OccupationController;
+use App\Http\Controllers\Api\Master\PermissionController;
 use App\Http\Controllers\Api\Master\ProfessionController;
 use App\Http\Controllers\Api\Main\ParentProfileController;
 use App\Http\Controllers\Api\Master\EducationTypeController;
@@ -36,6 +40,8 @@ Route::apiResource('employee', EmployeeController::class);
 Route::apiResource('parent', ParentProfileController::class);
 Route::apiResource('student', StudentController::class);
 
+Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 Route::group(['prefix' => 'master'], function () {
     Route::apiResource('study', StudyController::class);
     Route::apiResource('profession', ProfessionController::class);
@@ -47,6 +53,9 @@ Route::group(['prefix' => 'master'], function () {
     Route::apiResource('hostel', HostelController::class);
     Route::apiResource('program', ProgramController::class);
     Route::apiResource('occupation', OccupationController::class);
+    Route::apiResource('role', RoleController::class);
+    Route::apiResource('permission', PermissionController::class);
+    Route::apiResource('menu', MenuController::class);
 });
 
 Route::group(['prefix' => 'region'], function () {

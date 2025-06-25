@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api\Main;
 
-use App\Http\Controllers\Controller;
+use App\Models\Student;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\StudentResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class StudentController extends Controller
 {
@@ -14,17 +17,19 @@ class StudentController extends Controller
     {
         try {
             // Fetch all students from the database
-            $students = User::whereHas('student')->with(['student', 'roles'])->get();
-            if ($students->isEmpty()) {
-                return response()->json('data tidak ada', 404);
-            }
-            return response()->json($students, 200);
+            $students = Student::with(['program', 'parents'])->get();
+
+            return new StudentResource('data ditemukan', $students, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to fetch students: ' . $e->getMessage(),
             ], 500);
-        } catch (\Throwable $th) {
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No students found',
+            ], 404);
             //throw $th;
         }
     }

@@ -21,9 +21,8 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           REMOTE_HOST: barengsaya.com
           REMOTE_USER: bare3321
-          TARGET: /home/bare3321/public_html/smp
-          CRIPT_AFTER:
-            cd /home/bare3321/public_html/smp
+          TARGET: /home/bare3321/api.smp
+          CRIPT_AFTER: cd /home/bare3321/api.smp
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache

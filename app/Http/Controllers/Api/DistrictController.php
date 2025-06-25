@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Laravolt\Indonesia\Models\District;
 
 class DistrictController extends Controller
 {
@@ -13,7 +14,7 @@ class DistrictController extends Controller
     public function index()
     {
         try {
-            $districts = \Laravolt\Indonesia\Models\District::all();
+            $districts = District::with('city')->get();
             return response()->json($districts, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch districts'], 500);
