@@ -15,24 +15,24 @@ class MenuSeeder extends Seeder
     {
         // Define the menus to be seeded
         $menus = [
-            ['name' => 'Dashboard',],
-            ['name' => 'Asatidz'],
-            ['name' => 'Santri'],
-            ['name' => 'Users',],
-            ['name' => 'Roles',],
-            ['name' => 'Permissions',],
-            ['name' => 'Settings',],
-            ['name' => 'Reports',],
-            ['name' => 'Logs',],
-            ['name' => 'Notifications',],
-            ['name' => 'Profile',],
-            ['name' => 'Help',],
+            ['title' => 'Dashboard',],
+            ['title' => 'Asatidz'],
+            ['title' => 'Santri'],
+            ['title' => 'Users',],
+            ['title' => 'Roles',],
+            ['title' => 'Permissions',],
+            ['title' => 'Settings',],
+            ['title' => 'Reports',],
+            ['title' => 'Logs',],
+            ['title' => 'Notifications',],
+            ['title' => 'Profile',],
+            ['title' => 'Help',],
         ];
 
         // Insert each menu into the database
         foreach ($menus as $index => $menu) {
             Menu::create([
-                'name' => $menu['name'],
+                'title' => $menu['title'],
                 'description' => $menu['description'] ?? null,
                 'icon' => $menu['icon'] ?? null,
                 'route' => $menu['route'] ?? null,

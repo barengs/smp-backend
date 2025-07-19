@@ -26,11 +26,13 @@ class ParentProfileSeeder extends Seeder
         }, $data);
 
         foreach ($data as $item) {
-            User::create([
+            $user = User::create([
                 'name' => $item['first_name'],
                 'email' => $item['nik'],
                 'password' => Hash::make('password'),
             ]);
+
+            $user->assignRole('parent');
         }
 
         $collection = collect($data);

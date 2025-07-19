@@ -27,7 +27,18 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($this->data as $value) {
-            User::create($value);
+            $user = User::create($value);
+            if ($user->name === 'superadmin') {
+                $user->assignRole('superadmin');
+            } elseif ($user->name === 'erfaruq') {
+                $user->assignRole('admin');
+            } elseif ($user->name === 'rumhul') {
+                $user->assignRole('asatidz');
+            } elseif ($user->name === 'rosi') {
+                $user->assignRole('walikelas');
+            } elseif ($user->name === 'bahul') {
+                $user->assignRole('kasir');
+            }
         }
     }
 }

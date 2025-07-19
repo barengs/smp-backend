@@ -59,9 +59,9 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $user = auth()->user();
-        $user->api_token = $token;
-        $user->profile();
+        // $user = auth()->user();
+        // $user->api_token = $this->respondWithToken($user);
+        // $user->profile();
 
         return $this->respondWithToken($token);
     }
@@ -107,7 +107,10 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        $user = auth()->user();
+        $user->profile = $user->load('profile');
         return response()->json([
+            'user' => $user->load('profile'),
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60

@@ -16,12 +16,15 @@ return new class extends Migration {
             $table->string('description')->nullable();
             $table->string('icon')->nullable();
             $table->string('route')->nullable();
-            $table->foreignId('parent_id')->nullable()->constrained('menus')->cascadeOnDelete();
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->enum('type', ['link', 'dropdown', 'label'])->default('link');
             $table->enum('position', ['top', 'side'])->default('side');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->integer('order')->nullable();
             $table->timestamps();
+
+            // Foreign key constraint for parent_id
+            $table->foreign('parent_id')->references('id')->on('menus')->onDelete('cascade');
         });
         // Create pivot table for many-to-many relationship
         Schema::create('menu_roles', function (Blueprint $table) {
