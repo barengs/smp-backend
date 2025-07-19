@@ -108,9 +108,10 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         $user = auth()->user();
-        $user->profile = $user->load('profile');
+        $user->role = $user->getRoleNames();
         return response()->json([
-            'user' => $user->load('profile')->load('roles'),
+            'user' => $user,
+            // 'role' => $user->getRoleNames(),
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60

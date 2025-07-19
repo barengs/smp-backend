@@ -14,7 +14,7 @@ class RoleController extends Controller
     public function index()
     {
         // Fetch all roles from the database
-        $roles = Role::all();
+        $roles = Role::with('permissions')->get();
 
         // Return a response with the roles
         return response()->json([
@@ -28,7 +28,28 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|unique:roles,name',
+            'guard_name' => 'nullable|string',
+        ]);
+
+        try {
+            //code...
+            $role = Role::create([
+                'name' => $request->name,
+                'guard_name' => $request->guard_name ?? 'api',
+            ]);
+
+            return response()->json([
+                'message' => 'Role created successfully',
+                'data' => $role,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Failed to create role',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
     }
 
     /**
