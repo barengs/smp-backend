@@ -22,7 +22,6 @@ return new class extends Migration {
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->integer('order')->nullable();
             $table->timestamps();
-
             // Foreign key constraint for parent_id
             $table->foreign('parent_id')->references('id')->on('menus')->onDelete('cascade');
         });
