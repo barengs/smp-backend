@@ -110,7 +110,7 @@ class AuthController extends Controller
         $user = auth()->user();
         $user->profile = $user->load('profile');
         return response()->json([
-            'user' => $user->load('profile'),
+            'user' => $user->load('profile')->load('roles'),
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
