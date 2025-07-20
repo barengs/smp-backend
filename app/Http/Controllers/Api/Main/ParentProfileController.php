@@ -112,7 +112,17 @@ class ParentProfileController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $parent = User::whereHas('parent', function ($query) use ($id) {
+                $query->where('id', $id);
+            })->with(['parent', 'roles'])->firstOrFail();
+
+            return new ParentResource('data ditemukan', $parent, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Throwable $th) {
+            return response()->json('An error occurred: ' . $th->getMessage(), 500);
+        }
     }
 
     /**
