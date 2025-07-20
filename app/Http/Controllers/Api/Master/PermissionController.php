@@ -39,7 +39,7 @@ class PermissionController extends Controller
 
             $permission = Permission::create([
                 'name' => $data['name'],
-                'guard_name' => $data['guard_name'] ? $data['guard_name'] : 'api',
+                'guard_name' => $data['guard_name'] ?? 'api',
             ]);
             return new PermissionResource('success', $permission, 200);
         } catch (ValidationException $e) {

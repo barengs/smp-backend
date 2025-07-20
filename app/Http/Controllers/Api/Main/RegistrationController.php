@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Main;
 
 use App\Models\User;
+use App\Models\Registration;
+use App\Http\Resources\RegistrationResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -13,7 +15,15 @@ class RegistrationController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $registrations = Registration::with('student')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+
+            return RegistrationResource::collection($registrations);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch registrations: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
