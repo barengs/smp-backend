@@ -47,7 +47,21 @@ class StudentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            //code...
+            $student = Student::with(['program', 'parents'])->findOrFail($id);
+            return new StudentResource('data ditemukan', $student, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch student: ' . $th->getMessage(),
+            ], 500);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Student not found',
+            ], 404);
+        }
     }
 
     /**
