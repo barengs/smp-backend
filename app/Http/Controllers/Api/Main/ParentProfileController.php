@@ -120,7 +120,7 @@ class ParentProfileController extends Controller
 
             $students = Student::where('parent_id', $parent->parent->nik)->get();
 
-            $parent->student = $students;
+            $parent->students = $students;
 
             return new ParentResource('data ditemukan', $parent, 200);
         } catch (ModelNotFoundException $e) {

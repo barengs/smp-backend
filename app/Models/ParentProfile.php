@@ -24,7 +24,7 @@ class ParentProfile extends Model
         return $this->belongsTo(Occupation::class);
     }
 
-    public function student()
+    public function students()
     {
         return $this->hasMany(Student::class, 'parent_id', 'nik');
     }
