@@ -18,7 +18,7 @@ class ClassroomController extends Controller
     public function index()
     {
         try {
-            $classroom = Classroom::with('parent')->get();
+            $classroom = Classroom::with('class_grups')->get();
             return new ClassroomResource('Success', $classroom, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json('No data found', 404);
