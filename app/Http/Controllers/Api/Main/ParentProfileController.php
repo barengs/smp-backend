@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Main;
 
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\ParentProfile;
@@ -116,6 +117,10 @@ class ParentProfileController extends Controller
             $parent = User::whereHas('parent', function ($query) use ($id) {
                 $query->where('id', $id);
             })->with(['parent', 'roles'])->firstOrFail();
+
+            $students = Student::where('parent_id', $parent->parent->nik)->get();
+
+            $parent->student = $students;
 
             return new ParentResource('data ditemukan', $parent, 200);
         } catch (ModelNotFoundException $e) {

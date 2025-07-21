@@ -26,6 +26,6 @@ class ParentProfile extends Model
 
     public function student()
     {
-        return $this->hasMany(Student::class);
+        return $this->hasMany(Student::class, 'parent_id', 'nik');
     }
 }

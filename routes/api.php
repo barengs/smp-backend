@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Master\ClassGroupController;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,7 @@ Route::group(['prefix' => 'master'], function () {
     Route::apiResource('role', RoleController::class);
     Route::apiResource('permission', PermissionController::class);
     Route::apiResource('menu', MenuController::class);
+    Route::apiResource('class-group', ClassGroupController::class);
 });
 
 Route::group(['prefix' => 'region'], function () {
