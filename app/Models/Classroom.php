@@ -22,7 +22,7 @@ class Classroom extends Model
         return $this->hasMany(Classroom::class, 'parent_id');
     }
 
-    public function class_grups()
+    public function class_groups()
     {
         return $this->hasMany(ClassGroup::class);
     }
