@@ -146,18 +146,14 @@ class ParentProfileController extends Controller
         //
     }
 
-    public function getParentByNik(Request $request)
+    public function getParentByNik(Request $request, $nik)
     {
-        $request->validate([
-            'nik' => 'required|string|max:16',
-        ]);
+        try {
+            $parent = ParentProfile::where('nik', $nik)->firstOrFail();
 
-        $parent = ParentProfile::where('nik', $request->nik)->first();
-
-        if (!$parent) {
-            return response()->json('data tidak ditemukan', 404);
+            return new ParentResource('data ditemukan', $parent, 200);
+        } catch (\Throwable $th) {
+            return response()->json('An error occurred: ' . $th->getMessage(), 500);
         }
-
-        return new ParentResource('data ditemukan', $parent, 200);
     }
 }
