@@ -79,4 +79,72 @@ class StudentController extends Controller
     {
         //
     }
+
+    public function getStudentByParentId(string $parentId)
+    {
+        try {
+            // Fetch students by parent ID
+            $students = Student::where('parent_id', $parentId)->get();
+
+            if ($students->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No students found for this parent',
+                ], 404);
+            }
+
+            return new StudentResource('data ditemukan', $students, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch students: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getStudentByProgramId(string $programId)
+    {
+        try {
+            // Fetch students by program ID
+            $students = Student::where('program_id', $programId)->get();
+
+            if ($students->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No students found for this program',
+                ], 404);
+            }
+
+            return new StudentResource('data ditemukan', $students, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch students: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function setStatus(Request $request, string $id)
+    {
+        try {
+            $student = Student::findOrFail($id);
+
+            $request->validate([
+                'status' => 'required|boolean',
+            ]);
+
+            $student->status = $request->status;
+            $student->save();
+
+            return response()->json([
+                'message' => 'Student status updated successfully',
+                'data' => $student,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Failed to update student status',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
+    }
 }

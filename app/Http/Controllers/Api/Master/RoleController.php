@@ -65,7 +65,29 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $role = Role::findOrFail($id);
+
+            $request->validate([
+                'name' => 'required|string|unique:roles,name,' . $role->id,
+                'guard_name' => 'nullable|string',
+            ]);
+
+            $role->update([
+                'name' => $request->name,
+                'guard_name' => $request->guard_name ?? 'api',
+            ]);
+
+            return response()->json([
+                'message' => 'Role updated successfully',
+                'data' => $role,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Failed to update role',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
     }
 
     /**

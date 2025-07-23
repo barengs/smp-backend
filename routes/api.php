@@ -39,7 +39,12 @@ Route::middleware('auth:api')->group(function () {
 Route::apiResource('registration', RegistrationController::class);
 Route::apiResource('employee', EmployeeController::class);
 Route::apiResource('parent', ParentProfileController::class);
+Route::get('get-parent-by-nik/{nik}', [ParentProfileController::class, 'getParentByNik'])
+    ->name('parent.getByNik');
 Route::apiResource('student', StudentController::class);
+Route::post('student-status', [StudentController::class, 'setStatus'])->name('student.status');
+Route::get('student/program/{programId}', [StudentController::class, 'getStudentByProgramId'])
+    ->name('student.program');
 
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

@@ -68,7 +68,31 @@ class PermissionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $permission = Permission::findOrFail($id);
+
+            $data = $request->validate([
+                'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
+                'guard_name' => 'nullable|string',
+            ]);
+
+            $permission->update([
+                'name' => $data['name'],
+                'guard_name' => $data['guard_name'] ?? 'api',
+            ]);
+
+            return new PermissionResource('success', $permission, 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $e->validator->errors(),
+            ], 422);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Failed to update permission',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
     }
 
     /**
