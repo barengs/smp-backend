@@ -146,12 +146,15 @@ class ParentProfileController extends Controller
         //
     }
 
-    public function getParentByNik(Request $request, $nik)
+    public function getByNik($nik)
     {
         try {
-            $parent = ParentProfile::where('nik', $nik)->firstOrFail();
-
-            return new ParentResource('data ditemukan', $parent, 200);
+            $parent = ParentProfile::where('nik', $nik)->first();
+            // dd($parent);
+            return response()->json([
+                'status' => 'success',
+                'data' => $parent,
+            ], 200);
         } catch (\Throwable $th) {
             return response()->json('An error occurred: ' . $th->getMessage(), 500);
         }
