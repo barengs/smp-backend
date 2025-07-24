@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\Master\ClassGroupController;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,11 +21,13 @@ use App\Http\Controllers\Api\Master\ProgramController;
 use App\Http\Controllers\Api\Master\ClassroomController;
 use App\Http\Controllers\Api\Master\EducationController;
 use App\Http\Controllers\Api\Main\RegistrationController;
+use App\Http\Controllers\Api\Master\ClassGroupController;
 use App\Http\Controllers\Api\Master\OccupationController;
 use App\Http\Controllers\Api\Master\PermissionController;
 use App\Http\Controllers\Api\Master\ProfessionController;
 use App\Http\Controllers\Api\Main\ParentProfileController;
 use App\Http\Controllers\Api\Master\EducationTypeController;
+use App\Http\Controllers\Api\Master\EducationClassController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -53,7 +54,7 @@ Route::group(['prefix' => 'master'], function () {
     Route::apiResource('profession', ProfessionController::class);
     Route::apiResource('jobdes', JobDesController::class);
     Route::apiResource('classroom', ClassroomController::class);
-    Route::apiResource('education-class', EducationClassResource::class);
+    Route::apiResource('education-class', EducationClassController::class);
     Route::apiResource('education', EducationController::class);
     Route::apiResource('education-type', EducationTypeController::class);
     Route::apiResource('hostel', HostelController::class);

@@ -19,7 +19,7 @@ class EducationClassResource extends JsonResource
      * Create a new resource instance.
      * @param mixed $status [explicite description]
      * @param mixed $message [explicite description]
-     * @param mixed $resource [explicite description] untuk pendidikan formal dan non formal
+     * @param mixed $resource [explicite description]
      */
     public function __construct($message, $resource, $statusCode)
     {
