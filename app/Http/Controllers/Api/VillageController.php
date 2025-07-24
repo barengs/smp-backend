@@ -15,7 +15,7 @@ class VillageController extends Controller
     public function index()
     {
         try {
-            $villages = Village::with('district')->get();
+            $villages = Village::with('district')->paginate(5);
             return response()->json($villages, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch villages'], 500);
