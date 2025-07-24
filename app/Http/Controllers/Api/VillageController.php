@@ -12,10 +12,19 @@ class VillageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $defaultPerPage = 5;
+
+        $perPage = $request->input('per_page', $defaultPerPage);
+
+        $maxPerPage = 100; // Set a maximum limit for per_page
+        if ($perPage > $maxPerPage) {
+            $perPage = $maxPerPage;
+        }
+
         try {
-            $villages = Village::with('district')->paginate(5);
+            $villages = Village::with('district')->paginate($perPage);
             return response()->json($villages, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch villages'], 500);
