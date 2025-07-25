@@ -34,14 +34,19 @@ class ActivityController extends Controller
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'date' => 'nullable|date',
-                'status' => 'required|in:active,inactive',
+                'status' => 'nullable|in:active,inactive',
             ]);
 
-            $activity = Activity::create($request->all());
+            $activity = Activity::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'date' => $request->date,
+                'status' => $request->status ?? 'active',
+            ]);
 
             return new ActivityResource('Activity created successfully', $activity, 201);
         } catch (\Exception $e) {
-            return new ActivityResource('Error creating activity', null, 500);
+            return new ActivityResource($e->getMessage(), null, 500);
         } catch (\Throwable $th) {
             return new ActivityResource($th->getMessage(), null, 404);
         }
