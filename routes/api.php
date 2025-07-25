@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Master\NewsController;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Api\Master\MenuController;
 use App\Http\Controllers\Api\Master\RoleController;
 use App\Http\Controllers\Api\Main\StudentController;
 use App\Http\Controllers\Api\Master\StudyController;
+use App\Http\Controllers\Api\Main\ActivityController;
 use App\Http\Controllers\Api\Main\EmployeeController;
 use App\Http\Controllers\Api\Master\HostelController;
 use App\Http\Controllers\Api\Master\JobDesController;
@@ -48,6 +50,8 @@ Route::get('student/program/{programId}', [StudentController::class, 'getStudent
     ->name('student.program');
 
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::apiResource('activity', ActivityController::class);
+Route::apiResource('news', NewsController::class);
 
 Route::group(['prefix' => 'master'], function () {
     Route::apiResource('study', StudyController::class);
