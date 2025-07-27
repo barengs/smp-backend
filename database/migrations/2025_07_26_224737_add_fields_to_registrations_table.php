@@ -25,7 +25,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('village_id')->nullable();
             $table->string('postal_code')->nullable();
             $table->string('phone')->nullable();
-            $table->enum('status', ['Lulus', 'Tidak Lulus', 'Diproses'])->default('Diproses')->nullable();
             $table->string('photo')->nullable();
         });
     }
