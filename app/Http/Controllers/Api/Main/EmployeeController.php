@@ -47,6 +47,11 @@ class EmployeeController extends Controller
         DB::beginTransaction();
 
         try {
+            // check last employee code
+            $lastEmployee = Employee::orderBy('created_at', 'desc')->first();
+            $lastCode = $lastEmployee ? $lastEmployee->code : null;
+            $employeeCode = $this->generateCode('EMP', $lastCode, 4);
+
             // create user
             $user = User::create([
                 'name' => $request->first_name,
@@ -55,6 +60,7 @@ class EmployeeController extends Controller
             ]);
             // create employee
             $user->employee()->create([
+                'code' => $employeeCode,
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'nik' => $request->nik,
@@ -167,5 +173,21 @@ class EmployeeController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function generateCode(string $prefix, ?string $last_code, int $padding = 4)
+    {
+        $currentYear = date('Y');
+        $newSequence = 1;
+
+        if ($last_code) {
+            $lastYear = substr($last_code, 0, 4);
+            if ($lastYear == $currentYear) {
+                $lastSequence = (int) substr($last_code, strlen($prefix), -4);
+                $newSequence = $lastSequence + 1;
+            }
+        }
+
+        return $prefix . $currentYear . str_pad($newSequence, $padding, '0', STR_PAD_LEFT);
     }
 }
