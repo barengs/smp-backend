@@ -32,7 +32,7 @@ class ParentProfileSeeder extends Seeder
                 'password' => Hash::make('password'),
             ]);
 
-            $user->assignRole('parent');
+            $user->assignRole('orangtua');
         }
 
         $collection = collect($data);
