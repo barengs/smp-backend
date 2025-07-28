@@ -69,17 +69,17 @@ class User extends Authenticatable implements JWTSubject
 
     public function employee()
     {
-        return $this->hasOne(Employee::class);
+        return $this->hasOne(Employee::class, 'user_id', 'id');
     }
 
     public function parent()
     {
-        return $this->hasOne(ParentProfile::class);
+        return $this->hasOne(ParentProfile::class, 'user_id', 'id');
     }
 
     public function profile()
     {
-        if ($this->hasRole('parent')) {
+        if ($this->hasRole('orangtua')) {
             return $this->parent();
         } else {
             return $this->employee();

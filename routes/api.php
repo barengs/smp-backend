@@ -31,12 +31,12 @@ use App\Http\Controllers\Api\Main\ParentProfileController;
 use App\Http\Controllers\Api\Master\EducationTypeController;
 use App\Http\Controllers\Api\Master\EducationClassController;
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::middleware('auth:api')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
 });
 
 Route::apiResource('registration', RegistrationController::class);

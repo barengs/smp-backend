@@ -77,7 +77,15 @@ class AuthController extends Controller
      */
     public function profile()
     {
-        return response()->json(auth()->user());
+        $user = auth()->user();
+        $role = $user->getRoleNames(); // Get user roles
+        if ($role[0] == 'orangtua') {
+            $user->profile = $user->parent; // Attach parent profile if user is a parent
+        } else {
+            $user->profile = $user->employee; // Attach employee profile if user is a teacher
+        }
+        // $user->profile = $user->profile(); // Attach profile based on role
+        return response()->json(['data' => $user]);
     }
 
     /**
