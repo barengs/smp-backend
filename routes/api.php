@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\Master\NewsController;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +10,7 @@ use App\Http\Controllers\Api\VillageController;
 use App\Http\Controllers\Api\DistrictController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\Master\MenuController;
+use App\Http\Controllers\Api\Master\NewsController;
 use App\Http\Controllers\Api\Master\RoleController;
 use App\Http\Controllers\Api\Main\StudentController;
 use App\Http\Controllers\Api\Master\StudyController;
@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\Master\OccupationController;
 use App\Http\Controllers\Api\Master\PermissionController;
 use App\Http\Controllers\Api\Master\ProfessionController;
 use App\Http\Controllers\Api\Main\ParentProfileController;
+use App\Http\Controllers\Api\Master\AcademicYearController;
 use App\Http\Controllers\Api\Master\EducationTypeController;
 use App\Http\Controllers\Api\Master\EducationClassController;
 
@@ -68,6 +69,7 @@ Route::group(['prefix' => 'master'], function () {
     Route::apiResource('permission', PermissionController::class);
     Route::apiResource('menu', MenuController::class);
     Route::apiResource('class-group', ClassGroupController::class);
+    Route::apiResource('academic-year', AcademicYearController::class);
 });
 
 Route::group(['prefix' => 'region'], function () {
