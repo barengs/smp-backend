@@ -34,7 +34,7 @@ class RegistrationController extends Controller
     {
         $request->validate([
             'wali_nama_depan' => 'required',
-            'firstNameSantri' => 'required',
+            'santri_nama_depan' => 'required',
             'nisn' => 'required',
             'wali_nik' => 'required|min:16|max:16',
         ]);
