@@ -33,8 +33,9 @@ class RegistrationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'first_name' => 'required',
-            'nis' => 'required',
+            'firstName' => 'required',
+            'firstNameSantri' => 'required',
+            'nisn' => 'required',
             'nik' => 'required|min:16|max:16',
         ]);
 
