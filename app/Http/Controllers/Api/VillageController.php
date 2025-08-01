@@ -64,4 +64,14 @@ class VillageController extends Controller
     {
         //
     }
+
+    public function getVillagesByDistrictCode($districtCode)
+    {
+        try {
+            $villages = Village::where('district_code', $districtCode)->get();
+            return response()->json($villages, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch villages for district'], 500);
+        }
+    }
 }

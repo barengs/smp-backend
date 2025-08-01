@@ -33,17 +33,17 @@ class RegistrationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'firstName' => 'required',
+            'wali_nama_depan' => 'required',
             'firstNameSantri' => 'required',
             'nisn' => 'required',
-            'nik' => 'required|min:16|max:16',
+            'wali_nik' => 'required|min:16|max:16',
         ]);
 
         DB::beginTransaction();
 
         try {
 
-            $checkParent = ParentProfile::where('nik', $request->nik)->first();
+            $checkParent = ParentProfile::where('nik', $request->wali_nik)->first();
 
             if (!$checkParent) {
                 // Assuming you have a User model and it is set up correctly
@@ -54,17 +54,17 @@ class RegistrationController extends Controller
                 ]);
 
                 $parent = $user->parent()->create([
-                    'first_name' => $request->firstName,
-                    'last_name' => $request->lastName,
-                    'nik' => $request->nik,
-                    'kk' => $request->kk,
-                    'phone' => $request->phone,
-                    'email' => $request->email,
-                    'gender' => $request->gender,
-                    'parent_as' => $request->parentAs,
-                    'card_address' => $request->alamamatKtp,
-                    'domicile_address' => $request->alamatDomisili,
-                    'occupation' => $request->pekerjaanValue,
+                    'first_name' => $request->wali_nama_depan,
+                    'last_name' => $request->wali_nama_belakang,
+                    'nik' => $request->wali_nik,
+                    'kk' => $request->wali_kk,
+                    'phone' => $request->wali_telepon,
+                    'email' => $request->wali_email,
+                    'gender' => $request->wali_jenis_kelamin,
+                    'parent_as' => $request->wali_sebagai,
+                    'card_address' => $request->wali_alamamat_ktp,
+                    'domicile_address' => $request->wali_alamat_domisili,
+                    'occupation' => $request->wali_pekerjaan_id,
                 ]);
 
                 if ($parent) {
@@ -72,8 +72,8 @@ class RegistrationController extends Controller
                 }
             }
 
-            if ($request->hasFile('fotoSantri')) {
-                $file = $request->file('fotoSantri');
+            if ($request->hasFile('dokumen_foto_santri')) {
+                $file = $request->file('dokumen_foto_santri');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $filePath = $file->storeAs('uploads/registration_files', $fileName, 'public');
             }
@@ -81,20 +81,20 @@ class RegistrationController extends Controller
             $registration = Registration::create([
                 'registration_number' => $this->createRegistNumber(),
                 'parent_id' => $checkParent ? $checkParent->nik : $parent->nik,
-                'nis' => $request->nisn,
-                'first_name' => $request->firstNameSantri,
-                'last_name' => $request->lastNameSantri,
-                'nik' => $request->nikSantri,
-                'gender' => $request->jenisKelamin,
-                'address' => $request->alamatSantri,
-                'born_in' => $request->tempatLahir,
-                'born_at' => $request->tanggalLahir,
+                'nis' => $request->santri_nisn,
+                'first_name' => $request->santri_nama_depan,
+                'last_name' => $request->santri_nama_belakang,
+                'nik' => $request->santri_nik,
+                'gender' => $request->santri_jenis_kelamin,
+                'address' => $request->santri_alamat,
+                'born_in' => $request->santri_tempat_lahir,
+                'born_at' => $request->santri_tanggal_lahir,
                 'village_id' => $request->desaId ?? null,
                 'photo' => $filePath ?? null,
             ]);
 
-            if ($request->hasFile('ijazahFile')) {
-                $ijazahFile = $request->file('ijazahFile');
+            if ($request->hasFile('dokumen_ijazah')) {
+                $ijazahFile = $request->file('dokumen_ijazah');
                 $ijazahFileName = time() . '_' . $ijazahFile->getClientOriginalName();
                 $ijazahFilePath = $ijazahFile->storeAs('uploads/registration_files', $ijazahFileName, 'public');
 
@@ -104,8 +104,8 @@ class RegistrationController extends Controller
                 ]);
             }
 
-            if ($request->hasFile('optionalDocuments')) {
-                foreach ($request->file('optionalDocuments') as $file) {
+            if ($request->hasFile('dokumen_opsional')) {
+                foreach ($request->file('dokumen_opsional') as $file) {
                     $fileName = time() . '_' . $file->getClientOriginalName();
                     $filePath = $file->storeAs('uploads/registration_files', $fileName, 'public');
 
