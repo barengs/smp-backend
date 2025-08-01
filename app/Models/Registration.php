@@ -9,8 +9,18 @@ class Registration extends Model
     protected $table = 'registrations';
     protected $guarded = ['id'];
 
-    public function student()
+    // public function student()
+    // {
+    //     return $this->belongsTo(Student::class);
+    // }
+
+    public function parent()
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(ParentProfile::class);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(RegistrationFile::class);
     }
 }
