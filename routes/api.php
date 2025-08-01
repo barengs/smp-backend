@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Main\InternshipSupervisorController;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,7 @@ Route::get('student/program/{programId}', [StudentController::class, 'getStudent
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::apiResource('activity', ActivityController::class);
 Route::apiResource('news', NewsController::class);
+Route::apiResource('supervisor', InternshipSupervisorController::class);
 
 Route::group(['prefix' => 'master'], function () {
     Route::apiResource('study', StudyController::class);

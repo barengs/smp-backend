@@ -96,14 +96,27 @@ class AuthController extends Controller
     public function logout()
     {
         //remove token
-        $removeToken = JWTAuth::invalidate(JWTAuth::getToken());
+        try {
+            $removeToken = JWTAuth::invalidate(JWTAuth::getToken());
 
-        if ($removeToken) {
-            //return response JSON
+            if ($removeToken) {
+                //return response JSON
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Logout Berhasil!',
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Logout gagal, token tidak dapat dihapus.',
+                ], 400);
+            }
+        } catch (\Exception $e) {
             return response()->json([
-                'success' => true,
-                'message' => 'Logout Berhasil!',
-            ]);
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat logout.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
