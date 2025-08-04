@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('parent_profiles', function (Blueprint $table) {
             $table->id();
-            $table->string('kk')->primary();
+            $table->string('kk');
             $table->string('nik')->unique();
             $table->unsignedBigInteger('parent_id')->nullable();
             // $table->foreignId('parent_id')->nullable()->constrained('parent_profiles')->cascadeOnDelete();
