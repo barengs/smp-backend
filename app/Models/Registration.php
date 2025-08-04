@@ -16,7 +16,7 @@ class Registration extends Model
 
     public function parent()
     {
-        return $this->belongsTo(ParentProfile::class);
+        return $this->belongsTo(ParentProfile::class, 'parent_id', 'nik');
     }
 
     public function files()
