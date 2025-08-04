@@ -142,7 +142,12 @@ class RegistrationController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $data = Registration::with('parent')->findOrFail($id);
+            return new RegistrationResource('Data found', $data, 200);
+        } catch (\Throwable $th) {
+            return response()->json('Data not found: ' . $th->getMessage(), 404);
+        }
     }
 
     /**
