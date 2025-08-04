@@ -25,7 +25,7 @@ class RegistrationController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
 
-            return RegistrationResource::collection($registrations);
+            return new RegistrationResource('Registrations fetched successfully', $registrations, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch registrations: ' . $e->getMessage()], 500);
         }
