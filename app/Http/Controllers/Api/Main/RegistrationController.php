@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 use App\Models\ParentProfile;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\RegistrationResource;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RegistrationController extends Controller
 {
@@ -86,6 +89,7 @@ class RegistrationController extends Controller
                 'first_name' => $request->santri_nama_depan,
                 'last_name' => $request->santri_nama_belakang,
                 'nik' => $request->santri_nik,
+                'kk' => $request->wali_kk,
                 'gender' => $request->santri_jenis_kelamin,
                 'address' => $request->santri_alamat,
                 'born_in' => $request->santri_tempat_lahir,
@@ -120,12 +124,16 @@ class RegistrationController extends Controller
             DB::commit();
 
             return new RegistrationResource('Registration successful', $registration->load('parent'), 201);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('Data not found', 404);
         } catch (\Exception $e) {
             DB::rollBack();
-            return new RegistrationResource('Registration failed: ' . $e->getMessage(), null, 500);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return new RegistrationResource('An unexpected error occurred: ' . $e->getMessage(), null, 500);
+            return response()->json('An error occurred: ' . $e->getMessage(), 500);
         }
     }
 

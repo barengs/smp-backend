@@ -11,6 +11,7 @@ use App\Http\Resources\EmployeeResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Response;
 
 class EmployeeController extends Controller
 {
@@ -173,6 +174,95 @@ class EmployeeController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Export employee data to Excel/CSV format
+     */
+    public function export(Request $request)
+    {
+        try {
+            // Get all employees with their user and role data
+            $employees = User::whereHas('employee')
+                ->with(['employee', 'roles'])
+                ->get();
+
+            // Prepare headers for CSV
+            $headers = [
+                'ID',
+                'Kode Pegawai',
+                'Nama Lengkap',
+                'NIK',
+                'Email',
+                'Alamat',
+                'Telepon',
+                'Kode Pos',
+                'Role',
+                'Tanggal Dibuat',
+                'Tanggal Diperbarui'
+            ];
+
+            // Prepare data rows
+            $data = [];
+            foreach ($employees as $employee) {
+                $roles = $employee->roles->pluck('name')->implode(', ');
+
+                $data[] = [
+                    $employee->id,
+                    $employee->employee->code ?? '',
+                    $employee->employee->first_name . ' ' . ($employee->employee->last_name ?? ''),
+                    $employee->employee->nik ?? '',
+                    $employee->email,
+                    $employee->employee->address ?? '',
+                    $employee->employee->phone ?? '',
+                    $employee->employee->zip_code ?? '',
+                    $roles,
+                    $employee->created_at->format('Y-m-d H:i:s'),
+                    $employee->updated_at->format('Y-m-d H:i:s')
+                ];
+            }
+
+            // Generate filename with timestamp
+            $filename = 'employee_data_' . date('Y-m-d_H-i-s') . '.csv';
+
+            // Create CSV content
+            $csvContent = $this->arrayToCsv($data, $headers);
+
+            // Return CSV file as download
+            return response($csvContent)
+                ->header('Content-Type', 'text/csv; charset=UTF-8')
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
+
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan saat export: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Convert array to CSV format
+     */
+    private function arrayToCsv($data, $headers)
+    {
+        $output = fopen('php://temp', 'r+');
+
+        // Add BOM for UTF-8 encoding
+        fwrite($output, "\xEF\xBB\xBF");
+
+        // Write headers
+        fputcsv($output, $headers);
+
+        // Write data rows
+        foreach ($data as $row) {
+            fputcsv($output, $row);
+        }
+
+        rewind($output);
+        $csv = stream_get_contents($output);
+        fclose($output);
+
+        return $csv;
     }
 
     public function generateCode(string $prefix, ?string $last_code, int $padding = 4)

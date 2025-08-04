@@ -43,6 +43,7 @@ Route::middleware('auth:api')->group(function () {
 
 Route::apiResource('registration', RegistrationController::class);
 Route::apiResource('employee', EmployeeController::class);
+Route::get('employee/export', [EmployeeController::class, 'export'])->name('employee.export');
 Route::apiResource('parent', ParentProfileController::class);
 Route::get('parent/nik/{nik}/cek', [ParentProfileController::class, 'getByNik'])
     ->name('parent.getByNik');
