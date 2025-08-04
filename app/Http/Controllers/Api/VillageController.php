@@ -70,7 +70,7 @@ class VillageController extends Controller
         $distCode = substr($nik, 0, 6); // Ensure the district code is 6 characters long
         try {
             $villages = Village::where('district_code', $distCode)->get();
-            return response()->json($villages, 200);
+            return response()->json(['data' => $villages], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch villages for district'], 500);
         }
