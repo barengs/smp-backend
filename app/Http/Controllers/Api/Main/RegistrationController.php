@@ -48,8 +48,8 @@ class RegistrationController extends Controller
             if (!$checkParent) {
                 // Assuming you have a User model and it is set up correctly
                 $user = User::create([
-                    'name' => $request->firstName,
-                    'email' => $request->email ?? $request->nik,
+                    'name' => $request->wali_nama_depan,
+                    'email' => $request->wali_email ?? $request->wali_nik,
                     'password' => bcrypt('password'),
                 ]);
 
