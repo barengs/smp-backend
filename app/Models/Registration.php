@@ -23,4 +23,9 @@ class Registration extends Model
     {
         return $this->hasMany(RegistrationFile::class);
     }
+
+    public function occupation()
+    {
+        return $this->belongsTo(Occupation::class, 'occupation_id');
+    }
 }

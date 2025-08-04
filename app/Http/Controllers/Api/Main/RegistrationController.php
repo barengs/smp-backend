@@ -97,6 +97,10 @@ class RegistrationController extends Controller
                 'born_at' => $request->santri_tanggal_lahir,
                 'village_id' => $request->desaId ?? null,
                 'photo' => $filePath ?? null,
+                'previous_school' => $request->pendidikan_sekolah_asal,
+                'previous_school_address' => $request->pendidikan_alamat_sekolah,
+                'certificate_number' => $request->nomor_ijazah,
+                'education_level_id' => $request->education_level_id,
             ]);
 
             if ($request->hasFile('dokumen_ijazah')) {
@@ -144,7 +148,7 @@ class RegistrationController extends Controller
     public function show(string $id)
     {
         try {
-            $data = Registration::with('parent')->findOrFail($id);
+            $data = Registration::with(['parent', 'files', 'occupation'])->findOrFail($id);
             $data->photo_url = Storage::url($data->photo);
             return new RegistrationResource('Data found', $data, 200);
         } catch (\Throwable $th) {

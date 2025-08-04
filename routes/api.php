@@ -83,3 +83,5 @@ Route::group(['prefix' => 'region'], function () {
     Route::apiResource('city', CityController::class);
     Route::apiResource('province', ProvinceController::class);
 });
+
+Route::get('village/nik/{nik}', [VillageController::class, 'villageByNik']);
