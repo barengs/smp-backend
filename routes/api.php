@@ -44,6 +44,8 @@ Route::middleware('auth:api')->group(function () {
 Route::apiResource('registration', RegistrationController::class);
 Route::apiResource('employee', EmployeeController::class);
 Route::get('employee/export', [EmployeeController::class, 'export'])->name('employee.export');
+Route::post('employee/import', [EmployeeController::class, 'import'])->name('employee.import');
+Route::get('employee/import/template', [EmployeeController::class, 'getImportTemplate'])->name('employee.import.template');
 Route::apiResource('parent', ParentProfileController::class);
 Route::get('parent/nik/{nik}/cek', [ParentProfileController::class, 'getByNik'])
     ->name('parent.getByNik');
