@@ -144,6 +144,7 @@ class RegistrationController extends Controller
     {
         try {
             $data = Registration::with('parent')->findOrFail($id);
+            $data->photo_url = Storage::url($data->photo);
             return new RegistrationResource('Data found', $data, 200);
         } catch (\Throwable $th) {
             return response()->json('Data not found: ' . $th->getMessage(), 404);
