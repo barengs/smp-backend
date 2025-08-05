@@ -64,6 +64,14 @@ Route::apiResource('supervisor', InternshipSupervisorController::class);
 /* fitur perbaikan */
 Route::apiResource('product', ProductController::class);
 Route::apiResource('transaction', TransactionController::class);
+Route::post('transaction/deposit', [TransactionController::class, 'cashDeposit'])->name('transaction.deposit');
+Route::post('transaction/withdraw', [TransactionController::class, 'cashWithdraw'])->name('transaction.withdraw');
+Route::post('transaction/fund-transfer', [TransactionController::class, 'fundTransfer'])->name('transaction.fund-transfer');
+Route::get('transaction/get-by-account', [TransactionController::class, 'getByAccount'])->name('transaction.get-by-account');
+Route::get('transaction/get-by-status', [TransactionController::class, 'getByStatus'])->name('transaction.get-by-status');
+Route::get('transaction/get-by-date', [TransactionController::class, 'getByDateRange'])->name('transaction.get-by-date');
+Route::post('transaction/reverse-transaction', [TransactionController::class, 'reverseTransaction'])->name('transaction.reverse-transaction');
+Route::get('transaction/report-transaction', [TransactionController::class, 'getTransactionSummary'])->name('transaction.report-transaction');
 
 Route::group(['prefix' => 'master'], function () {
     Route::apiResource('study', StudyController::class);
