@@ -204,7 +204,7 @@ class ProductController extends Controller
      * Mengambil produk perbankan berdasarkan tipe
      *
      * Method ini digunakan untuk memfilter produk perbankan berdasarkan tipenya.
-     * Tipe produk yang valid: SAVINGS (tabungan), CHECKING (giro), 
+     * Tipe produk yang valid: SAVINGS (tabungan), CHECKING (giro),
      * LOAN (pinjaman), TIME_DEPOSIT (deposito berjangka).
      * Method ini berguna untuk menampilkan produk sesuai kebutuhan nasabah.
      *
