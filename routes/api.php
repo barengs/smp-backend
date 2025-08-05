@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\Main\InternshipSupervisorController;
+use App\Http\Controllers\Api\Main\TransactionController;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\Master\MenuController;
 use App\Http\Controllers\Api\Master\NewsController;
 use App\Http\Controllers\Api\Master\RoleController;
+use App\Http\Controllers\Api\Main\ProductController;
 use App\Http\Controllers\Api\Main\StudentController;
 use App\Http\Controllers\Api\Master\StudyController;
 use App\Http\Controllers\Api\Main\ActivityController;
@@ -32,6 +33,7 @@ use App\Http\Controllers\Api\Main\ParentProfileController;
 use App\Http\Controllers\Api\Master\AcademicYearController;
 use App\Http\Controllers\Api\Master\EducationTypeController;
 use App\Http\Controllers\Api\Master\EducationClassController;
+use App\Http\Controllers\Api\Main\InternshipSupervisorController;
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -58,6 +60,10 @@ Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard'
 Route::apiResource('activity', ActivityController::class);
 Route::apiResource('news', NewsController::class);
 Route::apiResource('supervisor', InternshipSupervisorController::class);
+
+/* fitur perbaikan */
+Route::apiResource('product', ProductController::class);
+Route::apiResource('transaction', TransactionController::class);
 
 Route::group(['prefix' => 'master'], function () {
     Route::apiResource('study', StudyController::class);
