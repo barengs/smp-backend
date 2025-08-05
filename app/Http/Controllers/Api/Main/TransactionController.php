@@ -16,14 +16,47 @@ use Illuminate\Support\Str;
 class TransactionController extends Controller
 {
     /**
-     * Menampilkan daftar semua transaksi
+     * Menampilkan daftar semua transaksi keuangan pesantren
      *
-     * Method ini digunakan untuk mengambil semua data transaksi dari database
+     * Method ini digunakan untuk mengambil semua data transaksi keuangan pesantren dari database
      * beserta relasi account sumber, account tujuan, dan entri ledger.
+     * Transaksi ini mencakup semua operasi keuangan santri seperti setoran, penarikan, dan transfer.
      *
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception Jika terjadi kesalahan saat mengambil data
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Jika tidak ada transaksi ditemukan
+     * @group Bank Santri
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "data ditemukan",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": "550e8400-e29b-41d4-a716-446655440000",
+     *       "transaction_type": "CASH_DEPOSIT",
+     *       "description": "Setoran tunai santri",
+     *       "amount": "1000000.00",
+     *       "status": "SUCCESS",
+     *       "reference_number": "DEP202412011234567890",
+     *       "channel": "TELLER",
+     *       "source_account": null,
+     *       "destination_account": "1234567890",
+     *       "created_at": "2024-12-01T12:34:56.000000Z",
+     *       "updated_at": "2024-12-01T12:34:56.000000Z",
+     *       "source_account": null,
+     *       "destination_account": {
+     *         "account_number": "1234567890",
+     *         "customer_id": 1,
+     *         "product_id": 1,
+     *         "balance": "5000000.00",
+     *         "status": "ACTIVE"
+     *       }
+     *     }
+     *   ]
+     * }
+     *
+     * @response 404 {
+     *   "status": "error",
+     *   "message": "No transactions found"
+     * }
      */
     public function index()
     {
@@ -216,18 +249,53 @@ class TransactionController extends Controller
     }
 
     /**
-     * Memproses transaksi setoran tunai
+     * Memproses transaksi setoran tunai santri
      *
-     * Method ini digunakan oleh teller untuk memproses setoran tunai ke rekening nasabah.
+     * Method ini digunakan oleh teller untuk memproses setoran tunai ke rekening santri.
      * Method ini akan:
-     * - Memvalidasi input nasabah
+     * - Memvalidasi input santri
      * - Membuat record transaksi
-     * - Mengupdate saldo rekening nasabah
+     * - Mengupdate saldo rekening santri
      * - Menggunakan database transaction untuk menjaga konsistensi data
      *
-     * @param \Illuminate\Http\Request $request Request yang berisi data setoran
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception Jika terjadi kesalahan saat memproses setoran
+     * @group Bank Santri
+     * @authenticated
+     *
+     * @bodyParam account_number string required Nomor rekening santri tujuan. Example: 1234567890
+     * @bodyParam amount numeric required Jumlah setoran (minimal 0). Example: 1000000
+     * @bodyParam description string Deskripsi setoran. Example: Setoran tunai santri
+     * @bodyParam teller_id string required ID teller yang memproses. Example: TEL001
+     *
+     * @response 201 {
+     *   "message": "Cash deposit processed successfully",
+     *   "status": 201,
+     *   "data": {
+     *     "id": "550e8400-e29b-41d4-a716-446655440000",
+     *     "transaction_type": "CASH_DEPOSIT",
+     *     "description": "Setoran tunai santri",
+     *     "amount": "1000000.00",
+     *     "status": "SUCCESS",
+     *     "reference_number": "DEP202412011234567890",
+     *     "channel": "TELLER",
+     *     "destination_account": "1234567890",
+     *     "created_at": "2024-12-01T12:34:56.000000Z",
+     *     "updated_at": "2024-12-01T12:34:56.000000Z"
+     *   }
+     * }
+     *
+     * @response 422 {
+     *   "status": "error",
+     *   "message": "Validation failed",
+     *   "errors": {
+     *     "account_number": ["The account number field is required."],
+     *     "amount": ["The amount field is required."]
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "status": "error",
+     *   "message": "Account not found"
+     * }
      */
     public function cashDeposit(Request $request)
     {

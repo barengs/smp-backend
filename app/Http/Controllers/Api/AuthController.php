@@ -24,9 +24,31 @@ class AuthController extends Controller
     }
 
     /**
-     * Register a User.
+     * Mendaftarkan user baru ke sistem
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Method ini digunakan untuk mendaftarkan user baru ke sistem pesantren.
+     * User yang didaftarkan akan memiliki akses ke sistem sesuai dengan role yang diberikan.
+     *
+     * @group Authentication
+     *
+     * @bodyParam name string required Nama lengkap user. Example: Ahmad Santri
+     * @bodyParam email string required Email user (harus unik). Example: ahmad@example.com
+     * @bodyParam password string required Password user (minimal 6 karakter). Example: password123
+     *
+     * @response 201 {
+     *   "user": {
+     *     "id": 1,
+     *     "name": "Ahmad Santri",
+     *     "email": "ahmad@example.com",
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 422 {
+     *   "email": ["The email has already been taken."],
+     *   "password": ["The password must be at least 6 characters."]
+     * }
      */
     public function register()
     {
@@ -50,9 +72,31 @@ class AuthController extends Controller
     }
 
     /**
-     * Get a JWT via given credentials.
+     * Login user dan mendapatkan token JWT
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Method ini digunakan untuk autentikasi user dan mendapatkan token JWT
+     * yang akan digunakan untuk mengakses endpoint yang memerlukan autentikasi.
+     *
+     * @group Authentication
+     *
+     * @bodyParam email string required Email user. Example: ahmad@example.com
+     * @bodyParam password string required Password user. Example: password123
+     *
+     * @response 200 {
+     *   "user": {
+     *     "id": 1,
+     *     "name": "Ahmad Santri",
+     *     "email": "ahmad@example.com",
+     *     "role": ["santri"]
+     *   },
+     *   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+     *   "token_type": "bearer",
+     *   "expires_in": 3600
+     * }
+     *
+     * @response 401 {
+     *   "error": "Unauthorized"
+     * }
      */
     public function login()
     {
@@ -71,9 +115,32 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the authenticated User.
+     * Mendapatkan data profile user yang sedang login
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Method ini digunakan untuk mendapatkan data lengkap user yang sedang login,
+     * termasuk role dan profile yang terkait (parent atau employee).
+     *
+     * @group Authentication
+     * @authenticated
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Ahmad Santri",
+     *     "email": "ahmad@example.com",
+     *     "role": ["santri"],
+     *     "profile": {
+     *       "id": 1,
+     *       "student_id": "STU001",
+     *       "name": "Ahmad Santri",
+     *       "status": "Aktif"
+     *     }
+     *   }
+     * }
+     *
+     * @response 401 {
+     *   "error": "Unauthorized"
+     * }
      */
     public function profile()
     {
@@ -89,9 +156,29 @@ class AuthController extends Controller
     }
 
     /**
-     * Log the user out (Invalidate the token).
+     * Logout user dan invalidate token JWT
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Method ini digunakan untuk logout user dengan menghapus token JWT
+     * yang sedang aktif. Token yang dihapus tidak dapat digunakan lagi.
+     *
+     * @group Authentication
+     * @authenticated
+     *
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Logout Berhasil!"
+     * }
+     *
+     * @response 400 {
+     *   "success": false,
+     *   "message": "Logout gagal, token tidak dapat dihapus."
+     * }
+     *
+     * @response 500 {
+     *   "success": false,
+     *   "message": "Terjadi kesalahan saat logout.",
+     *   "error": "Error details"
+     * }
      */
     public function logout()
     {
@@ -121,9 +208,29 @@ class AuthController extends Controller
     }
 
     /**
-     * Refresh a token.
+     * Refresh token JWT yang sedang aktif
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Method ini digunakan untuk memperbarui token JWT yang sedang aktif
+     * tanpa perlu login ulang. Token baru akan memiliki masa berlaku yang baru.
+     *
+     * @group Authentication
+     * @authenticated
+     *
+     * @response 200 {
+     *   "user": {
+     *     "id": 1,
+     *     "name": "Ahmad Santri",
+     *     "email": "ahmad@example.com",
+     *     "role": ["santri"]
+     *   },
+     *   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+     *   "token_type": "bearer",
+     *   "expires_in": 3600
+     * }
+     *
+     * @response 401 {
+     *   "error": "Unauthorized"
+     * }
      */
     public function refresh()
     {

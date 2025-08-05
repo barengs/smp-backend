@@ -13,7 +13,41 @@ use Illuminate\Validation\ValidationException;
 class EducationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua data pendidikan
+     *
+     * Method ini digunakan untuk mengambil semua data pendidikan dari database
+     * beserta relasi education class. Data pendidikan mencakup tingkat pendidikan
+     * yang ditawarkan pesantren.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Success",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "SMP",
+     *       "description": "Sekolah Menengah Pertama",
+     *       "education_class": [
+     *         {
+     *           "id": 1,
+     *           "name": "Kelas 7",
+     *           "description": "Kelas 7 SMP"
+     *         }
+     *       ],
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 500 {
+     *   "status": false,
+     *   "message": "Failed to retrieve data",
+     *   "error": "Error details"
+     * }
      */
     public function index()
     {

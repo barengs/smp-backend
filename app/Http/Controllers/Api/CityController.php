@@ -11,7 +11,33 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class CityController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua kota di Indonesia
+     *
+     * Method ini digunakan untuk mengambil semua data kota dari database
+     * menggunakan package Laravolt Indonesia beserta relasi provinsi.
+     *
+     * @group Region Data
+     * @authenticated
+     *
+     * @response 200 [
+     *   {
+     *     "id": 1,
+     *     "code": "1101",
+     *     "name": "KABUPATEN ACEH SELATAN",
+     *     "province_id": 1,
+     *     "province": {
+     *       "id": 1,
+     *       "code": "11",
+     *       "name": "ACEH"
+     *     },
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * ]
+     *
+     * @response 500 {
+     *   "error": "Failed to fetch cities"
+     * }
      */
     public function index()
     {

@@ -15,7 +15,44 @@ use Illuminate\Validation\ValidationException;
 class ParentProfileController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua data orang tua
+     *
+     * Method ini digunakan untuk mengambil semua data orang tua dari database
+     * beserta relasi user dan roles.
+     *
+     * @group Parents
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "data ditemukan",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Bapak Ahmad",
+     *       "email": "bapak@example.com",
+     *       "parent": {
+     *         "id": 1,
+     *         "first_name": "Bapak",
+     *         "last_name": "Ahmad",
+     *         "nik": "1234567890123456",
+     *         "kk": "1234567890123456",
+     *         "gender": "L",
+     *         "parent_as": "ayah",
+     *         "phone": "081234567890"
+     *       },
+     *       "roles": [
+     *         {
+     *           "name": "user"
+     *         }
+     *       ]
+     *     }
+     *   ]
+     * }
+     *
+     * @response 404 {
+     *   "message": "data tidak ada"
+     * }
      */
     public function index()
     {

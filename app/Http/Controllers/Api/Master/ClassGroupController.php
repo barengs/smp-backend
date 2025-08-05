@@ -10,7 +10,35 @@ use App\Http\Resources\ClassGroupResource;
 class ClassGroupController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua kelompok kelas
+     *
+     * Method ini digunakan untuk mengambil semua data kelompok kelas dari database
+     * beserta relasi classroom. Kelompok kelas mencakup pembagian siswa
+     * dalam satu ruang kelas.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Kelas 7A",
+     *       "classroom_id": 1,
+     *       "classroom": {
+     *         "id": 1,
+     *         "name": "Ruang Kelas 7A",
+     *         "description": "Ruang kelas untuk siswa kelas 7A"
+     *       },
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 500 {
+     *   "error": "Failed to retrieve class groups"
+     * }
      */
     public function index()
     {

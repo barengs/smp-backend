@@ -13,7 +13,40 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class ClassroomController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua ruang kelas
+     *
+     * Method ini digunakan untuk mengambil semua data ruang kelas dari database
+     * beserta relasi class groups. Ruang kelas mencakup lokasi fisik tempat belajar
+     * di pesantren.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Success",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Ruang Kelas 7A",
+     *       "parent_id": null,
+     *       "description": "Ruang kelas untuk siswa kelas 7A",
+     *       "class_groups": [
+     *         {
+     *           "id": 1,
+     *           "name": "Kelas 7A",
+     *           "description": "Kelas 7A"
+     *         }
+     *       ],
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 404 {
+     *   "message": "No data found"
+     * }
      */
     public function index()
     {

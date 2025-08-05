@@ -8,7 +8,33 @@ use Illuminate\Http\Request;
 class PartnerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua partner
+     *
+     * Method ini digunakan untuk mengambil semua data partner dari database.
+     * Partner mencakup mitra kerja pesantren seperti supplier, vendor,
+     * dan lembaga mitra lainnya.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Partners retrieved successfully",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "PT Supplier Makanan",
+     *       "type": "supplier",
+     *       "contact_person": "Ahmad Supplier",
+     *       "phone": "081234567890",
+     *       "email": "supplier@example.com",
+     *       "address": "Jl. Supplier No. 123",
+     *       "status": "active",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
      */
     public function index()
     {

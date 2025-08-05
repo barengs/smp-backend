@@ -24,12 +24,88 @@ return [
         /*
          * API version.
          */
-        'version' => env('API_VERSION', '0.1.1'),
+        'version' => env('API_VERSION', '1.0.0'),
 
         /*
          * Description rendered on the home page of the API documentation (`/docs/api`).
          */
-        'description' => 'API untuk Sistem Informasi Manajemen Pesantren (SMP) Pondok Pesantren Panyeppen, Pamekasan.',
+        'description' => '
+# Sistem Informasi Manajemen Pesantren (SMP) - API Documentation
+
+## Tentang Aplikasi
+
+SMP adalah sistem informasi manajemen pesantren yang dirancang untuk mengelola operasi pesantren secara komprehensif. Aplikasi ini mencakup semua aspek manajemen pesantren modern dari pendaftaran santri hingga manajemen keuangan.
+
+## Fitur Utama
+
+### 🎓 Pendaftaran Santri
+- **Pendaftaran Online**: Sistem pendaftaran santri baru secara online
+- **Verifikasi Data**: Validasi dan verifikasi data santri
+- **Dokumen Digital**: Upload dan manajemen dokumen pendaftaran
+- **Status Tracking**: Tracking status pendaftaran santri
+
+### 👥 Manajemen Santri
+- **Data Santri**: Manajemen data lengkap santri
+- **Status Santri**: Tracking status (Aktif, Tugas, Alumni)
+- **Riwayat Akademik**: Riwayat pendidikan dan prestasi
+- **Asrama**: Manajemen penempatan asrama
+
+### 🏦 Bank Santri
+- **Tabungan Santri**: Sistem tabungan untuk santri
+- **Transaksi Keuangan**: Setoran, penarikan, transfer
+- **Laporan Keuangan**: Laporan keuangan santri
+- **Produk Keuangan**: Berbagai produk keuangan untuk santri
+
+### 📚 Manajemen Pendidikan
+- **Program Studi**: Manajemen program pendidikan
+- **Kelas dan Kelompok**: Pengelolaan kelas dan kelompok belajar
+- **Jadwal Pelajaran**: Penjadwalan kegiatan belajar
+- **Evaluasi**: Sistem evaluasi dan penilaian
+
+### 🔐 Manajemen Keamanan
+- **Access Control**: Kontrol akses berdasarkan role
+- **User Management**: Manajemen user dan permission
+- **Audit Trail**: Pencatatan aktivitas sistem
+- **Data Protection**: Perlindungan data sensitif
+
+### 📊 Master Data
+- **Data Wilayah**: Provinsi, kota, kecamatan, desa
+- **Data Pendidikan**: Tingkat pendidikan, jenis pendidikan
+- **Data Pekerjaan**: Profesi dan pekerjaan
+- **Data Akademik**: Tahun akademik, program studi
+
+## Teknologi
+
+- **Framework**: Laravel 12.x
+- **Database**: MySQL/PostgreSQL
+- **Authentication**: JWT (JSON Web Tokens)
+- **Documentation**: Scramble (OpenAPI 3.0)
+- **API**: RESTful API
+- **Validation**: Laravel Validation
+- **Testing**: PHPUnit
+
+## Penggunaan
+
+1. **Authentication**: Semua endpoint memerlukan token JWT (kecuali login/register)
+2. **Headers**: Gunakan `Authorization: Bearer {token}` untuk request
+3. **Response Format**: Semua response menggunakan format JSON standar
+4. **Error Handling**: Error response dengan kode status HTTP yang sesuai
+
+## Endpoint Groups
+
+- **Authentication**: Login, register, profile management
+- **Dashboard**: Data ringkasan dan statistik pesantren
+- **Registration**: Pendaftaran santri baru
+- **Students**: Manajemen data santri
+- **Bank**: Operasi keuangan santri
+- **Education**: Manajemen pendidikan
+- **Security**: Manajemen keamanan dan user
+- **Master Data**: Data master (wilayah, pendidikan, dll)
+
+## Support
+
+Untuk bantuan teknis atau pertanyaan, silakan hubungi tim development.
+        ',
     ],
 
     /*
@@ -39,7 +115,7 @@ return [
         /*
          * Define the title of the documentation's website. App name is used when this config is `null`.
          */
-        'title' => null,
+        'title' => 'Sistem Informasi Manajemen Pesantren (SMP) - API Documentation',
 
         /*
          * Define the theme of the documentation. Available options are `light` and `dark`.
@@ -89,7 +165,10 @@ return [
      * ],
      * ```
      */
-    'servers' => null,
+    'servers' => [
+        'Local Development' => 'http://localhost:8000/api',
+        'Production' => 'https://your-domain.com/api',
+    ],
 
     /**
      * Determines how Scramble stores the descriptions of enum cases.

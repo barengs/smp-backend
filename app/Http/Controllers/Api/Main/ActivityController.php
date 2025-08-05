@@ -10,7 +10,35 @@ use App\Http\Resources\ActivityResource;
 class ActivityController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua kegiatan pesantren
+     *
+     * Method ini digunakan untuk mengambil semua data kegiatan pesantren dari database.
+     * Kegiatan mencakup berbagai aktivitas yang dilakukan di pesantren.
+     *
+     * @group Activities
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Success",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Kajian Kitab Kuning",
+     *       "description": "Kajian kitab kuning setiap malam Jumat",
+     *       "date": "2024-01-01",
+     *       "status": "active",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 500 {
+     *   "message": "Error",
+     *   "status": 500,
+     *   "data": null
+     * }
      */
     public function index()
     {
@@ -25,7 +53,39 @@ class ActivityController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan kegiatan pesantren baru
+     *
+     * Method ini digunakan untuk membuat kegiatan pesantren baru dengan validasi input
+     * yang ketat. Kegiatan akan disimpan dengan status aktif secara default.
+     *
+     * @group Activities
+     * @authenticated
+     *
+     * @bodyParam name string required Nama kegiatan (maksimal 255 karakter). Example: Kajian Kitab Kuning
+     * @bodyParam description string Deskripsi kegiatan. Example: Kajian kitab kuning setiap malam Jumat
+     * @bodyParam date date Tanggal kegiatan. Example: 2024-01-01
+     * @bodyParam status string Status kegiatan (active, inactive). Example: active
+     *
+     * @response 201 {
+     *   "message": "Activity created successfully",
+     *   "status": 201,
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Kajian Kitab Kuning",
+     *     "description": "Kajian kitab kuning setiap malam Jumat",
+     *     "date": "2024-01-01",
+     *     "status": "active",
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 422 {
+     *   "message": "Validation error",
+     *   "errors": {
+     *     "name": ["The name field is required."]
+     *   }
+     * }
      */
     public function store(Request $request)
     {
@@ -53,7 +113,34 @@ class ActivityController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Menampilkan detail kegiatan berdasarkan ID
+     *
+     * Method ini digunakan untuk mengambil detail kegiatan spesifik berdasarkan ID.
+     *
+     * @group Activities
+     * @authenticated
+     *
+     * @urlParam id integer required ID kegiatan yang akan ditampilkan. Example: 1
+     *
+     * @response 200 {
+     *   "message": "Success",
+     *   "status": 200,
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Kajian Kitab Kuning",
+     *     "description": "Kajian kitab kuning setiap malam Jumat",
+     *     "date": "2024-01-01",
+     *     "status": "active",
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Activity not found",
+     *   "status": 404,
+     *   "data": null
+     * }
      */
     public function show(string $id)
     {
@@ -68,7 +155,39 @@ class ActivityController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Mengupdate data kegiatan yang ada
+     *
+     * Method ini digunakan untuk mengubah data kegiatan yang sudah ada
+     * dengan validasi input yang ketat.
+     *
+     * @group Activities
+     * @authenticated
+     *
+     * @urlParam id integer required ID kegiatan yang akan diupdate. Example: 1
+     * @bodyParam name string required Nama kegiatan (maksimal 255 karakter). Example: Kajian Kitab Kuning Updated
+     * @bodyParam description string Deskripsi kegiatan. Example: Kajian kitab kuning setiap malam Jumat
+     * @bodyParam date date Tanggal kegiatan. Example: 2024-01-01
+     * @bodyParam status string required Status kegiatan (active, inactive). Example: active
+     *
+     * @response 200 {
+     *   "message": "Activity updated successfully",
+     *   "status": 200,
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Kajian Kitab Kuning Updated",
+     *     "description": "Kajian kitab kuning setiap malam Jumat",
+     *     "date": "2024-01-01",
+     *     "status": "active",
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Activity not found",
+     *   "status": 404,
+     *   "data": null
+     * }
      */
     public function update(Request $request, string $id)
     {
@@ -92,7 +211,27 @@ class ActivityController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus kegiatan berdasarkan ID
+     *
+     * Method ini digunakan untuk menghapus kegiatan berdasarkan ID.
+     * Perlu diperhatikan bahwa penghapusan kegiatan harus dilakukan dengan hati-hati.
+     *
+     * @group Activities
+     * @authenticated
+     *
+     * @urlParam id integer required ID kegiatan yang akan dihapus. Example: 1
+     *
+     * @response 200 {
+     *   "message": "Activity deleted successfully",
+     *   "status": 200,
+     *   "data": null
+     * }
+     *
+     * @response 404 {
+     *   "message": "Activity not found",
+     *   "status": 404,
+     *   "data": null
+     * }
      */
     public function destroy(string $id)
     {

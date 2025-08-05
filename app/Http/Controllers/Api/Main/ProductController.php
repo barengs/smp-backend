@@ -12,15 +12,37 @@ use Illuminate\Support\Facades\Validator;
 class ProductController extends Controller
 {
     /**
-     * Menampilkan daftar semua produk perbankan
+     * Menampilkan daftar semua produk keuangan pesantren
      *
-     * Method ini digunakan untuk mengambil semua data produk perbankan dari database.
-     * Produk perbankan mencakup berbagai jenis rekening seperti tabungan, giro,
-     * pinjaman, dan deposito berjangka.
+     * Method ini digunakan untuk mengambil semua data produk keuangan pesantren dari database.
+     * Produk keuangan mencakup berbagai jenis tabungan dan layanan keuangan untuk santri
+     * seperti tabungan santri, giro, pinjaman, dan deposito berjangka.
      *
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception Jika terjadi kesalahan saat mengambil data
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Jika tidak ada produk ditemukan
+     * @group Bank Santri
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "data ditemukan",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "product_code": "TAB001",
+     *       "product_name": "Tabungan Santri Reguler",
+     *       "product_type": "SAVINGS",
+     *       "interest_rate": "3.5",
+     *       "admin_fee": "5000.00",
+     *       "is_active": true,
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 404 {
+     *   "status": "error",
+     *   "message": "No products found"
+     * }
      */
     public function index()
     {
@@ -43,15 +65,46 @@ class ProductController extends Controller
     }
 
     /**
-     * Menyimpan produk perbankan baru ke database
+     * Menyimpan produk keuangan pesantren baru ke database
      *
-     * Method ini digunakan untuk membuat produk perbankan baru dengan validasi input
+     * Method ini digunakan untuk membuat produk keuangan pesantren baru dengan validasi input
      * yang ketat. Produk akan dibuat dengan kode produk yang unik dan validasi
-     * tipe produk yang sesuai dengan standar perbankan.
+     * tipe produk yang sesuai dengan standar keuangan pesantren.
      *
-     * @param \Illuminate\Http\Request $request Request yang berisi data produk perbankan
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception Jika terjadi kesalahan saat menyimpan data
+     * @group Bank Santri
+     * @authenticated
+     *
+     * @bodyParam product_code string required Kode produk (maksimal 20 karakter, harus unik). Example: TAB001
+     * @bodyParam product_name string required Nama produk (maksimal 100 karakter). Example: Tabungan Santri Reguler
+     * @bodyParam product_type string required Tipe produk (SAVINGS, CHECKING, LOAN, TIME_DEPOSIT). Example: SAVINGS
+     * @bodyParam interest_rate numeric Suku bunga dalam persen (0-100). Example: 3.5
+     * @bodyParam admin_fee numeric Biaya administrasi bulanan. Example: 5000
+     * @bodyParam is_active boolean Status aktif produk. Example: true
+     *
+     * @response 201 {
+     *   "message": "Product created successfully",
+     *   "status": 201,
+     *   "data": {
+     *     "id": 1,
+     *     "product_code": "TAB001",
+     *     "product_name": "Tabungan Santri Reguler",
+     *     "product_type": "SAVINGS",
+     *     "interest_rate": "3.5",
+     *     "admin_fee": "5000.00",
+     *     "is_active": true,
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 422 {
+     *   "status": "error",
+     *   "message": "Validation failed",
+     *   "errors": {
+     *     "product_code": ["The product code field is required."],
+     *     "product_name": ["The product name field is required."]
+     *   }
+     * }
      */
     public function store(Request $request)
     {
@@ -91,10 +144,31 @@ class ProductController extends Controller
      * berdasarkan ID. Method ini berguna untuk melihat informasi lengkap
      * tentang produk seperti suku bunga, biaya administrasi, dan status aktif.
      *
-     * @param string $id ID produk yang akan ditampilkan
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception Jika terjadi kesalahan saat mengambil data
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Jika produk tidak ditemukan
+     * @group Products
+     * @authenticated
+     *
+     * @urlParam id integer required ID produk yang akan ditampilkan. Example: 1
+     *
+     * @response 200 {
+     *   "message": "data ditemukan",
+     *   "status": 200,
+     *   "data": {
+     *     "id": 1,
+     *     "product_code": "TAB001",
+     *     "product_name": "Tabungan Reguler",
+     *     "product_type": "SAVINGS",
+     *     "interest_rate": "3.5",
+     *     "admin_fee": "5000.00",
+     *     "is_active": true,
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "status": "error",
+     *   "message": "Product not found"
+     * }
      */
     public function show(string $id)
     {

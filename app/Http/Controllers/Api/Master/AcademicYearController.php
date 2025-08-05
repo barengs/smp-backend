@@ -10,7 +10,35 @@ use App\Http\Resources\AcademicYearResource;
 class AcademicYearController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua tahun akademik
+     *
+     * Method ini digunakan untuk mengambil semua data tahun akademik dari database.
+     * Tahun akademik mencakup periode belajar yang digunakan pesantren.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Data retrieved successfully",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "year": "2024/2025",
+     *       "semester": "Ganjil",
+     *       "active": true,
+     *       "description": "Tahun Akademik 2024/2025 Semester Ganjil",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 500 {
+     *   "message": "Failed to retrieve data",
+     *   "status": 500,
+     *   "error": "Error details"
+     * }
      */
     public function index()
     {
@@ -33,7 +61,39 @@ class AcademicYearController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan tahun akademik baru
+     *
+     * Method ini digunakan untuk membuat tahun akademik baru dengan validasi input
+     * yang ketat. Tahun akademik harus unik dan tidak boleh duplikat.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @bodyParam year string required Tahun akademik (format: 2024/2025, maksimal 9 karakter). Example: 2024/2025
+     * @bodyParam semester string required Semester (Ganjil/Genap, maksimal 20 karakter). Example: Ganjil
+     * @bodyParam active boolean Status aktif tahun akademik. Example: true
+     * @bodyParam description string Deskripsi tahun akademik. Example: Tahun Akademik 2024/2025 Semester Ganjil
+     *
+     * @response 201 {
+     *   "message": "Academic year created successfully",
+     *   "status": 201,
+     *   "data": {
+     *     "id": 1,
+     *     "year": "2024/2025",
+     *     "semester": "Ganjil",
+     *     "active": true,
+     *     "description": "Tahun Akademik 2024/2025 Semester Ganjil",
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 422 {
+     *   "message": "Validation error",
+     *   "errors": {
+     *     "year": ["The year field is required."]
+     *   }
+     * }
      */
     public function store(Request $request)
     {
@@ -63,7 +123,32 @@ class AcademicYearController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Menampilkan detail tahun akademik berdasarkan ID
+     *
+     * Method ini digunakan untuk mengambil detail tahun akademik spesifik berdasarkan ID.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @urlParam id integer required ID tahun akademik yang akan ditampilkan. Example: 1
+     *
+     * @response 200 {
+     *   "message": "Data retrieved successfully",
+     *   "status": 200,
+     *   "data": {
+     *     "id": 1,
+     *     "year": "2024/2025",
+     *     "semester": "Ganjil",
+     *     "active": true,
+     *     "description": "Tahun Akademik 2024/2025 Semester Ganjil",
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Academic year not found"
+     * }
      */
     public function show(string $id)
     {
@@ -80,7 +165,37 @@ class AcademicYearController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Mengupdate data tahun akademik yang ada
+     *
+     * Method ini digunakan untuk mengubah data tahun akademik yang sudah ada
+     * dengan validasi input yang ketat.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @urlParam id integer required ID tahun akademik yang akan diupdate. Example: 1
+     * @bodyParam year string required Tahun akademik (format: 2024/2025, maksimal 9 karakter). Example: 2024/2025
+     * @bodyParam semester string required Semester (Ganjil/Genap, maksimal 20 karakter). Example: Ganjil
+     * @bodyParam active boolean Status aktif tahun akademik. Example: true
+     * @bodyParam description string Deskripsi tahun akademik. Example: Tahun Akademik 2024/2025 Semester Ganjil
+     *
+     * @response 200 {
+     *   "message": "Academic year updated successfully",
+     *   "status": 200,
+     *   "data": {
+     *     "id": 1,
+     *     "year": "2024/2025",
+     *     "semester": "Ganjil",
+     *     "active": true,
+     *     "description": "Tahun Akademik 2024/2025 Semester Ganjil Updated",
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Academic year not found"
+     * }
      */
     public function update(Request $request, string $id)
     {
@@ -111,13 +226,61 @@ class AcademicYearController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus tahun akademik berdasarkan ID
+     *
+     * Method ini digunakan untuk menghapus tahun akademik berdasarkan ID.
+     * Perlu diperhatikan bahwa penghapusan tahun akademik harus dilakukan dengan hati-hati
+     * karena dapat mempengaruhi data pendidikan yang terkait.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @urlParam id integer required ID tahun akademik yang akan dihapus. Example: 1
+     *
+     * @response 200 {
+     *   "message": "Academic year deleted successfully",
+     *   "status": 200
+     * }
+     *
+     * @response 404 {
+     *   "message": "Academic year not found"
+     * }
      */
     public function destroy(string $id)
     {
         //
     }
 
+    /**
+     * Mengatur status aktif tahun akademik
+     *
+     * Method ini digunakan untuk mengubah status aktif tahun akademik.
+     * Hanya satu tahun akademik yang dapat aktif pada satu waktu.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @urlParam id integer required ID tahun akademik yang statusnya akan diubah. Example: 1
+     * @bodyParam active boolean required Status aktif (true = aktif, false = nonaktif). Example: true
+     *
+     * @response 200 {
+     *   "message": "Academic year status updated successfully",
+     *   "status": 200,
+     *   "data": {
+     *     "id": 1,
+     *     "year": "2024/2025",
+     *     "semester": "Ganjil",
+     *     "active": true,
+     *     "description": "Tahun Akademik 2024/2025 Semester Ganjil",
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Academic year not found"
+     * }
+     */
     public function setActive(Request $request, string $id)
     {
         try {

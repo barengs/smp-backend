@@ -10,7 +10,34 @@ use App\Http\Resources\NewsResource;
 class NewsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua berita dan pengumuman
+     *
+     * Method ini digunakan untuk mengambil semua data berita dan pengumuman dari database.
+     * Berita mencakup informasi penting dan pengumuman pesantren.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Success",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "title": "Pengumuman Libur Sekolah",
+     *       "content": "Sekolah akan libur pada tanggal 25 Desember 2024",
+     *       "image": "images/news1.jpg",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 500 {
+     *   "message": "Error fetching news",
+     *   "status": 500,
+     *   "data": null
+     * }
      */
     public function index()
     {

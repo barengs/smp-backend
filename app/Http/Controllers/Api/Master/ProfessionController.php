@@ -13,7 +13,37 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class ProfessionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua profesi
+     *
+     * Method ini digunakan untuk mengambil semua data profesi dari database.
+     * Data profesi digunakan untuk mengisi informasi profesi orang tua
+     * dan data demografis pesantren.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Professions retrieved successfully",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Guru",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     },
+     *     {
+     *       "id": 2,
+     *       "name": "Dokter",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 404 {
+     *   "message": "No data found"
+     * }
      */
     public function index()
     {

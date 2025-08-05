@@ -8,7 +8,32 @@ use Illuminate\Http\Request;
 class TransactionLedgerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua buku besar transaksi
+     *
+     * Method ini digunakan untuk mengambil semua data buku besar transaksi dari database.
+     * Buku besar mencakup detail pencatatan setiap transaksi keuangan
+     * untuk audit trail dan laporan keuangan.
+     *
+     * @group Bank Santri
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Transaction ledgers retrieved successfully",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "transaction_id": "TRX001",
+     *       "account_number": "ACC001",
+     *       "debit_amount": 1000000,
+     *       "credit_amount": 0,
+     *       "balance": 1000000,
+     *       "description": "Setoran awal",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
      */
     public function index()
     {

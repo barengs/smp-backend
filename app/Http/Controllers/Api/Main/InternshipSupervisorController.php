@@ -10,7 +10,36 @@ use Illuminate\Http\Request;
 class InternshipSupervisorController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua pembimbing magang
+     *
+     * Method ini digunakan untuk mengambil semua data pembimbing magang dari database.
+     * Pembimbing magang mencakup supervisor yang bertanggung jawab
+     * membimbing santri dalam program magang.
+     *
+     * @group Students
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Data fetched successfully",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Ahmad Supervisor",
+     *       "email": "ahmad@company.com",
+     *       "phone": "081234567890",
+     *       "address": "Jl. Perusahaan No. 123",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 500 {
+     *   "message": "Failed to fetch data",
+     *   "status": 500,
+     *   "data": []
+     * }
      */
     public function index()
     {

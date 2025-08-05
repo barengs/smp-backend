@@ -10,7 +10,48 @@ use Illuminate\Http\Request;
 class MenuController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua menu
+     *
+     * Method ini digunakan untuk mengambil semua data menu dari database
+     * beserta relasi child menu. Menu digunakan untuk mengatur navigasi
+     * dan struktur menu aplikasi pesantren.
+     *
+     * @group Security Management
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "success",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "title": "Dashboard",
+     *       "description": "Halaman utama dashboard",
+     *       "icon": "fas fa-tachometer-alt",
+     *       "route": "/dashboard",
+     *       "parent_id": null,
+     *       "type": "link",
+     *       "position": "side",
+     *       "status": "active",
+     *       "order": 1,
+     *       "child": [
+     *         {
+     *           "id": 2,
+     *           "title": "Sub Menu",
+     *           "icon": "fas fa-cog",
+     *           "route": "/dashboard/settings"
+     *         }
+     *       ],
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 500 {
+     *   "message": "Data tidak ditemukan",
+     *   "error": "Error details"
+     * }
      */
     public function index()
     {

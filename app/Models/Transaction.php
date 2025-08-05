@@ -12,7 +12,7 @@ class Transaction extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'transaction_id',
+        'id',
         'transaction_type',
         'description',
         'amount',

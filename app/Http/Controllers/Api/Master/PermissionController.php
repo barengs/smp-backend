@@ -11,7 +11,39 @@ use Illuminate\Validation\ValidationException;
 class PermissionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua permission
+     *
+     * Method ini digunakan untuk mengambil semua data permission dari database.
+     * Permission digunakan untuk mengatur akses detail user dalam sistem pesantren.
+     *
+     * @group Security Management
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "success",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "create-users",
+     *       "guard_name": "api",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     },
+     *     {
+     *       "id": 2,
+     *       "name": "edit-users",
+     *       "guard_name": "api",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 500 {
+     *   "message": "Failed to retrieve permission",
+     *   "error": "Error details"
+     * }
      */
     public function index()
     {

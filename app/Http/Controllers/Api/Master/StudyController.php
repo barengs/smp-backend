@@ -13,7 +13,34 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class StudyController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua mata pelajaran
+     *
+     * Method ini digunakan untuk mengambil semua data mata pelajaran dari database.
+     * Mata pelajaran mencakup kurikulum yang diajarkan di pesantren.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Studies retrieved successfully",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Matematika",
+     *       "description": "Mata pelajaran matematika untuk tingkat SMP",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     },
+     *     {
+     *       "id": 2,
+     *       "name": "Bahasa Indonesia",
+     *       "description": "Mata pelajaran bahasa Indonesia",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
      */
     public function index()
     {

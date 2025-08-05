@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TransactionLedger extends Model
 {
     protected $table = 'transaction_ledger';
-    protected $primaryKey = 'ledger_entry_id';
+    protected $primaryKey = 'id';
     public $timestamps = false; // Karena tidak ada kolom created_at/updated_at di migrasi
 
     protected $fillable = [

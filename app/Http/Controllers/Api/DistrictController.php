@@ -9,7 +9,33 @@ use Laravolt\Indonesia\Models\District;
 class DistrictController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua kecamatan di Indonesia
+     *
+     * Method ini digunakan untuk mengambil semua data kecamatan dari database
+     * menggunakan package Laravolt Indonesia beserta relasi kota.
+     *
+     * @group Region Data
+     * @authenticated
+     *
+     * @response 200 [
+     *   {
+     *     "id": 1,
+     *     "code": "110101",
+     *     "name": "KECAMATAN BAKONGAN",
+     *     "city_id": 1,
+     *     "city": {
+     *       "id": 1,
+     *       "code": "1101",
+     *       "name": "KABUPATEN ACEH SELATAN"
+     *     },
+     *     "created_at": "2024-01-01T00:00:00.000000Z",
+     *     "updated_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * ]
+     *
+     * @response 500 {
+     *   "error": "Failed to fetch districts"
+     * }
      */
     public function index()
     {

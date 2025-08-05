@@ -11,7 +11,40 @@ use Illuminate\Validation\ValidationException;
 class OccupationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua pekerjaan
+     *
+     * Method ini digunakan untuk mengambil semua data pekerjaan dari database.
+     * Data pekerjaan digunakan untuk mengisi informasi pekerjaan orang tua
+     * dan data demografis pesantren.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Occupations retrieved successfully",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "PNS",
+     *       "description": "Pegawai Negeri Sipil",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     },
+     *     {
+     *       "id": 2,
+     *       "name": "Wiraswasta",
+     *       "description": "Pengusaha atau wiraswasta",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 500 {
+     *   "status": "error",
+     *   "message": "Failed to fetch occupations: Error details"
+     * }
      */
     public function index()
     {

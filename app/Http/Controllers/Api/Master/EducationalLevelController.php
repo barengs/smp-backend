@@ -8,7 +8,38 @@ use Illuminate\Http\Request;
 class EducationalLevelController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua tingkat pendidikan
+     *
+     * Method ini digunakan untuk mengambil semua data tingkat pendidikan dari database.
+     * Tingkat pendidikan mencakup jenjang pendidikan yang ditawarkan pesantren.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Data educational level",
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "SMP",
+     *       "description": "Sekolah Menengah Pertama",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     },
+     *     {
+     *       "id": 2,
+     *       "name": "SMA",
+     *       "description": "Sekolah Menengah Atas",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 404 {
+     *   "message": "Data tidak ditemukan"
+     * }
      */
     public function index()
     {

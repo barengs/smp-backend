@@ -11,7 +11,41 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class EducationClassController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua kelas pendidikan
+     *
+     * Method ini digunakan untuk mengambil semua data kelas pendidikan dari database.
+     * Kelas pendidikan mencakup pembagian tingkat kelas dalam sistem pendidikan
+     * pesantren.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Success",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Kelas 7",
+     *       "description": "Kelas 7 SMP",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     },
+     *     {
+     *       "id": 2,
+     *       "name": "Kelas 8",
+     *       "description": "Kelas 8 SMP",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 500 {
+     *   "status": false,
+     *   "message": "Failed to retrieve data",
+     *   "error": "Error details"
+     * }
      */
     public function index()
     {

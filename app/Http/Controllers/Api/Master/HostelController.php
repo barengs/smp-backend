@@ -12,7 +12,47 @@ use Illuminate\Validation\ValidationException;
 class HostelController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua asrama
+     *
+     * Method ini digunakan untuk mengambil semua data asrama dari database
+     * beserta relasi parent asrama. Asrama mencakup tempat tinggal santri
+     * di pesantren.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Data retrieved successfully",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Asrama Putra A",
+     *       "parent_id": null,
+     *       "description": "Asrama untuk santri putra kelas 7-9",
+     *       "parent": null,
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     },
+     *     {
+     *       "id": 2,
+     *       "name": "Asrama Putra B",
+     *       "parent_id": 1,
+     *       "description": "Sub-asrama dari Asrama Putra A",
+     *       "parent": {
+     *         "id": 1,
+     *         "name": "Asrama Putra A"
+     *       },
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 500 {
+     *   "message": "Error retrieving data",
+     *   "error": "Error details"
+     * }
      */
     public function index()
     {

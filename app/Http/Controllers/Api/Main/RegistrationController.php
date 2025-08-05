@@ -17,7 +17,44 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class RegistrationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua pendaftaran santri
+     *
+     * Method ini digunakan untuk mengambil semua data pendaftaran santri dari database
+     * beserta relasi data orang tua. Data diurutkan berdasarkan tanggal terbaru
+     * dan menggunakan pagination.
+     *
+     * @group Registration
+     * @authenticated
+     *
+     * @queryParam page integer Halaman yang akan ditampilkan. Example: 1
+     * @queryParam per_page integer Jumlah data per halaman. Example: 10
+     *
+     * @response 200 {
+     *   "message": "Registrations fetched successfully",
+     *   "status": 200,
+     *   "data": {
+     *     "current_page": 1,
+     *     "data": [
+     *       {
+     *         "id": 1,
+     *         "registration_number": "REG2024001",
+     *         "first_name": "Ahmad",
+     *         "last_name": "Santri",
+     *         "nis": "1234567890",
+     *         "status": "pending",
+     *         "parent": {
+     *           "id": 1,
+     *           "first_name": "Bapak",
+     *           "last_name": "Ahmad",
+     *           "nik": "1234567890123456"
+     *         },
+     *         "created_at": "2024-01-01T00:00:00.000000Z"
+     *       }
+     *     ],
+     *     "total": 50,
+     *     "per_page": 10
+     *   }
+     * }
      */
     public function index()
     {

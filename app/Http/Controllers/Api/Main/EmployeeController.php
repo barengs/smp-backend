@@ -16,7 +16,42 @@ use Illuminate\Http\Response;
 class EmployeeController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua asatidz (karyawan)
+     *
+     * Method ini digunakan untuk mengambil semua data asatidz dari database
+     * beserta relasi employee dan roles.
+     *
+     * @group Employees
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "data ditemukan",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Ahmad Asatidz",
+     *       "email": "ahmad@example.com",
+     *       "employee": {
+     *         "id": 1,
+     *         "code": "EMP0001",
+     *         "first_name": "Ahmad",
+     *         "last_name": "Asatidz",
+     *         "nik": "1234567890123456",
+     *         "phone": "081234567890"
+     *       },
+     *       "roles": [
+     *         {
+     *           "name": "asatidz"
+     *         }
+     *       ]
+     *     }
+     *   ]
+     * }
+     *
+     * @response 404 {
+     *   "message": "data tidak ditemukan"
+     * }
      */
     public function index()
     {

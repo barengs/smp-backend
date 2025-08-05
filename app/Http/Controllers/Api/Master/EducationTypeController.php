@@ -12,7 +12,38 @@ use Illuminate\Validation\ValidationException;
 class EducationTypeController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua jenis pendidikan
+     *
+     * Method ini digunakan untuk mengambil semua data jenis pendidikan dari database.
+     * Jenis pendidikan mencakup kategori pendidikan yang ditawarkan pesantren.
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Success",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Formal",
+     *       "description": "Pendidikan formal sesuai kurikulum nasional",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     },
+     *     {
+     *       "id": 2,
+     *       "name": "Non-Formal",
+     *       "description": "Pendidikan non-formal seperti kursus dan pelatihan",
+     *       "created_at": "2024-01-01T00:00:00.000000Z",
+     *       "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 404 {
+     *   "message": "No data found"
+     * }
      */
     public function index()
     {
