@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\Imports\OccupationImport;
 use App\Models\Occupation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OccupationResource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OccupationController extends Controller
 {
@@ -179,6 +182,39 @@ class OccupationController extends Controller
                 'status' => 'error',
                 'message' => 'Validation failed: ' . $e->getMessage(),
             ], 422);
+        }
+    }
+    public function import(Request $request)
+    {
+        try {
+            $request->validate([
+                'file' => 'required|mimes:xlsx,csv'
+            ]);
+
+            DB::beginTransaction();
+
+            Excel::import(new OccupationImport, $request->file('file'));
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data imported successfully',
+            ], 200);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $e->validator->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to import data',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 }

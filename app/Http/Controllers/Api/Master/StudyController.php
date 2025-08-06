@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\Imports\StudyImport;
 use App\Models\Study;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StudyResource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudyController extends Controller
 {
@@ -147,6 +150,53 @@ class StudyController extends Controller
             return response()->json('Study not found', 404);
         } catch (\Exception $e) {
             return response()->json('An error occurred: ' . $e->getMessage(), 500);
+        }
+    }
+    public function import(Request $request)
+    {
+        try {
+            $request->validate([
+                'file' => 'required|mimes:xlsx,csv'
+            ]);
+
+            DB::beginTransaction();
+
+            Excel::import(new StudyImport, $request->file('file'));
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data imported successfully',
+            ], 200);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $e->validator->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to import data',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getImportTemplate()
+    {
+        $path = public_path('template/import/study.xlsx');
+
+        if (file_exists($path)) {
+            return response()->download($path);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Template not found',
+            ], 404);
         }
     }
 }

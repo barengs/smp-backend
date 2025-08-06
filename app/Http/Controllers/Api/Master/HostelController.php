@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\HostelResource;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\UploadedFile;
 
 class HostelController extends Controller
 {
@@ -168,6 +171,129 @@ class HostelController extends Controller
         } catch (\Throwable $th) {
             return response([
                 'message' => 'Error deleting hostel',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Import data asrama dari file Excel/CSV.
+     *
+     * Method ini digunakan untuk mengimpor data asrama secara massal dari file Excel atau CSV.
+     * File harus memiliki kolom: name, parent_id (opsional), description (opsional).
+     *
+     * @group Master Data
+     * @authenticated
+     *
+     * @bodyParam file file required File Excel/CSV yang berisi data asrama.
+     *
+     * @response 200 {
+     *   "message": "Import successful",
+     *   "imported": 10,
+     *   "failed": 2,
+     *   "errors": [
+     *     {"row": 3, "error": "Kolom name wajib diisi"}
+     *   ]
+     * }
+     *
+     * @response 422 {
+     *   "message": "Validation error",
+     *   "errors": {
+     *     "file": ["The file field is required."]
+     *   }
+     * }
+     */
+    public function import(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|file|mimes:xlsx,csv,txt',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $file = $request->file('file');
+        $imported = 0;
+        $failed = 0;
+        $errors = [];
+
+        try {
+            $rows = [];
+            $extension = strtolower($file->getClientOriginalExtension());
+
+            if ($extension === 'csv' || $extension === 'txt') {
+                $handle = fopen($file->getRealPath(), 'r');
+                $header = fgetcsv($handle);
+                while (($data = fgetcsv($handle)) !== false) {
+                    $rows[] = array_combine($header, $data);
+                }
+                fclose($handle);
+            } else {
+                // Excel (xlsx) support
+                if (!class_exists('\PhpOffice\PhpSpreadsheet\IOFactory')) {
+                    return response([
+                        'message' => 'Excel import requires phpoffice/phpspreadsheet package.',
+                        'error' => 'Package not installed.',
+                    ], 500);
+                }
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+                $sheet = $spreadsheet->getActiveSheet();
+                $header = [];
+                foreach ($sheet->getRowIterator() as $rowIndex => $row) {
+                    $cellIterator = $row->getCellIterator();
+                    $cellIterator->setIterateOnlyExistingCells(false);
+                    $cells = [];
+                    foreach ($cellIterator as $cell) {
+                        $cells[] = $cell->getValue();
+                    }
+                    if ($rowIndex === 1) {
+                        $header = $cells;
+                    } else {
+                        $rows[] = array_combine($header, $cells);
+                    }
+                }
+            }
+
+            DB::beginTransaction();
+            foreach ($rows as $i => $row) {
+                $rowNumber = $i + 2; // +2 for header and 1-based index
+                $rowValidator = Validator::make($row, [
+                    'name' => 'required|string|max:255',
+                    'parent_id' => 'nullable|integer|exists:hostels,id',
+                    'description' => 'nullable|string',
+                ]);
+                if ($rowValidator->fails()) {
+                    $failed++;
+                    $errors[] = [
+                        'row' => $rowNumber,
+                        'error' => $rowValidator->errors()->first(),
+                    ];
+                    continue;
+                }
+                Hostel::create([
+                    'name' => $row['name'],
+                    'parent_id' => $row['parent_id'] ?? null,
+                    'description' => $row['description'] ?? null,
+                ]);
+                $imported++;
+            }
+            DB::commit();
+
+            return response([
+                'message' => 'Import successful',
+                'imported' => $imported,
+                'failed' => $failed,
+                'errors' => $errors,
+            ], 200);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response([
+                'message' => 'Error importing data',
                 'error' => $th->getMessage(),
             ], 500);
         }

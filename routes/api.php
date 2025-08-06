@@ -75,15 +75,19 @@ Route::get('transaction/report-transaction', [TransactionController::class, 'get
 
 Route::group(['prefix' => 'master'], function () {
     Route::apiResource('study', StudyController::class);
+    Route::post('study/import', [StudyController::class, 'import'])->name('study.import');
+    Route::get('study/import/template', [StudyController::class, 'getImportTemplate'])->name('study.import.template');
     Route::apiResource('profession', ProfessionController::class);
     Route::apiResource('jobdes', JobDesController::class);
     Route::apiResource('classroom', ClassroomController::class);
     Route::apiResource('education-class', EducationClassController::class);
     Route::apiResource('education', EducationController::class);
+    Route::post('education/import', [EducationController::class, 'import'])->name('education.import');
     Route::apiResource('education-type', EducationTypeController::class);
     Route::apiResource('hostel', HostelController::class);
     Route::apiResource('program', ProgramController::class);
     Route::apiResource('occupation', OccupationController::class);
+    Route::post('occupation/import', [OccupationController::class, 'import'])->name('occupation.import');
     Route::apiResource('role', RoleController::class);
     Route::apiResource('permission', PermissionController::class);
     Route::apiResource('menu', MenuController::class);

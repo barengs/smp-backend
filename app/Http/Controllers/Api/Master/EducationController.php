@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api\Master;
 
 use App\Models\Education;
+use App\Imports\EducationImport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\EducationResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EducationController extends Controller
 {
@@ -213,6 +215,33 @@ class EducationController extends Controller
                 'message' => 'Data not found',
                 'error' => $th->getMessage(),
             ], 404);
+        }
+    }
+    public function import(Request $request)
+    {
+        try {
+            $request->validate([
+                'file' => 'required|mimes:xlsx,csv'
+            ]);
+
+            Excel::import(new EducationImport, $request->file('file'));
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data imported successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to import data',
+                'error' => $e->getMessage(),
+            ], 500);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $e->validator->errors(),
+            ], 422);
         }
     }
 }
