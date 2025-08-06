@@ -167,7 +167,7 @@ Untuk bantuan teknis atau pertanyaan, silakan hubungi tim development.
      */
     'servers' => [
         'Local Development' => 'http://localhost:8000/api',
-        'Production' => 'https://your-domain.com/api',
+        'Production' => 'https://api.smp.barengsaya.com/api',
     ],
 
     /**
