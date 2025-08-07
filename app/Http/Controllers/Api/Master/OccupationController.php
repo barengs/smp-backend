@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\Exports\OccupationExport;
 use App\Imports\OccupationImport;
 use App\Models\Occupation;
 use Illuminate\Http\Request;
@@ -184,6 +185,12 @@ class OccupationController extends Controller
             ], 422);
         }
     }
+
+    public function getImportTemplate()
+    {
+        return Excel::download(new OccupationExport, 'occupation_template.xlsx');
+    }
+
     public function import(Request $request)
     {
         try {

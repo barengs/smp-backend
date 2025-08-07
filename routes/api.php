@@ -85,9 +85,12 @@ Route::group(['prefix' => 'master'], function () {
     Route::post('education/import', [EducationController::class, 'import'])->name('education.import');
     Route::apiResource('education-type', EducationTypeController::class);
     Route::apiResource('hostel', HostelController::class);
+    Route::post('hostel/import', [HostelController::class, 'import'])->name('hostel.import');
+    Route::get('hostel/import/template', [HostelController::class, 'getImportTemplate'])->name('hostel.import.template');
     Route::apiResource('program', ProgramController::class);
     Route::apiResource('occupation', OccupationController::class);
     Route::post('occupation/import', [OccupationController::class, 'import'])->name('occupation.import');
+    Route::get('occupation/import/template', [OccupationController::class, 'getImportTemplate'])->name('occupation.import.template');
     Route::apiResource('role', RoleController::class);
     Route::apiResource('permission', PermissionController::class);
     Route::apiResource('menu', MenuController::class);

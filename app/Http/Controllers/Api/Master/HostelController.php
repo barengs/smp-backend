@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\HostelResource;
+use App\Exports\HostelExport;
+use App\Imports\HostelImport;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HostelController extends Controller
 {
@@ -205,97 +208,40 @@ class HostelController extends Controller
      */
     public function import(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:xlsx,csv,txt',
-        ]);
-
-        if ($validator->fails()) {
-            return response([
-                'message' => 'Validation error',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        $file = $request->file('file');
-        $imported = 0;
-        $failed = 0;
-        $errors = [];
-
         try {
-            $rows = [];
-            $extension = strtolower($file->getClientOriginalExtension());
-
-            if ($extension === 'csv' || $extension === 'txt') {
-                $handle = fopen($file->getRealPath(), 'r');
-                $header = fgetcsv($handle);
-                while (($data = fgetcsv($handle)) !== false) {
-                    $rows[] = array_combine($header, $data);
-                }
-                fclose($handle);
-            } else {
-                // Excel (xlsx) support
-                if (!class_exists('\PhpOffice\PhpSpreadsheet\IOFactory')) {
-                    return response([
-                        'message' => 'Excel import requires phpoffice/phpspreadsheet package.',
-                        'error' => 'Package not installed.',
-                    ], 500);
-                }
-                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
-                $sheet = $spreadsheet->getActiveSheet();
-                $header = [];
-                foreach ($sheet->getRowIterator() as $rowIndex => $row) {
-                    $cellIterator = $row->getCellIterator();
-                    $cellIterator->setIterateOnlyExistingCells(false);
-                    $cells = [];
-                    foreach ($cellIterator as $cell) {
-                        $cells[] = $cell->getValue();
-                    }
-                    if ($rowIndex === 1) {
-                        $header = $cells;
-                    } else {
-                        $rows[] = array_combine($header, $cells);
-                    }
-                }
-            }
+            $request->validate([
+                'file' => 'required|mimes:xlsx,csv'
+            ]);
 
             DB::beginTransaction();
-            foreach ($rows as $i => $row) {
-                $rowNumber = $i + 2; // +2 for header and 1-based index
-                $rowValidator = Validator::make($row, [
-                    'name' => 'required|string|max:255',
-                    'parent_id' => 'nullable|integer|exists:hostels,id',
-                    'description' => 'nullable|string',
-                ]);
-                if ($rowValidator->fails()) {
-                    $failed++;
-                    $errors[] = [
-                        'row' => $rowNumber,
-                        'error' => $rowValidator->errors()->first(),
-                    ];
-                    continue;
-                }
-                Hostel::create([
-                    'name' => $row['name'],
-                    'parent_id' => $row['parent_id'] ?? null,
-                    'description' => $row['description'] ?? null,
-                ]);
-                $imported++;
-            }
+
+            Excel::import(new HostelImport, $request->file('file'));
+
             DB::commit();
 
-            return response([
-                'message' => 'Import successful',
-                'imported' => $imported,
-                'failed' => $failed,
-                'errors' => $errors,
+            return response()->json([
+                'status' => true,
+                'message' => 'Data imported successfully',
             ], 200);
-
-        } catch (\Throwable $th) {
+        } catch (ValidationException $e) {
             DB::rollBack();
-            return response([
-                'message' => 'Error importing data',
-                'error' => $th->getMessage(),
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $e->validator->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to import data',
+                'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function getImportTemplate()
+    {
+        return Excel::download(new HostelExport, 'hostel_template.xlsx');
     }
 }
