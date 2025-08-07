@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Master;
 
 use App\Models\Education;
+use App\Exports\EducationExport;
 use App\Imports\EducationImport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -217,6 +218,12 @@ class EducationController extends Controller
             ], 404);
         }
     }
+
+    public function getImportTemplate()
+    {
+        return Excel::download(new EducationExport, 'education_template.xlsx');
+    }
+
     public function import(Request $request)
     {
         try {

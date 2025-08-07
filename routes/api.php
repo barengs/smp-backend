@@ -83,6 +83,7 @@ Route::group(['prefix' => 'master'], function () {
     Route::apiResource('education-class', EducationClassController::class);
     Route::apiResource('education', EducationController::class);
     Route::post('education/import', [EducationController::class, 'import'])->name('education.import');
+    Route::get('education/import/template', [EducationController::class, 'getImportTemplate'])->name('education.import.template');
     Route::apiResource('education-type', EducationTypeController::class);
     Route::apiResource('hostel', HostelController::class);
     Route::post('hostel/import', [HostelController::class, 'import'])->name('hostel.import');
