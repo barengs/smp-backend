@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\Exports\StudyExport;
 use App\Imports\StudyImport;
 use App\Models\Study;
 use Illuminate\Http\Request;
@@ -188,15 +189,6 @@ class StudyController extends Controller
 
     public function getImportTemplate()
     {
-        $path = public_path('template/import/study.xlsx');
-
-        if (file_exists($path)) {
-            return response()->download($path);
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Template not found',
-            ], 404);
-        }
+        return Excel::download(new StudyExport, 'study_template.xlsx');
     }
 }
