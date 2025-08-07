@@ -44,6 +44,7 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::apiResource('registration', RegistrationController::class);
+Route::get('registration/current-year', [RegistrationController::class, 'getByCurrentYear'])->name('registration.current-year');
 Route::apiResource('employee', EmployeeController::class);
 Route::get('employee/export', [EmployeeController::class, 'export'])->name('employee.export');
 Route::post('employee/import', [EmployeeController::class, 'import'])->name('employee.import');

@@ -221,4 +221,17 @@ class RegistrationController extends Controller
         }
         return $registrationNumber;
     }
+    public function getByCurrentYear()
+    {
+        try {
+            $registrations = Registration::with('parent')
+                ->whereYear('created_at', date('Y'))
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+
+            return new RegistrationResource('Registrations for the current year fetched successfully', $registrations, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch registrations: ' . $e->getMessage()], 500);
+        }
+    }
 }
