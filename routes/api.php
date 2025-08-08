@@ -104,6 +104,7 @@ Route::group(['prefix' => 'region'], function () {
     Route::apiResource('village', VillageController::class);
     Route::apiResource('district', DistrictController::class);
     Route::apiResource('city', CityController::class);
+    Route::get('city/by-name', [CityController::class, 'getByName'])->name('city.by-name');
     Route::apiResource('province', ProvinceController::class);
 });
 

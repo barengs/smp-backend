@@ -82,4 +82,22 @@ class CityController extends Controller
     {
         //
     }
+    public function getByName(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string',
+            ]);
+
+            $cities = City::with('province')
+                ->where('name', 'like', '%' . $request->name . '%')
+                ->get();
+
+            return response()->json($cities, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch cities'], 500);
+        } catch (ModelNotFoundException $th) {
+            return response()->json(['error' => 'Model not found'], 404);
+        }
+    }
 }
