@@ -83,12 +83,14 @@ class HostelController extends Controller
                 'name' => 'required|string|max:255',
                 'program_id' => 'nullable',
                 'description' => 'nullable',
+                'capacity' => 'nullable|integer',
             ]);
 
             $hostel = Hostel::create([
                 'name' => $request->name,
                 'program_id' => $request->program_id,
                 'description' => $request->description,
+                'capacity' => $request->capacity ?? 0, // Default capacity to 0 if not provided
             ]);
             return new HostelResource('Hostel created successfully', $hostel, 201);
         } catch (ValidationException $e) {
@@ -130,6 +132,7 @@ class HostelController extends Controller
                 'name' => 'required|string|max:255',
                 'program_id' => 'nullable',
                 'description' => 'nullable',
+                'capacity' => 'nullable',
             ]);
 
             $hostel = Hostel::findOrFail($id);
@@ -137,6 +140,7 @@ class HostelController extends Controller
                 'name' => $request->name,
                 'program_id' => $request->program_id,
                 'description' => $request->description,
+                'capacity' => $request->capacity ?? $hostel->capacity, // Keep existing capacity if not provided
             ]);
             return new HostelResource('Hostel updated successfully', $hostel, 200);
         } catch (ValidationException $e) {
