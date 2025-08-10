@@ -34,7 +34,7 @@ class HostelController extends Controller
      *     {
      *       "id": 1,
      *       "name": "Asrama Putra A",
-     *       "parent_id": null,
+     *       "program_id": null,
      *       "description": "Asrama untuk santri putra kelas 7-9",
      *       "parent": null,
      *       "created_at": "2024-01-01T00:00:00.000000Z",
@@ -43,7 +43,7 @@ class HostelController extends Controller
      *     {
      *       "id": 2,
      *       "name": "Asrama Putra B",
-     *       "parent_id": 1,
+     *       "program_id": 1,
      *       "description": "Sub-asrama dari Asrama Putra A",
      *       "parent": {
      *         "id": 1,
@@ -63,7 +63,7 @@ class HostelController extends Controller
     public function index()
     {
         try {
-            $data = Hostel::with('parent')->get();
+            $data = Hostel::with('program')->get();
             return new HostelResource('Data retrieved successfully', $data, 200);
         } catch (\Throwable $th) {
             return response([
@@ -81,13 +81,13 @@ class HostelController extends Controller
         try {
             $data = $request->validate([
                 'name' => 'required|string|max:255',
-                'parent_id' => 'nullable',
+                'program_id' => 'nullable',
                 'description' => 'nullable',
             ]);
 
             $hostel = Hostel::create([
                 'name' => $request->name,
-                'parent_id' => $request->parent_id,
+                'program_id' => $request->program_id,
                 'description' => $request->description,
             ]);
             return new HostelResource('Hostel created successfully', $hostel, 201);
@@ -110,7 +110,7 @@ class HostelController extends Controller
     public function show(string $id)
     {
         try {
-            $data = Hostel::with('parent')->findOrFail($id);
+            $data = Hostel::with('program')->findOrFail($id);
             return new HostelResource('Data retrieved successfully', $data, 200);
         } catch (\Throwable $th) {
             return response([
@@ -128,14 +128,14 @@ class HostelController extends Controller
         try {
             $data = $request->validate([
                 'name' => 'required|string|max:255',
-                'parent_id' => 'nullable',
+                'program_id' => 'nullable',
                 'description' => 'nullable',
             ]);
 
             $hostel = Hostel::findOrFail($id);
             $hostel->update([
                 'name' => $request->name,
-                'parent_id' => $request->parent_id,
+                'program_id' => $request->program_id,
                 'description' => $request->description,
             ]);
             return new HostelResource('Hostel updated successfully', $hostel, 200);
