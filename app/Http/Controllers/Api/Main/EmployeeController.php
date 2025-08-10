@@ -289,13 +289,8 @@ class EmployeeController extends Controller
             $file = $request->file('file');
             $extension = $file->getClientOriginalExtension();
 
-            // Process the file based on its extension
-            if ($extension === 'csv') {
-                $data = $this->processCsvFile($file);
-            } else {
-                // For Excel files, we'll convert to CSV first
-                $data = $this->processExcelFile($file);
-            }
+            // Process the file based on its extension. For Excel files, we'll convert to CSV first
+            $data = ($extension === 'csv') ? $this->processCsvFile($file) : $this->processExcelFile($file);
 
             if (empty($data)) {
                 return response()->json([
@@ -533,9 +528,9 @@ class EmployeeController extends Controller
         $newSequence = 1;
 
         if ($last_code) {
-            $lastYear = substr($last_code, 0, 4);
+            $lastYear = substr($last_code, strlen($prefix), 4);
             if ($lastYear == $currentYear) {
-                $lastSequence = (int) substr($last_code, strlen($prefix), -4);
+                $lastSequence = (int) substr($last_code, strlen($prefix) + 4);
                 $newSequence = $lastSequence + 1;
             }
         }
