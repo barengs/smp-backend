@@ -106,7 +106,8 @@ class RegistrationController extends Controller
                     'parent_as' => $request->wali_sebagai,
                     'card_address' => $request->wali_alamamat_ktp,
                     'domicile_address' => $request->wali_alamat_domisili,
-                    'occupation' => $request->wali_pekerjaan_id,
+                    'occupation_id' => $request->wali_pekerjaan_id,
+                    'education' => $request->wali_pendidikan_id,
                 ]);
 
                 if ($parent) {

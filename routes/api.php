@@ -34,6 +34,7 @@ use App\Http\Controllers\Api\Master\AcademicYearController;
 use App\Http\Controllers\Api\Master\EducationTypeController;
 use App\Http\Controllers\Api\Master\EducationClassController;
 use App\Http\Controllers\Api\Main\InternshipSupervisorController;
+use App\Http\Controllers\Api\Main\ControlPanelController;
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -61,6 +62,7 @@ Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard'
 Route::apiResource('activity', ActivityController::class);
 Route::apiResource('news', NewsController::class);
 Route::apiResource('supervisor', InternshipSupervisorController::class);
+Route::apiResource('control-panel', ControlPanelController::class);
 
 /* fitur perbaikan */
 Route::apiResource('product', ProductController::class);
