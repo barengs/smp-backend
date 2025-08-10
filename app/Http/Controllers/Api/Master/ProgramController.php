@@ -44,7 +44,7 @@ class ProgramController extends Controller
     public function index()
     {
         try {
-            $programs = Program::all();
+            $programs = Program::with('hostels')->get();
             return response()->json($programs, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch programs'], 500);
