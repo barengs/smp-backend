@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
+use App\Imports\EmployeeImport;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException as ExcelValidationException;
 
 class EmployeeController extends Controller
 {
@@ -280,191 +283,56 @@ class EmployeeController extends Controller
      */
     public function import(Request $request)
     {
+        DB::beginTransaction();
         try {
-            // Validate the uploaded file
             $request->validate([
-                'file' => 'required|file|mimes:xlsx,xls,csv|max:2048', // 2MB max
+                'file' => 'required|file|mimes:xlsx,xls,csv|max:2048',
             ]);
 
             $file = $request->file('file');
-            $extension = $file->getClientOriginalExtension();
+            $import = new EmployeeImport();
+            $import->import($file);
 
-            // Process the file based on its extension. For Excel files, we'll convert to CSV first
-            $data = ($extension === 'csv') ? $this->processCsvFile($file) : $this->processExcelFile($file);
-
-            if (empty($data)) {
+            $failures = $import->failures();
+            $errors = [];
+            if ($failures->isNotEmpty()) {
+                foreach ($failures as $failure) {
+                    $errors[] = "Baris " . $failure->row() . ": " . implode(', ', $failure->errors());
+                }
+                DB::rollBack();
                 return response()->json([
-                    'message' => 'File kosong atau format tidak sesuai',
-                    'success' => false
-                ], 400);
+                    'message' => 'Import gagal. Terdapat kesalahan pada beberapa baris.',
+                    'success' => false,
+                    'errors' => $errors,
+                ], 422);
             }
 
-            // Process the imported data
-            $results = $this->processImportedData($data);
-
+            DB::commit();
             return response()->json([
-                'message' => 'Import berhasil',
+                'message' => 'Import selesai.',
                 'success' => true,
-                'data' => [
-                    'total_rows' => count($data),
-                    'success_count' => $results['success_count'],
-                    'error_count' => $results['error_count'],
-                    'errors' => $results['errors']
-                ]
             ], 200);
-
-        } catch (ValidationException $e) {
+        } catch (ExcelValidationException $e) {
+            DB::rollBack();
+            $failures = $e->failures();
+            $errors = [];
+            foreach ($failures as $failure) {
+                $errors[] = "Baris " . $failure->row() . ": " . implode(', ', $failure->errors());
+            }
             return response()->json([
-                'message' => 'Validation error',
-                'errors' => $e->errors(),
-                'success' => false
+                'message' => 'Terjadi kesalahan validasi saat import',
+                'errors' => $errors,
+                'success' => false,
             ], 422);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'message' => 'Terjadi kesalahan saat import: ' . $e->getMessage(),
-                'success' => false
+                'success' => false,
             ], 500);
         }
     }
 
-    /**
-     * Process CSV file
-     */
-    private function processCsvFile($file)
-    {
-        $data = [];
-        $handle = fopen($file->getPathname(), 'r');
-
-        // Skip header row
-        $headers = fgetcsv($handle);
-
-        while (($row = fgetcsv($handle)) !== false) {
-            if (count($row) >= 8) { // Minimum required columns
-                $data[] = [
-                    'code' => $row[0] ?? '',
-                    'first_name' => $row[1] ?? '',
-                    'last_name' => $row[2] ?? '',
-                    'nik' => $row[3] ?? '',
-                    'email' => $row[4] ?? '',
-                    'address' => $row[5] ?? '',
-                    'phone' => $row[6] ?? '',
-                    'zip_code' => $row[7] ?? '',
-                    'password' => $row[8] ?? 'password123', // Default password
-                    'roles' => $row[9] ?? 'employee' // Default role
-                ];
-            }
-        }
-
-        fclose($handle);
-        return $data;
-    }
-
-    /**
-     * Process Excel file (basic implementation)
-     */
-    private function processExcelFile($file)
-    {
-        // For now, we'll use CSV processing as fallback
-        // In a real implementation, you'd use a library like PhpSpreadsheet
-        return $this->processCsvFile($file);
-    }
-
-    /**
-     * Process imported data and create employees
-     */
-    private function processImportedData($data)
-    {
-        $successCount = 0;
-        $errorCount = 0;
-        $errors = [];
-
-        DB::beginTransaction();
-
-        try {
-            foreach ($data as $index => $row) {
-                try {
-                    // Validate required fields
-                    if (empty($row['first_name']) || empty($row['email']) || empty($row['nik'])) {
-                        $errors[] = "Baris " . ($index + 2) . ": Nama depan, email, dan NIK wajib diisi";
-                        $errorCount++;
-                        continue;
-                    }
-
-                    // Check if email already exists
-                    if (User::where('email', $row['email'])->exists()) {
-                        $errors[] = "Baris " . ($index + 2) . ": Email sudah terdaftar";
-                        $errorCount++;
-                        continue;
-                    }
-
-                    // Check if NIK already exists
-                    if (Employee::where('nik', $row['nik'])->exists()) {
-                        $errors[] = "Baris " . ($index + 2) . ": NIK sudah terdaftar";
-                        $errorCount++;
-                        continue;
-                    }
-
-                    // Generate employee code if not provided
-                    if (empty($row['code'])) {
-                        $lastEmployee = Employee::orderBy('created_at', 'desc')->first();
-                        $lastCode = $lastEmployee ? $lastEmployee->code : null;
-                        $row['code'] = $this->generateCode('EMP', $lastCode, 4);
-                    }
-
-                    // Create user
-                    $user = User::create([
-                        'name' => $row['first_name'],
-                        'email' => $row['email'],
-                        'password' => bcrypt($row['password']),
-                    ]);
-
-                    // Create employee
-                    $user->employee()->create([
-                        'code' => $row['code'],
-                        'first_name' => $row['first_name'],
-                        'last_name' => $row['last_name'] ?? '',
-                        'nik' => $row['nik'],
-                        'address' => $row['address'] ?? '',
-                        'email' => $row['email'],
-                        'password' => bcrypt($row['password']),
-                        'phone' => $row['phone'] ?? '',
-                        'zip_code' => $row['zip_code'] ?? '',
-                    ]);
-
-                    // Assign role
-                    if (!empty($row['roles'])) {
-                        $roles = explode(',', $row['roles']);
-                        foreach ($roles as $role) {
-                            $role = trim($role);
-                            if (!empty($role)) {
-                                $user->assignRole($role);
-                            }
-                        }
-                    } else {
-                        $user->assignRole('employee');
-                    }
-
-                    $successCount++;
-
-                } catch (\Exception $e) {
-                    $errors[] = "Baris " . ($index + 2) . ": " . $e->getMessage();
-                    $errorCount++;
-                }
-            }
-
-            DB::commit();
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-        return [
-            'success_count' => $successCount,
-            'error_count' => $errorCount,
-            'errors' => $errors
-        ];
-    }
 
     /**
      * Get import template
