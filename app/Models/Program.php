@@ -17,4 +17,9 @@ class Program extends Model
     {
         return $this->hasMany(Registration::class);
     }
+
+    public function hostels()
+    {
+        return $this->hasMany(Hostel::class, 'program_id');
+    }
 }

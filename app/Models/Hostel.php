@@ -9,17 +9,12 @@ class Hostel extends Model
     protected $guarded = ['id'];
     protected $fillable = [
         'name',
-        'parent_id',
+        'program_id',
         'description',
     ];
 
-    public function parent()
+    public function program()
     {
-        return $this->belongsTo(Hostel::class, 'parent_id');
-    }
-
-    public function children()
-    {
-        return $this->hasMany(Hostel::class, 'parent_id');
+        return $this->belongsTo(Program::class, 'program_id');
     }
 }
