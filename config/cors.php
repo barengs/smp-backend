@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*', 'https://smp.barengsaya.com'],
+    'allowed_origins' => ['*', 'https://smp.barengsaya.com', 'smp.barengsaya.com'],
 
     'allowed_origins_patterns' => [],
 
