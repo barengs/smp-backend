@@ -3,6 +3,12 @@
         Options -MultiViews -Indexes
     </IfModule>
 
+
+    <FilesMatch "\.(avif|bmp|cur|gif|ico|jpe?g|a?png|svgz?|webp)$">
+        SetEnvIf Origin "https://smp.barengsaya.com" ACAO=$0
+        Header set Access-Control-Allow-Origin %{ACAO}e env=ACAO
+    </FilesMatch>
+
     RewriteEngine On
 
     # Handle Authorization Header
