@@ -90,4 +90,33 @@ class ControlPanelController extends Controller
 
         return response()->json(null, 204);
     }
+
+    /**
+     * Update the specified resource in storage by column.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateByColumn(Request $request, string $id)
+    {
+        $controlPanel = ControlPanel::findOrFail($id);
+
+        $column = $request->input('column');
+        $value = $request->input('value');
+
+        if (!$column || !$value) {
+            return response()->json(['message' => 'Column and value are required.'], 422);
+        }
+
+        $fillable = $controlPanel->getFillable();
+        if (!in_array($column, $fillable)) {
+            return response()->json(['message' => 'Column is not fillable.'], 422);
+        }
+
+        $controlPanel->{$column} = $value;
+        $controlPanel->save();
+
+        return response()->json($controlPanel);
+    }
 }

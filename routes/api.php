@@ -35,6 +35,7 @@ use App\Http\Controllers\Api\Master\EducationTypeController;
 use App\Http\Controllers\Api\Master\EducationClassController;
 use App\Http\Controllers\Api\Main\InternshipSupervisorController;
 use App\Http\Controllers\Api\Main\ControlPanelController;
+use App\Http\Controllers\Api\Main\TransactionTypeController;
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -59,10 +60,12 @@ Route::get('student/program/{programId}', [StudentController::class, 'getStudent
     ->name('student.program');
 
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('dashboard/student-statistics-by-period', [DashboardController::class, 'studentStatisticsByPeriod'])->name('dashboard.student-statistics-by-period');
 Route::apiResource('activity', ActivityController::class);
 Route::apiResource('news', NewsController::class);
 Route::apiResource('supervisor', InternshipSupervisorController::class);
 Route::apiResource('control-panel', ControlPanelController::class);
+Route::post('control-panel/{id}/update-by-column', [ControlPanelController::class, 'updateByColumn'])->name('control-panel.update-by-column');
 
 /* fitur perbaikan */
 Route::apiResource('product', ProductController::class);
@@ -75,6 +78,8 @@ Route::get('transaction/get-by-status', [TransactionController::class, 'getBySta
 Route::get('transaction/get-by-date', [TransactionController::class, 'getByDateRange'])->name('transaction.get-by-date');
 Route::post('transaction/reverse-transaction', [TransactionController::class, 'reverseTransaction'])->name('transaction.reverse-transaction');
 Route::get('transaction/report-transaction', [TransactionController::class, 'getTransactionSummary'])->name('transaction.report-transaction');
+Route::apiResource('transaction-type', TransactionTypeController::class);
+Route::post('transaction-type/{id}/toggle-active', [TransactionTypeController::class, 'toggleActiveStatus'])->name('transaction-type.toggle-active');
 
 Route::group(['prefix' => 'master'], function () {
     Route::apiResource('study', StudyController::class);

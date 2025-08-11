@@ -183,7 +183,7 @@ class DashboardController extends Controller
                         break;
                     case 'monthly':
                         $query->whereMonth('created_at', now()->month)
-                              ->whereYear('created_at', now()->year);
+                            ->whereYear('created_at', now()->year);
                         break;
                     case 'yearly':
                         $query->whereYear('created_at', now()->year);
@@ -216,6 +216,32 @@ class DashboardController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to retrieve transaction statistics: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+    /**
+     * Menampilkan statistik santri berdasarkan periode (angkatan).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function studentStatisticsByPeriod(Request $request)
+    {
+        try {
+            $statistics = Student::select('period', \DB::raw('count(*) as total'))
+                ->groupBy('period')
+                ->orderBy('period', 'asc')
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Student statistics by period retrieved successfully',
+                'data' => $statistics,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve student statistics: ' . $e->getMessage(),
             ], 500);
         }
     }
