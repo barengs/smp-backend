@@ -37,6 +37,7 @@ use App\Http\Controllers\Api\Main\InternshipSupervisorController;
 use App\Http\Controllers\Api\Main\ControlPanelController;
 use App\Http\Controllers\Api\Main\TransactionTypeController;
 use App\Http\Controllers\Api\Main\AccountController;
+use App\Http\Controllers\Api\Main\ChartOfAccountController;
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -83,6 +84,8 @@ Route::get('transaction/report-transaction', [TransactionController::class, 'get
 Route::apiResource('transaction-type', TransactionTypeController::class);
 Route::post('transaction-type/{id}/toggle-active', [TransactionTypeController::class, 'toggleActiveStatus'])->name('transaction-type.toggle-active');
 Route::post('account/create', [AccountController::class, 'createAccount'])->name('account.create');
+
+Route::apiResource('chart-of-account', ChartOfAccountController::class);
 
 Route::group(['prefix' => 'master'], function () {
     Route::apiResource('study', StudyController::class);
