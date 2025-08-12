@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('customer_id')->constrained('students', 'id')->onDelete('restrict');
             $table->foreignId('product_id')->constrained('products', 'id')->onDelete('restrict');
             $table->decimal('balance', 18, 2)->default(0);
-            $table->enum('status', ['ACTIVE', 'DORMANT', 'CLOSED', 'BLOCKED']);
+            $table->enum('status', ['ACTIVE', 'DORMANT', 'CLOSED', 'BLOCKED', 'INACTIVE']);
             $table->date('open_date');
             $table->date('close_date')->nullable();
             $table->timestamps();

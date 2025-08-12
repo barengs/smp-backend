@@ -633,9 +633,9 @@ class TransactionController extends Controller
                 $request->start_date . ' 00:00:00',
                 $request->end_date . ' 23:59:59'
             ])
-            ->with(['sourceAccount', 'destinationAccount'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+                ->with(['sourceAccount', 'destinationAccount'])
+                ->orderBy('created_at', 'desc')
+                ->get();
 
             if ($transactions->isEmpty()) {
                 return response()->json([
@@ -767,15 +767,15 @@ class TransactionController extends Controller
                 $request->start_date . ' 00:00:00',
                 $request->end_date . ' 23:59:59'
             ])
-            ->selectRaw('
+                ->selectRaw('
                 transaction_type,
                 status,
                 channel,
                 COUNT(*) as total_transactions,
                 SUM(amount) as total_amount
             ')
-            ->groupBy('transaction_type', 'status', 'channel')
-            ->get();
+                ->groupBy('transaction_type', 'status', 'channel')
+                ->get();
 
             return response()->json([
                 'status' => 'success',
@@ -787,6 +787,67 @@ class TransactionController extends Controller
                 'status' => 'error',
                 'message' => 'Failed to get transaction summary: ' . $e->getMessage(),
             ], 500);
+        }
+    }
+    /**
+     * Membuat transaksi pembayaran registrasi.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createRegistrationPayment(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required|exists:students,id',
+            'product_id' => 'required|exists:products,id',
+            'hijri_year' => 'required|digits:4',
+            'amount' => 'required|numeric|min:0',
+            'transaction_type_id' => 'required|exists:transaction_types,id',
+            'registration_number' => 'required|unique:registrations,registration_number'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Create account
+            $accountController = new AccountController();
+            $accountRequest = new Request([
+                'student_id' => $request->student_id,
+                'product_id' => $request->product_id,
+                'hijri_year' => $request->hijri_year,
+            ]);
+            $accountResponse = $accountController->createAccount($accountRequest);
+
+            if ($accountResponse->getStatusCode() != 201) {
+                DB::rollBack();
+                return $accountResponse;
+            }
+
+            $account = json_decode($accountResponse->getContent());
+
+            // Create transaction
+            $transaction = Transaction::create([
+                'id' => Str::uuid(),
+                'transaction_type_id' => $request->transaction_type_id,
+                'description' => 'biaya pendaftaran',
+                'amount' => $request->amount,
+                'status' => 'PENDING',
+                'reference_number' => $request->registration_number,
+                'channel' => 'SYSTEM',
+                'source_account' => $account->account_number,
+                'destination_account' => null, // Or a specific account for registration fees
+            ]);
+
+            DB::commit();
+
+            return response()->json($transaction, 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Failed to create registration payment', 'error' => $e->getMessage()], 500);
         }
     }
 }

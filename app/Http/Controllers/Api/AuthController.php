@@ -53,7 +53,7 @@ class AuthController extends Controller
     public function register()
     {
         $validator = Validator::make(request()->all(), [
-            'name' => 'required|string',
+            'name' => 'required|string|unique:users',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:6',
         ]);
@@ -100,16 +100,25 @@ class AuthController extends Controller
      */
     public function login()
     {
-        // dd(request()->all());
-        $credentials = request(['email', 'password']);
+        $validator = Validator::make(request()->all(), [
+            'login' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $loginType = filter_var(request('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+
+        $credentials = [
+            $loginType => request('login'),
+            'password' => request('password')
+        ];
 
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        // $user = auth()->user();
-        // $user->api_token = $this->respondWithToken($user);
-        // $user->profile();
 
         return $this->respondWithToken($token);
     }

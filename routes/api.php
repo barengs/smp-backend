@@ -36,6 +36,7 @@ use App\Http\Controllers\Api\Master\EducationClassController;
 use App\Http\Controllers\Api\Main\InternshipSupervisorController;
 use App\Http\Controllers\Api\Main\ControlPanelController;
 use App\Http\Controllers\Api\Main\TransactionTypeController;
+use App\Http\Controllers\Api\Main\AccountController;
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -47,6 +48,7 @@ Route::middleware('auth:api')->group(function () {
 
 Route::apiResource('registration', RegistrationController::class);
 Route::get('registration/current-year', [RegistrationController::class, 'getByCurrentYear'])->name('registration.current-year');
+Route::post('registration/transaction', [RegistrationController::class, 'createRegistrationTransaction'])->name('registration.transaction');
 Route::apiResource('employee', EmployeeController::class);
 Route::get('employee/export', [EmployeeController::class, 'export'])->name('employee.export');
 Route::post('employee/import', [EmployeeController::class, 'import'])->name('employee.import');
@@ -80,6 +82,7 @@ Route::post('transaction/reverse-transaction', [TransactionController::class, 'r
 Route::get('transaction/report-transaction', [TransactionController::class, 'getTransactionSummary'])->name('transaction.report-transaction');
 Route::apiResource('transaction-type', TransactionTypeController::class);
 Route::post('transaction-type/{id}/toggle-active', [TransactionTypeController::class, 'toggleActiveStatus'])->name('transaction-type.toggle-active');
+Route::post('account/create', [AccountController::class, 'createAccount'])->name('account.create');
 
 Route::group(['prefix' => 'master'], function () {
     Route::apiResource('study', StudyController::class);

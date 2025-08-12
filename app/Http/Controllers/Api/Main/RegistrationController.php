@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\RegistrationResource;
 use Illuminate\Validation\ValidationException;
+use App\Http\Controllers\Api\Main\AccountController;
+use App\Models\Transaction;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RegistrationController extends Controller
@@ -233,6 +235,65 @@ class RegistrationController extends Controller
             return new RegistrationResource('Registrations for the current year fetched successfully', $registrations, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch registrations: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Membuat transaksi pembayaran registrasi.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createRegistrationTransaction(Request $request)
+    {
+        $request->validate([
+            'registration_id' => 'required|exists:registrations,id',
+            'product_id' => 'required|exists:products,id',
+            'hijri_year' => 'required|digits:4',
+            'amount' => 'required|numeric',
+            'transaction_type_id' => 'required|exists:transaction_types,id',
+            'channel' => 'required|string',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $registration = Registration::findOrFail($request->registration_id);
+
+            // Create account
+            $accountController = new AccountController();
+            $accountRequest = new Request([
+                'student_id' => $registration->student->id,
+                'product_id' => $request->product_id,
+                'hijri_year' => $request->hijri_year,
+            ]);
+            $accountResponse = $accountController->createAccount($accountRequest);
+            $account = json_decode($accountResponse->getContent(), true);
+
+            if ($accountResponse->getStatusCode() != 201) {
+                DB::rollBack();
+                return response()->json(['message' => 'Failed to create account', 'errors' => $account], 500);
+            }
+
+            // Create transaction
+            $transaction = Transaction::create([
+                'id' => \Illuminate\Support\Str::uuid(),
+                'transaction_type_id' => $request->transaction_type_id,
+                'description' => 'Biaya Pendaftaran',
+                'amount' => $request->amount,
+                'status' => 'PENDING',
+                'reference_number' => $registration->registration_number,
+                'channel' => $request->channel,
+                'source_account' => $account['account_number'],
+                'destination_account' => null,
+            ]);
+
+            DB::commit();
+
+            return response()->json($transaction, 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Failed to create registration transaction', 'error' => $e->getMessage()], 500);
         }
     }
 }
