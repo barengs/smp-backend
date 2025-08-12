@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('code')->unique();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->enum('category', ['transfer', 'payment', 'cash_operation', 'fee'])->default('expense');
+            $table->enum('category', ['transfer', 'payment', 'cash_operation', 'fee'])->default('payment');
             $table->boolean('is_debit');
             $table->boolean('is_credit');
             $table->boolean('is_active')->default(true);
