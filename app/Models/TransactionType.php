@@ -17,4 +17,9 @@ class TransactionType extends Model
         'is_credit',
         'is_active',
     ];
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'transaction_type_id', 'id');
+    }
 }
