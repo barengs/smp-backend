@@ -85,15 +85,15 @@ class DashboardController extends Controller
 
             // Transaction summary for today
             $transactionSummary = [
-                'deposits' => Transaction::where('transaction_type', 'CASH_DEPOSIT')
-                    ->whereDate('created_at', today())
-                    ->count(),
-                'withdrawals' => Transaction::where('transaction_type', 'CASH_WITHDRAWAL')
-                    ->whereDate('created_at', today())
-                    ->count(),
-                'transfers' => Transaction::where('transaction_type', 'FUND_TRANSFER')
-                    ->whereDate('created_at', today())
-                    ->count(),
+                'deposits' => Transaction::whereHas('transactionType', function ($query) {
+                    $query->where('name', 'CASH_DEPOSIT');
+                })->whereDate('created_at', today())->count(),
+                'withdrawals' => Transaction::whereHas('transactionType', function ($query) {
+                    $query->where('name', 'CASH_WITHDRAWAL');
+                })->whereDate('created_at', today())->count(),
+                'transfers' => Transaction::whereHas('transactionType', function ($query) {
+                    $query->where('name', 'FUND_TRANSFER');
+                })->whereDate('created_at', today())->count(),
             ];
 
             return response()->json([
@@ -196,10 +196,12 @@ class DashboardController extends Controller
             $averageAmount = $totalTransactions > 0 ? $totalAmount / $totalTransactions : 0;
 
             // Transaction types breakdown
-            $transactionTypes = $query->selectRaw('transaction_type, COUNT(*) as count')
-                ->groupBy('transaction_type')
-                ->pluck('count', 'transaction_type')
-                ->toArray();
+            $transactionTypes = $query->with('transactionType')->selectRaw('transaction_type_id, COUNT(*) as count')
+                ->groupBy('transaction_type_id')
+                ->get()
+                ->mapWithKeys(function ($item) {
+                    return [$item->transactionType->name => $item->count];
+                });
 
             return response()->json([
                 'status' => 'success',
