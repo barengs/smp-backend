@@ -133,7 +133,16 @@ class MenuController extends Controller
 
         try {
             $menu = Menu::findOrFail($id);
-            $menu->update($request->all());
+            $menu->update([
+                'title' => $request->title,
+                'description' => $request->description,
+                'icon' => $request->icon,
+                'route' => $request->route,
+                'parent_id' => $request->parent_id,
+                'type' => $request->type ?? $menu->type,
+                'position' => $request->position ?? $menu->position,
+                'status' => $request->status ?? $menu->status,
+            ]);
 
             return new MenuResource('Menu updated successfully', $menu, 200);
         } catch (\Throwable $th) {
