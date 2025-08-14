@@ -125,33 +125,33 @@ class MenuController extends Controller
     public function update(Request $request, string $id)
     {
         dd($request->all());
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'icon' => 'required|string|max:255',
-            'route' => 'required|string|max:255',
-            'parent_id' => 'nullable|integer|exists:menus,id',
-        ]);
+        // $request->validate([
+        //     'title' => 'required|string|max:255',
+        //     'icon' => 'required|string|max:255',
+        //     'route' => 'required|string|max:255',
+        //     'parent_id' => 'nullable|integer|exists:menus,id',
+        // ]);
 
-        try {
-            $menu = Menu::findOrFail($id);
-            $menu->update([
-                'title' => $request->title,
-                'description' => $request->description,
-                'icon' => $request->icon,
-                'route' => $request->route,
-                'parent_id' => $request->parent_id,
-                'type' => $request->type ?? $menu->type,
-                'position' => $request->position ?? $menu->position,
-                'status' => $request->status ?? $menu->status,
-            ]);
+        // try {
+        //     $menu = Menu::findOrFail($id);
+        //     $menu->update([
+        //         'title' => $request->title,
+        //         'description' => $request->description,
+        //         'icon' => $request->icon,
+        //         'route' => $request->route,
+        //         'parent_id' => $request->parent_id,
+        //         'type' => $request->type ?? $menu->type,
+        //         'position' => $request->position ?? $menu->position,
+        //         'status' => $request->status ?? $menu->status,
+        //     ]);
 
-            return new MenuResource('Menu updated successfully', $menu, 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Failed to update menu',
-                'error' => $th->getMessage(),
-            ], 500);
-        }
+        //     return new MenuResource('Menu updated successfully', $menu, 200);
+        // } catch (\Throwable $th) {
+        //     return response()->json([
+        //         'message' => 'Failed to update menu',
+        //         'error' => $th->getMessage(),
+        //     ], 500);
+        // }
     }
 
     /**
