@@ -124,6 +124,7 @@ class MenuController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        dd($request->all());
         $request->validate([
             'title' => 'required|string|max:255',
             'icon' => 'required|string|max:255',
