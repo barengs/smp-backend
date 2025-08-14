@@ -9,7 +9,7 @@ class Menu extends Model
     protected $table = 'menus';
 
     protected $fillable = [
-        'name',
+        'title',
         'description',
         'icon',
         'route',
