@@ -11,7 +11,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('menus', function (Blueprint $table) {
-            //
+            $table->enum('type', ['main', 'sub-menu', 'link', 'external'])->default('main')->change();
+            $table->enum('position', ['sidebar', 'header', 'footer'])->default('sidebar')->change();
         });
     }
 
