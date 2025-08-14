@@ -37,8 +37,8 @@ class MenuSeeder extends Seeder
                 'icon' => $menu['icon'] ?? null,
                 'route' => $menu['route'] ?? null,
                 'parent_id' => $menu['parent_id'] ?? null,
-                'type' => $menu['type'] ?? 'link',
-                'position' => $menu['position'] ?? 'side',
+                'type' => $menu['type'] ?? 'main',
+                'position' => $menu['position'] ?? 'sidebar',
                 'status' => $menu['status'] ?? 'active',
                 'order' => $menu['order'] ?? $index + 1,
             ]);

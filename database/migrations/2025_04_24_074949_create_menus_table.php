@@ -17,8 +17,8 @@ return new class extends Migration {
             $table->string('icon')->nullable();
             $table->string('route')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->enum('type', ['link', 'dropdown', 'label'])->default('link');
-            $table->enum('position', ['top', 'side'])->default('side');
+            $table->enum('type', ['main', 'sub-menu', 'link', 'external'])->default('main');
+            $table->enum('position', ['sidebar', 'header', 'footer'])->default('sidebar');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->integer('order')->nullable();
             $table->timestamps();
