@@ -308,6 +308,11 @@ class RegistrationController extends Controller
                 'destination_account' => null,
             ]);
 
+            if (!$transaction) {
+                DB::rollBack();
+                return response()->json(['message' => 'Failed to create transaction', 'errors' => $transaction], 500);
+            }
+
             DB::commit();
 
             return response()->json($transaction, 201);
