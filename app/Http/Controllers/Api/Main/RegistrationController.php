@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\Main;
 
 use App\Models\User;
+use App\Models\Student;
+use App\Models\Transaction;
+use Illuminate\Support\Str;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use App\Models\ParentProfile;
-use App\Models\Student;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +16,6 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\RegistrationResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Api\Main\AccountController;
-use App\Models\Transaction;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RegistrationController extends Controller
@@ -295,7 +296,7 @@ class RegistrationController extends Controller
 
             // Create transaction
             $transaction = Transaction::create([
-                'id' => \Illuminate\Support\Str::uuid(),
+                'id' => Str::uuid(),
                 'transaction_type_id' => $request->transaction_type_id,
                 'description' => 'Biaya Pendaftaran',
                 'amount' => $request->amount,

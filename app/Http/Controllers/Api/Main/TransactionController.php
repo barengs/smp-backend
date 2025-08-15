@@ -7,6 +7,7 @@ use App\Http\Resources\TransactionResource;
 use App\Models\Transaction;
 use App\Models\Account;
 use App\Models\TransactionLedger;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
@@ -847,6 +848,10 @@ class TransactionController extends Controller
             return response()->json($transaction, 201);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to create registration payment', [
+                'error' => $e->getMessage(),
+                'request' => $request->all(),
+            ]);
             return response()->json(['message' => 'Failed to create registration payment', 'error' => $e->getMessage()], 500);
         }
     }
