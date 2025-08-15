@@ -18,4 +18,9 @@ class Hostel extends Model
     {
         return $this->belongsTo(Program::class, 'program_id');
     }
+
+    public function rooms()
+    {
+        return $this->hasMany(Room::class, 'hostel_id', 'id');
+    }
 }

@@ -24,7 +24,7 @@ class TransactionLedgerController extends Controller
      *     {
      *       "id": 1,
      *       "transaction_id": "TRX001",
-     *       "account_number": "ACC001",
+     *       "coa_code": "ACC001",
      *       "debit_amount": 1000000,
      *       "credit_amount": 0,
      *       "balance": 1000000,

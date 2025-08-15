@@ -37,7 +37,9 @@ use App\Http\Controllers\Api\Main\InternshipSupervisorController;
 use App\Http\Controllers\Api\Main\ControlPanelController;
 use App\Http\Controllers\Api\Main\TransactionTypeController;
 use App\Http\Controllers\Api\Main\AccountController;
+use App\Http\Controllers\Api\Main\AccountMovementController;
 use App\Http\Controllers\Api\Main\ChartOfAccountController;
+use App\Http\Controllers\Api\Master\RoomController;
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -86,6 +88,10 @@ Route::post('transaction-type/{id}/toggle-active', [TransactionTypeController::c
 Route::apiResource('account', AccountController::class);
 Route::post('account/{id}/status', [AccountController::class, 'updateStatus'])->name('account.status');
 
+Route::apiResource('account-movement', AccountMovementController::class);
+Route::get('account-movement/account/{account_number}/history', [AccountMovementController::class, 'accountHistory'])->name('account-movement.history');
+Route::get('account-movement/daily-summary', [AccountMovementController::class, 'dailySummary'])->name('account-movement.daily-summary');
+
 Route::apiResource('chart-of-account', ChartOfAccountController::class);
 
 Route::group(['prefix' => 'master'], function () {
@@ -112,6 +118,7 @@ Route::group(['prefix' => 'master'], function () {
     Route::apiResource('menu', MenuController::class);
     Route::apiResource('class-group', ClassGroupController::class);
     Route::apiResource('academic-year', AcademicYearController::class);
+    Route::apiResource('room', RoomController::class);
 });
 
 Route::group(['prefix' => 'region'], function () {

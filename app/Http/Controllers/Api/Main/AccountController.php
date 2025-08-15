@@ -25,6 +25,30 @@ class AccountController extends Controller
      * Menampilkan daftar semua akun tabungan santri yang ada dalam sistem.
      * Response akan menyertakan data customer (siswa) dan product (produk keuangan).
      *
+     * @OA\Get(
+     *     path="/api/account",
+     *     operationId="getAccounts",
+     *     tags={"Bank Santri - Account Management"},
+     *     summary="Daftar Semua Akun",
+     *     description="Menampilkan daftar semua akun tabungan santri dengan relasi customer dan product",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Berhasil mendapatkan daftar akun",
+     *         @OA\JsonContent(ref="#/components/schemas/AccountListResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized action",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     )
+     * )
+     *
      * @response 200 {
      *   "data": [
      *     {
@@ -68,6 +92,45 @@ class AccountController extends Controller
      *
      * Membuat akun tabungan baru untuk santri. Sistem akan otomatis generate nomor akun
      * berdasarkan NIS siswa dan mengatur status awal sebagai INACTIVE.
+     *
+     * @OA\Post(
+     *     path="/api/account",
+     *     operationId="createAccount",
+     *     tags={"Bank Santri - Account Management"},
+     *     summary="Buat Akun Baru",
+     *     description="Membuat akun tabungan baru untuk santri dengan validasi data",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Data untuk membuat akun baru",
+     *         @OA\JsonContent(ref="#/components/schemas/AccountCreateRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Akun berhasil dibuat",
+     *         @OA\JsonContent(ref="#/components/schemas/AccountCreateResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request - data tidak lengkap",
+     *         @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Conflict - siswa sudah memiliki akun",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed",
+     *         @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     )
+     * )
      *
      * @bodyParam student_id integer required ID siswa yang akan dibuatkan akun. Example: 1
      * @bodyParam product_id integer required ID produk keuangan yang dipilih. Example: 1
@@ -150,6 +213,37 @@ class AccountController extends Controller
      * Menampilkan detail lengkap akun tabungan berdasarkan nomor akun.
      * Response akan menyertakan data customer, product, dan riwayat movements (transaksi).
      *
+     * @OA\Get(
+     *     path="/api/account/{id}",
+     *     operationId="getAccount",
+     *     tags={"Bank Santri - Account Management"},
+     *     summary="Detail Akun",
+     *     description="Menampilkan detail lengkap akun tabungan dengan relasi customer, product, dan movements",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Nomor akun tabungan",
+     *         @OA\Schema(type="string", example="20250197001")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Berhasil mendapatkan detail akun",
+     *         @OA\JsonContent(ref="#/components/schemas/AccountSingleResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Akun tidak ditemukan",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     )
+     * )
+     *
      * @urlParam id string required Nomor akun tabungan. Example: 20250197001
      *
      * @response 200 {
@@ -208,6 +302,47 @@ class AccountController extends Controller
      *
      * Memperbarui informasi akun tabungan seperti produk keuangan dan status akun.
      * Hanya field yang diizinkan yang dapat diupdate.
+     *
+     * @OA\Put(
+     *     path="/api/account/{id}",
+     *     operationId="updateAccount",
+     *     tags={"Bank Santri - Account Management"},
+     *     summary="Update Akun",
+     *     description="Memperbarui informasi akun tabungan seperti produk keuangan dan status",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Nomor akun tabungan",
+     *         @OA\Schema(type="string", example="20250197001")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Data untuk update akun",
+     *         @OA\JsonContent(ref="#/components/schemas/AccountUpdateRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Akun berhasil diupdate",
+     *         @OA\JsonContent(ref="#/components/schemas/AccountUpdateResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request - data tidak lengkap",
+     *         @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Akun tidak ditemukan",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed",
+     *         @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse")
+     *     )
+     * )
      *
      * @urlParam id string required Nomor akun tabungan. Example: 20250197001
      * @bodyParam product_id integer required ID produk keuangan baru. Example: 2
@@ -272,6 +407,41 @@ class AccountController extends Controller
      * Menghapus akun tabungan dari sistem. Operasi ini tidak dapat dibatalkan.
      * Pastikan semua transaksi telah diselesaikan sebelum menghapus akun.
      *
+     * @OA\Delete(
+     *     path="/api/account/{id}",
+     *     operationId="deleteAccount",
+     *     tags={"Bank Santri - Account Management"},
+     *     summary="Hapus Akun",
+     *     description="Menghapus akun tabungan dari sistem (hanya jika saldo 0 dan tidak ada transaksi)",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Nomor akun tabungan yang akan dihapus",
+     *         @OA\Schema(type="string", example="20250197001")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Akun berhasil dihapus"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Akun tidak ditemukan",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Conflict - akun tidak dapat dihapus",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     )
+     * )
+     *
      * @urlParam id string required Nomor akun tabungan yang akan dihapus. Example: 20250197001
      *
      * @response 204
@@ -314,6 +484,52 @@ class AccountController extends Controller
      *
      * Memperbarui status akun tabungan tanpa mengubah informasi lainnya.
      * Status yang tersedia: ACTIVE, DORMANT, CLOSED, BLOCKED, INACTIVE.
+     *
+     * @OA\Post(
+     *     path="/api/account/{id}/status",
+     *     operationId="updateAccountStatus",
+     *     tags={"Bank Santri - Account Management"},
+     *     summary="Update Status Akun",
+     *     description="Memperbarui status akun tabungan dengan validasi khusus",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Nomor akun tabungan",
+     *         @OA\Schema(type="string", example="20250197001")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Data untuk update status akun",
+     *         @OA\JsonContent(ref="#/components/schemas/AccountStatusRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Status akun berhasil diupdate",
+     *         @OA\JsonContent(ref="#/components/schemas/AccountStatusResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request - data tidak lengkap",
+     *         @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Akun tidak ditemukan",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Conflict - status tidak dapat diubah",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed",
+     *         @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse")
+     *     )
+     * )
      *
      * @urlParam id string required Nomor akun tabungan. Example: 20250197001
      * @bodyParam status string required Status akun baru. Example: ACTIVE
