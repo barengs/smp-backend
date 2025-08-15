@@ -276,6 +276,7 @@ class RegistrationController extends Controller
                 'photo' => $registration->photo,
                 'user_id' => auth()->user()->id,
                 'education_type_id' => $registration->education_level_id,
+                'status' => 'Tidak Aktif', // Default status
             ]);
 
             // Create account
