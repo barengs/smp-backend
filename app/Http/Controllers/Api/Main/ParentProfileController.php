@@ -151,9 +151,7 @@ class ParentProfileController extends Controller
     public function show(string $id)
     {
         try {
-            $parent = User::whereHas('parent', function ($query) use ($id) {
-                $query->where('id', $id);
-            })->with(['parent', 'roles'])->firstOrFail();
+            $parent = User::whereHas('parent')->where('id', $id)->with(['parent', 'roles'])->firstOrFail();
 
             $students = Student::where('parent_id', $parent->parent->nik)->get();
 
