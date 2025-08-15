@@ -17,6 +17,7 @@ use App\Http\Resources\RegistrationResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Api\Main\AccountController;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Log;
 
 class RegistrationController extends Controller
 {
@@ -264,7 +265,7 @@ class RegistrationController extends Controller
 
             // Create student
             $student = Student::create([
-                'parent_id' => $registration->parent_id,
+                'parent_id' => $registration->nik,
                 'nis' => $this->generateNis($request->hijri_year),
                 'period' => $request->hijri_year,
                 'first_name' => $registration->first_name,
@@ -312,7 +313,11 @@ class RegistrationController extends Controller
             return response()->json($transaction, 201);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Failed to create registration transaction', 'error' => $e->getMessage()], 500);
+            Log::error('Transaksi Pendaftaran Gagal', [
+                'error' => $e->getMessage(),
+                'registration_id' => $request->registration_id,
+            ]);
+            return response()->json(['message' => 'Gagal membuat transaksi pendaftaran', 'error' => $e->getMessage()], 500);
         }
     }
 
