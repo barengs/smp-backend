@@ -283,14 +283,14 @@ class RegistrationController extends Controller
             ]);
 
             // Create account
-            $account = Account::create([
-                'account_number' => $student->nis,
-                'customer_id' => $student->id,
-                'product_id' => $request->product_id,
-                'balance' => 0,
-                'status' => 'INACTIVE',
-                'open_date' => now(),
-            ]);
+            // $account = Account::create([
+            //     'account_number' => $student->nis,
+            //     'customer_id' => $student->id,
+            //     'product_id' => $request->product_id,
+            //     'balance' => 0,
+            //     'status' => 'INACTIVE',
+            //     'open_date' => now(),
+            // ]);
 
             // if ($accountResponse->getStatusCode() != 201) {
             //     DB::rollBack();
@@ -317,7 +317,7 @@ class RegistrationController extends Controller
 
             DB::commit();
 
-            return response()->json($account, 201);
+            return response()->json($student, 201);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Transaksi Pendaftaran Gagal', [
