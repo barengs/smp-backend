@@ -21,7 +21,7 @@ class AccountController extends Controller
      */
     public function index()
     {
-        $accounts = Account::with(['customer', 'product'])->paginate(10);
+        $accounts = Account::with(['customer', 'product'])->get();
         return response()->json($accounts);
     }
 
