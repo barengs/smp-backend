@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\Validator;
 class AccountController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua akun.
+     *
+     * @group Akun
+     * @authenticated
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -23,7 +26,13 @@ class AccountController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan akun baru.
+     *
+     * @group Akun
+     * @authenticated
+     *
+     * @bodyParam student_id integer required ID siswa. Example: 1
+     * @bodyParam product_id integer required ID produk. Example: 1
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
@@ -63,7 +72,12 @@ class AccountController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Menampilkan akun tertentu.
+     *
+     * @group Akun
+     * @authenticated
+     *
+     * @urlParam id string required Nomor akun. Example: 20250197001
      *
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
@@ -79,7 +93,14 @@ class AccountController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui akun tertentu.
+     *
+     * @group Akun
+     * @authenticated
+     *
+     * @urlParam id string required Nomor akun. Example: 20250197001
+     * @bodyParam product_id integer required ID produk. Example: 1
+     * @bodyParam status string required Status akun. Example: ACTIVE
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  string  $id
@@ -106,7 +127,12 @@ class AccountController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus akun tertentu.
+     *
+     * @group Akun
+     * @authenticated
+     *
+     * @urlParam id string required Nomor akun. Example: 20250197001
      *
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
@@ -123,7 +149,13 @@ class AccountController extends Controller
     }
 
     /**
-     * Update the status of the specified resource in storage.
+     * Memperbarui status akun tertentu.
+     *
+     * @group Akun
+     * @authenticated
+     *
+     * @urlParam id string required Nomor akun. Example: 20250197001
+     * @bodyParam status string required Status akun. Example: ACTIVE
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  string  $id
