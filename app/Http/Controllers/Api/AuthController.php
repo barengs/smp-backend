@@ -257,6 +257,7 @@ class AuthController extends Controller
     {
         $user = auth()->user();
         $user->role = $user->getRoleNames();
+        $user->profile = $user->profile(); // Attach profile based on role
         return response()->json([
             'user' => $user,
             // 'role' => $user->getRoleNames(),
