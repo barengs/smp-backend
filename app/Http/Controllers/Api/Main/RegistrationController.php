@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Api\Main;
 
-use Log;
 use App\Models\User;
-use App\Models\Account;
 use App\Models\Student;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
@@ -19,6 +17,7 @@ use App\Http\Resources\RegistrationResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Api\Main\AccountController;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Log;
 
 class RegistrationController extends Controller
 {
@@ -283,32 +282,31 @@ class RegistrationController extends Controller
             ]);
 
             // Create account
-            // $account = Account::create([
-            //     'account_number' => $student->nis,
-            //     'customer_id' => $student->id,
-            //     'product_id' => $request->product_id,
-            //     'balance' => 0,
-            //     'status' => 'INACTIVE',
-            //     'open_date' => now(),
-            // ]);
+            $accountController = new AccountController();
+            $accountRequest = new Request([
+                'student_id' => $student->id,
+                'product_id' => $request->product_id,
+            ]);
+            $accountResponse = $accountController->store($accountRequest);
+            $account = json_decode($accountResponse->getContent(), true);
 
-            // if ($accountResponse->getStatusCode() != 201) {
-            //     DB::rollBack();
-            //     return response()->json(['message' => 'Failed to create account', 'errors' => $account], 500);
-            // }
+            if ($accountResponse->getStatusCode() != 201) {
+                DB::rollBack();
+                return response()->json(['message' => 'Failed to create account', 'errors' => $account], 500);
+            }
 
             // Create transaction
-            // $transaction = Transaction::create([
-            //     'id' => Str::uuid(),
-            //     'transaction_type_id' => $request->transaction_type_id,
-            //     'description' => 'Biaya Pendaftaran',
-            //     'amount' => $request->amount,
-            //     'status' => 'PENDING',
-            //     'reference_number' => $registration->registration_number,
-            //     'channel' => $request->channel,
-            //     'source_account' => $account['account_number'],
-            //     'destination_account' => null,
-            // ]);
+            $transaction = Transaction::create([
+                'id' => Str::uuid(),
+                'transaction_type_id' => $request->transaction_type_id,
+                'description' => 'Biaya Pendaftaran',
+                'amount' => $request->amount,
+                'status' => 'PENDING',
+                'reference_number' => $registration->registration_number,
+                'channel' => $request->channel,
+                'source_account' => $account['account_number'],
+                'destination_account' => null,
+            ]);
 
             // if (!$transaction) {
             //     DB::rollBack();
@@ -317,7 +315,7 @@ class RegistrationController extends Controller
 
             DB::commit();
 
-            return response()->json($student, 201);
+            return response()->json($transaction, 201);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Transaksi Pendaftaran Gagal', [
