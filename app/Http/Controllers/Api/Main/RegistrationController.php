@@ -264,38 +264,38 @@ class RegistrationController extends Controller
             $registration = Registration::findOrFail($request->registration_id);
 
             // Create student
-            // $student = Student::create([
-            //     'parent_id' => $registration->nik,
-            //     'nis' => $this->generateNis($request->hijri_year),
-            //     'period' => $request->hijri_year,
-            //     'first_name' => $registration->first_name,
-            //     'last_name' => $registration->last_name,
-            //     'gender' => $registration->gender,
-            //     'address' => $registration->address,
-            //     'born_in' => $registration->born_in,
-            //     'born_at' => $registration->born_at,
-            //     'village_id' => $registration->village_id,
-            //     'photo' => $registration->photo,
-            //     'user_id' => auth()->user()->id,
-            //     'education_type_id' => $registration->education_level_id,
-            //     'status' => 'Tidak Aktif', // Default status
-            // ]);
+            $student = Student::create([
+                'parent_id' => $registration->nik,
+                'nis' => $this->generateNis($request->hijri_year),
+                'period' => $request->hijri_year,
+                'first_name' => $registration->first_name,
+                'last_name' => $registration->last_name,
+                'gender' => $registration->gender,
+                'address' => $registration->address,
+                'born_in' => $registration->born_in,
+                'born_at' => $registration->born_at,
+                'village_id' => $registration->village_id,
+                'photo' => $registration->photo,
+                'user_id' => auth()->user()->id,
+                'education_type_id' => $registration->education_level_id,
+                'status' => 'Tidak Aktif', // Default status
+            ]);
 
             // Create account
-            // $accountController = new AccountController();
-            // $accountRequest = new Request([
-            //     'student_id' => $student->id,
-            //     'product_id' => $request->product_id,
-            // ]);
-            // $accountResponse = $accountController->store($accountRequest);
-            // $account = json_decode($accountResponse->getContent(), true);
+            $accountController = new AccountController();
+            $accountRequest = new Request([
+                'student_id' => $student->id,
+                'product_id' => $request->product_id,
+            ]);
+            $accountResponse = $accountController->store($accountRequest);
+            $account = json_decode($accountResponse->getContent(), true);
 
-            // if ($accountResponse->getStatusCode() != 201) {
-            //     DB::rollBack();
-            //     return response()->json(['message' => 'Failed to create account', 'errors' => $account], 500);
-            // }
+            if ($accountResponse->getStatusCode() != 201) {
+                DB::rollBack();
+                return response()->json(['message' => 'Failed to create account', 'errors' => $account], 500);
+            }
 
-            // // Create transaction
+            // Create transaction
             // $transaction = Transaction::create([
             //     'id' => Str::uuid(),
             //     'transaction_type_id' => $request->transaction_type_id,
@@ -315,7 +315,7 @@ class RegistrationController extends Controller
 
             DB::commit();
 
-            return response()->json($registration, 201);
+            return response()->json($account, 201);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Transaksi Pendaftaran Gagal', [
