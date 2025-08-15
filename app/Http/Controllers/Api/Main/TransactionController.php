@@ -820,7 +820,7 @@ class TransactionController extends Controller
                 'product_id' => $request->product_id,
                 'hijri_year' => $request->hijri_year,
             ]);
-            $accountResponse = $accountController->createAccount($accountRequest);
+            $accountResponse = $accountController->store($accountRequest);
 
             if ($accountResponse->getStatusCode() != 201) {
                 DB::rollBack();

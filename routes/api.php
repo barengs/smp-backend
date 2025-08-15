@@ -83,7 +83,8 @@ Route::post('transaction/reverse-transaction', [TransactionController::class, 'r
 Route::get('transaction/report-transaction', [TransactionController::class, 'getTransactionSummary'])->name('transaction.report-transaction');
 Route::apiResource('transaction-type', TransactionTypeController::class);
 Route::post('transaction-type/{id}/toggle-active', [TransactionTypeController::class, 'toggleActiveStatus'])->name('transaction-type.toggle-active');
-Route::post('account/create', [AccountController::class, 'createAccount'])->name('account.create');
+Route::apiResource('account', AccountController::class);
+Route::post('account/{id}/status', [AccountController::class, 'updateStatus'])->name('account.status');
 
 Route::apiResource('chart-of-account', ChartOfAccountController::class);
 

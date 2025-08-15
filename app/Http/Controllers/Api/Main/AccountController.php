@@ -12,17 +12,27 @@ use Illuminate\Support\Facades\Validator;
 class AccountController extends Controller
 {
     /**
-     * Membuat rekening baru untuk siswa.
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index()
+    {
+        $accounts = Account::with(['customer', 'product'])->paginate(10);
+        return response()->json($accounts);
+    }
+
+    /**
+     * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function createAccount(Request $request)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'student_id' => 'required|exists:students,id',
             'product_id' => 'required|exists:products,id',
-            'hijri_year' => 'required|digits:4',
         ]);
 
         if ($validator->fails()) {
@@ -31,19 +41,14 @@ class AccountController extends Controller
 
         try {
             $student = Student::findOrFail($request->student_id);
-            $hijriYear = $request->hijri_year;
-            $prefix = $hijriYear . '0197';
+            // Check if the student already has an account
+            if (Account::where('customer_id', $student->id)->exists()) {
+                return response()->json(['message' => 'Student already has an account'], 409);
+            }
 
-            // Find the last account number with the same prefix and increment the sequence
-            $lastAccount = Account::where('account_number', 'like', $prefix . '%')
-                ->orderBy('account_number', 'desc')
-                ->first();
-
-            $sequence = $lastAccount ? (int) substr($lastAccount->account_number, -3) + 1 : 1;
-            $accountNumber = $prefix . str_pad($sequence, 3, '0', STR_PAD_LEFT);
-
+            // Create a new account for the student
             $account = Account::create([
-                'account_number' => $accountNumber,
+                'account_number' => $student->nis,
                 'customer_id' => $student->id,
                 'product_id' => $request->product_id,
                 'balance' => 0,
@@ -54,6 +59,93 @@ class AccountController extends Controller
             return response()->json($account, 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to create account', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(string $id)
+    {
+        try {
+            $account = Account::with(['customer', 'product', 'movements'])->findOrFail($id);
+            return response()->json($account);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Account not found'], 404);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, string $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'product_id' => 'required|exists:products,id',
+            'status' => 'required|in:ACTIVE,DORMANT,CLOSED,BLOCKED,INACTIVE',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        try {
+            $account = Account::findOrFail($id);
+            $account->update($request->only(['product_id', 'status']));
+            return response()->json($account);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Account not found'], 404);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(string $id)
+    {
+        try {
+            $account = Account::findOrFail($id);
+            $account->delete();
+            return response()->json(null, 204);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Account not found'], 404);
+        }
+    }
+
+    /**
+     * Update the status of the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateStatus(Request $request, string $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:ACTIVE,DORMANT,CLOSED,BLOCKED,INACTIVE',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        try {
+            $account = Account::findOrFail($id);
+            $account->status = $request->status;
+            $account->save();
+            return response()->json($account);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Account not found'], 404);
         }
     }
 }

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use App\Models\ParentProfile;
+use App\Models\Student;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
@@ -260,14 +261,30 @@ class RegistrationController extends Controller
         try {
             $registration = Registration::findOrFail($request->registration_id);
 
+            // Create student
+            $student = Student::create([
+                'parent_id' => $registration->parent_id,
+                'nis' => $this->generateNis($request->hijri_year),
+                'period' => $request->hijri_year,
+                'first_name' => $registration->first_name,
+                'last_name' => $registration->last_name,
+                'gender' => $registration->gender,
+                'address' => $registration->address,
+                'born_in' => $registration->born_in,
+                'born_at' => $registration->born_at,
+                'village_id' => $registration->village_id,
+                'photo' => $registration->photo,
+                'user_id' => auth()->user()->id,
+                'education_type_id' => $registration->education_level_id,
+            ]);
+
             // Create account
             $accountController = new AccountController();
             $accountRequest = new Request([
-                'student_id' => $registration->student->id,
+                'student_id' => $student->id,
                 'product_id' => $request->product_id,
-                'hijri_year' => $request->hijri_year,
             ]);
-            $accountResponse = $accountController->createAccount($accountRequest);
+            $accountResponse = $accountController->store($accountRequest);
             $account = json_decode($accountResponse->getContent(), true);
 
             if ($accountResponse->getStatusCode() != 201) {
@@ -295,5 +312,20 @@ class RegistrationController extends Controller
             DB::rollBack();
             return response()->json(['message' => 'Failed to create registration transaction', 'error' => $e->getMessage()], 500);
         }
+    }
+
+    private function generateNis($hijriYear)
+    {
+        $prefix = $hijriYear . '0197';
+        $lastStudent = Student::where('nis', 'like', $prefix . '%')->orderBy('nis', 'desc')->first();
+
+        if ($lastStudent) {
+            $lastSequence = (int) substr($lastStudent->nis, -3);
+            $nextSequence = $lastSequence + 1;
+        } else {
+            $nextSequence = 1;
+        }
+
+        return $prefix . str_pad($nextSequence, 3, '0', STR_PAD_LEFT);
     }
 }
