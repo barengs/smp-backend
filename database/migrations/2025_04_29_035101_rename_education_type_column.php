@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::table('students', function (Blueprint $table) {
             $table->renameColumn('education_type_id', 'program_id');
-            $table->unsignedBigInteger('program_id')->change();
+            $table->unsignedBigInteger('program_id')->nullable()->change();
         });
     }
 
