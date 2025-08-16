@@ -189,7 +189,7 @@ class RoleController extends Controller
                 'guard_name' => $request->guard_name ?? 'api',
             ]);
 
-            $role->syncPermissions($request->permissions);
+            $role->syncPermissions($request->permission);
 
             return response()->json([
                 'message' => 'Role updated successfully',
