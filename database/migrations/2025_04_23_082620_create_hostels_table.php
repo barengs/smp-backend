@@ -13,7 +13,8 @@ return new class extends Migration {
         Schema::create('hostels', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->unsignedBigInteger('program_id')->nullable();
+            $table->integer('capacity')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
         });

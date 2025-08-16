@@ -30,10 +30,11 @@ return new class extends Migration {
             $table->string('postal_code')->nullable();
             $table->string('phone')->nullable();
             $table->unsignedBigInteger('hostel_id')->nullable();
-            $table->unsignedBigInteger('education_type_id');
-            $table->enum('status', ['Aktif', 'Tugas', 'Lulus', 'Dikeluarkan'])->default('Aktif')->nullable();
+            $table->unsignedBigInteger('program_id');
+            $table->enum('status', ['Tidak Aktif', 'Aktif', 'Tugas', 'Lulus', 'Dikeluarkan'])->default('Tidak Aktif')->nullable();
             $table->string('photo')->nullable();
             $table->unsignedBigInteger('user_id');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

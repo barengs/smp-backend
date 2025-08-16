@@ -252,7 +252,7 @@ class AccountMovementController extends Controller
             $account = Account::findOrFail($request->account_number);
 
             // Check if account is active
-            if ($account->status !== 'ACTIVE') {
+            if ($account->status !== 'AKTIF') {
                 return response()->json([
                     'message' => 'Account is not active. Current status: ' . $account->status
                 ], 409);
@@ -275,7 +275,7 @@ class AccountMovementController extends Controller
                 'transaction_type_id' => $request->transaction_type_id,
                 'description' => $request->description,
                 'amount' => abs($amount),
-                'status' => 'COMPLETED',
+                'status' => 'SUCCESS',
                 'reference_number' => $request->reference_number,
                 'channel' => $request->channel ?? 'CASH',
                 'source_account' => $request->account_number,
@@ -303,7 +303,7 @@ class AccountMovementController extends Controller
             if ($request->filled('destination_account') && $isDebit) {
                 $destinationAccount = Account::findOrFail($request->destination_account);
 
-                if ($destinationAccount->status !== 'ACTIVE') {
+                if ($destinationAccount->status !== 'AKTIF') {
                     DB::rollBack();
                     return response()->json([
                         'message' => 'Destination account is not active'

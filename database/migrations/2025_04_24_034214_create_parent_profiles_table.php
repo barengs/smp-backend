@@ -27,7 +27,7 @@ return new class extends Migration {
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('occupation')->nullable();
-            $table->string('education')->nullable();
+            $table->string('education_id')->nullable();
             $table->text('photo')->nullable();
             $table->string('photo_path')->nullable();
             $table->softDeletes();

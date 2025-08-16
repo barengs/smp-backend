@@ -197,7 +197,7 @@ class AccountController extends Controller
                 'customer_id' => $student->id,
                 'product_id' => $request->product_id,
                 'balance' => 0,
-                'status' => 'INACTIVE',
+                'status' => 'TIDAK AKTIF', // Default status
                 'open_date' => now(),
             ]);
 
@@ -385,7 +385,7 @@ class AccountController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|exists:products,id',
-            'status' => 'required|in:ACTIVE,DORMANT,CLOSED,BLOCKED,INACTIVE',
+            'status' => 'required|in:AKTIF,TIDAK AKTIF,TUTUP,TERBLOKIR,DIBEKUKAN',
         ]);
 
         if ($validator->fails()) {
@@ -572,7 +572,7 @@ class AccountController extends Controller
     public function updateStatus(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'required|in:ACTIVE,DORMANT,CLOSED,BLOCKED,INACTIVE',
+            'status' => 'required|in:AKTIF,TIDAK AKTIF,TUTUP,TERBLOKIR,DIBEKUKAN',
         ]);
 
         if ($validator->fails()) {
@@ -583,14 +583,14 @@ class AccountController extends Controller
             $account = Account::findOrFail($id);
 
             // Additional validation for status changes
-            if ($request->status === 'CLOSED' && $account->balance > 0) {
+            if ($request->status === 'TUTUP' && $account->balance > 0) {
                 return response()->json(['message' => 'Cannot change status to CLOSED with active balance'], 409);
             }
 
             $account->status = $request->status;
 
             // Set close_date if status is CLOSED
-            if ($request->status === 'CLOSED') {
+            if ($request->status === 'TUTUP') {
                 $account->close_date = now();
             } else {
                 $account->close_date = null;

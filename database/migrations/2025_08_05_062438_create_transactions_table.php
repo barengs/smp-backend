@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('transaction_type', 50);
+            $table->unsignedBigInteger('transaction_type_id');
             $table->text('description')->nullable();
             $table->decimal('amount', 18, 2);
             $table->enum('status', ['SUCCESS', 'PENDING', 'FAILED', 'REVERSED']);
@@ -24,6 +24,7 @@ return new class extends Migration {
 
             $table->foreign('source_account')->references('account_number')->on('accounts')->onDelete('restrict');
             $table->foreign('destination_account')->references('account_number')->on('accounts')->onDelete('restrict');
+            $table->foreign('transaction_type_id')->references('id')->on('transaction_types')->onDelete('restrict');
         });
     }
 
