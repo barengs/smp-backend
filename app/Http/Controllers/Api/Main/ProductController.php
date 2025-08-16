@@ -112,7 +112,7 @@ class ProductController extends Controller
             $validator = Validator::make($request->all(), [
                 'product_code' => 'required|string|max:20|unique:products,product_code',
                 'product_name' => 'required|string|max:100',
-                'product_type' => 'required|in:SAVINGS,CHECKING,LOAN,TIME_DEPOSIT',
+                'product_type' => 'required|in:Tabungan,Deposito,Pinjaman',
                 'interest_rate' => 'nullable|numeric|min:0|max:100',
                 'admin_fee' => 'nullable|numeric|min:0',
                 'is_active' => 'boolean',
@@ -209,7 +209,7 @@ class ProductController extends Controller
             $validator = Validator::make($request->all(), [
                 'product_code' => 'sometimes|required|string|max:20|unique:products,product_code,' . $id,
                 'product_name' => 'sometimes|required|string|max:100',
-                'product_type' => 'sometimes|required|in:SAVINGS,CHECKING,LOAN,TIME_DEPOSIT',
+                'product_type' => 'sometimes|required|in:Tabungan,Deposito,Pinjaman',
                 'interest_rate' => 'nullable|numeric|min:0|max:100',
                 'admin_fee' => 'nullable|numeric|min:0',
                 'is_active' => 'sometimes|boolean',
@@ -290,7 +290,7 @@ class ProductController extends Controller
     {
         try {
             $validator = Validator::make(['type' => $type], [
-                'type' => 'required|in:SAVINGS,CHECKING,LOAN,TIME_DEPOSIT',
+                'type' => 'required|in:Tabungan,Deposito,Pinjaman',
             ]);
 
             if ($validator->fails()) {
