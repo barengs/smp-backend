@@ -3,6 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Illuminate\Routing\Controller;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +25,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'forgotPassword', 'resetPassword']]);
     }
 
     /**
@@ -214,6 +219,136 @@ class AuthController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Mengirim email reset password
+     *
+     * Method ini digunakan untuk mengirim email reset password ke user.
+     *
+     * @group Authentication
+     *
+     * @bodyParam email string required Email user. Example: ahmad@example.com
+     *
+     * @response 200 {
+     *   "message": "Password reset link sent to your email."
+     * }
+     *
+     * @response 404 {
+     *   "message": "User not found."
+     * }
+     */
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        $token = Str::random(60);
+
+        DB::table('password_resets')->insert([
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => now()
+        ]);
+
+        // Kirim email dengan link reset password
+        Mail::to($user->email)->send(new \App\Mail\ResetPasswordMail($token));
+
+        return response()->json(['message' => 'Password reset link sent to your email.']);
+    }
+
+    /**
+     * Mereset password user
+     *
+     * Method ini digunakan untuk mereset password user dengan token yang valid.
+     *
+     * @group Authentication
+     *
+     * @bodyParam token string required Token reset password.
+     * @bodyParam email string required Email user.
+     * @bodyParam password string required Password baru user.
+     * @bodyParam password_confirmation string required Konfirmasi password baru.
+     *
+     * @response 200 {
+     *   "message": "Password has been reset."
+     * }
+     *
+     * @response 404 {
+     *   "message": "Invalid token."
+     * }
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        $reset = DB::table('password_resets')
+            ->where('email', $request->email)
+            ->where('token', $request->token)
+            ->first();
+
+        if (!$reset) {
+            return response()->json(['message' => 'Invalid token.'], 404);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        DB::table('password_resets')->where('email', $request->email)->delete();
+
+        return response()->json(['message' => 'Password has been reset.']);
+    }
+
+    /**
+     * Mengganti password user yang sedang login
+     *
+     * Method ini digunakan untuk mengganti password user yang sedang login.
+     *
+     * @group Authentication
+     * @authenticated
+     *
+     * @bodyParam current_password string required Password saat ini.
+     * @bodyParam new_password string required Password baru.
+     * @bodyParam new_password_confirmation string required Konfirmasi password baru.
+     *
+     * @response 200 {
+     *   "message": "Password changed successfully."
+     * }
+     *
+     * @response 400 {
+     *   "message": "Current password does not match."
+     * }
+     *
+     * @response 422 {
+     *   "new_password": ["The new password confirmation does not match."]
+     * }
+     */
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|confirmed|min:6',
+        ]);
+
+        $user = Auth::user();
+
+        if (!\Hash::check($request->current_password, $user->password)) {
+            return response()->json(['message' => 'Current password does not match.'], 400);
+        }
+
+        $user->password = bcrypt($request->new_password);
+        $user->save();
+
+        return response()->json(['message' => 'Password changed successfully.']);
     }
 
     /**
