@@ -209,7 +209,104 @@ class RegistrationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $registration = Registration::findOrFail($id);
+            $parent = ParentProfile::where('nik', $registration->parent_id)->firstOrFail();
+
+            // Update Parent Profile
+            $parent->update([
+                'first_name' => $request->input('wali_nama_depan', $parent->first_name),
+                'last_name' => $request->input('wali_nama_belakang', $parent->last_name),
+                'kk' => $request->input('wali_kk', $parent->kk),
+                'phone' => $request->input('wali_telepon', $parent->phone),
+                'email' => $request->input('wali_email', $parent->email),
+                'gender' => $request->input('wali_jenis_kelamin', $parent->gender),
+                'parent_as' => $request->input('wali_sebagai', $parent->parent_as),
+                'card_address' => $request->input('wali_alamamat_ktp', $parent->card_address),
+                'domicile_address' => $request->input('wali_alamat_domisili', $parent->domicile_address),
+                'occupation_id' => $request->input('wali_pekerjaan_id', $parent->occupation_id),
+                'education' => $request->input('wali_pendidikan_id', $parent->education),
+            ]);
+
+            // Handle Santri Photo Upload
+            if ($request->hasFile('dokumen_foto_santri')) {
+                // Delete old photo if it exists
+                if ($registration->photo && Storage::disk('public')->exists($registration->photo)) {
+                    Storage::disk('public')->delete($registration->photo);
+                }
+                $file = $request->file('dokumen_foto_santri');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $filePath = $file->storeAs('uploads/registration_files', $fileName, 'public');
+                $registration->photo = $filePath;
+            }
+
+            // Update Registration
+            $registration->update([
+                'nis' => $request->input('santri_nisn', $registration->nis),
+                'first_name' => $request->input('santri_nama_depan', $registration->first_name),
+                'last_name' => $request->input('santri_nama_belakang', $registration->last_name),
+                'nik' => $request->input('santri_nik', $registration->nik),
+                'kk' => $request->input('wali_kk', $registration->kk),
+                'gender' => $request->input('santri_jenis_kelamin', $registration->gender),
+                'address' => $request->input('santri_alamat', $registration->address),
+                'born_in' => $request->input('santri_tempat_lahir', $registration->born_in),
+                'born_at' => $request->input('santri_tanggal_lahir', $registration->born_at),
+                'village_id' => $request->input('desaId', $registration->village_id),
+                'previous_school' => $request->input('pendidikan_sekolah_asal', $registration->previous_school),
+                'previous_school_address' => $request->input('pendidikan_alamat_sekolah', $registration->previous_school_address),
+                'certificate_number' => $request->input('pendidikan_nomor_ijazah', $registration->certificate_number),
+                'education_level_id' => $request->input('pendidikan_jenjang_sebelumnya', $registration->education_level_id),
+                'previous_madrasah' => $request->input('madrasah_sekolah_asal', $registration->previous_madrasah),
+                'previous_madrasah_address' => $request->input('madrasah_alamat_sekolah', $registration->previous_madrasah_address),
+                'certificate_madrasah' => $request->input('madrasah_nomor_ijazah', $registration->certificate_madrasah),
+                'madrasah_level_id' => $request->input('madrasah_jenjang_sebelumnya', $registration->madrasah_level_id),
+            ]);
+            $registration->save();
+
+
+            // Handle Ijazah Upload
+            if ($request->hasFile('dokumen_ijazah')) {
+                // Optional: Delete old ijazah if needed
+                $ijazahFile = $request->file('dokumen_ijazah');
+                $ijazahFileName = time() . '_' . $ijazahFile->getClientOriginalName();
+                $ijazahFilePath = $ijazahFile->storeAs('uploads/registration_files', $ijazahFileName, 'public');
+
+                $registration->files()->updateOrCreate(
+                    ['file_type' => 'ijazah'],
+                    [
+                        'file_name' => $ijazahFileName,
+                        'file_path' => $ijazahFilePath,
+                    ]
+                );
+            }
+
+            // Handle Optional Documents
+            if ($request->hasFile('dokumen_opsional')) {
+                // Optional: Delete old optional files if needed
+                foreach ($request->file('dokumen_opsional') as $file) {
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $filePath = $file->storeAs('uploads/registration_files', $fileName, 'public');
+
+                    $registration->files()->create([
+                        'file_name' => $fileName,
+                        'file_path' => $filePath,
+                        'file_type' => 'optional'
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return new RegistrationResource('Registration updated successfully', $registration->load('parent'), 200);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Registration not found'], 404);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
