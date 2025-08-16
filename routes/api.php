@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\Main\TransactionController;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +12,8 @@ use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\Master\MenuController;
 use App\Http\Controllers\Api\Master\NewsController;
 use App\Http\Controllers\Api\Master\RoleController;
+use App\Http\Controllers\Api\Master\RoomController;
+use App\Http\Controllers\Api\Main\AccountController;
 use App\Http\Controllers\Api\Main\ProductController;
 use App\Http\Controllers\Api\Main\StudentController;
 use App\Http\Controllers\Api\Master\StudyController;
@@ -22,24 +23,24 @@ use App\Http\Controllers\Api\Master\HostelController;
 use App\Http\Controllers\Api\Master\JobDesController;
 use App\Http\Controllers\Api\Main\DashboardController;
 use App\Http\Controllers\Api\Master\ProgramController;
+use App\Http\Controllers\Api\Main\InternshipController;
+use App\Http\Controllers\Api\Main\TransactionController;
 use App\Http\Controllers\Api\Master\ClassroomController;
 use App\Http\Controllers\Api\Master\EducationController;
+use App\Http\Controllers\Api\Main\ControlPanelController;
 use App\Http\Controllers\Api\Main\RegistrationController;
 use App\Http\Controllers\Api\Master\ClassGroupController;
 use App\Http\Controllers\Api\Master\OccupationController;
 use App\Http\Controllers\Api\Master\PermissionController;
 use App\Http\Controllers\Api\Master\ProfessionController;
 use App\Http\Controllers\Api\Main\ParentProfileController;
+use App\Http\Controllers\Api\Main\ChartOfAccountController;
 use App\Http\Controllers\Api\Master\AcademicYearController;
+use App\Http\Controllers\Api\Main\AccountMovementController;
+use App\Http\Controllers\Api\Main\TransactionTypeController;
 use App\Http\Controllers\Api\Master\EducationTypeController;
 use App\Http\Controllers\Api\Master\EducationClassController;
 use App\Http\Controllers\Api\Main\InternshipSupervisorController;
-use App\Http\Controllers\Api\Main\ControlPanelController;
-use App\Http\Controllers\Api\Main\TransactionTypeController;
-use App\Http\Controllers\Api\Main\AccountController;
-use App\Http\Controllers\Api\Main\AccountMovementController;
-use App\Http\Controllers\Api\Main\ChartOfAccountController;
-use App\Http\Controllers\Api\Master\RoomController;
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -74,8 +75,9 @@ Route::apiResource('news', NewsController::class);
 Route::apiResource('supervisor', InternshipSupervisorController::class);
 Route::apiResource('control-panel', ControlPanelController::class);
 Route::post('control-panel/{id}/update-by-column', [ControlPanelController::class, 'updateByColumn'])->name('control-panel.update-by-column');
+Route::apiResource('internship', InternshipController::class);
 
-/* fitur perbaikan */
+/* fitur perbankan */
 Route::apiResource('product', ProductController::class);
 Route::apiResource('transaction', TransactionController::class);
 Route::post('transaction/deposit', [TransactionController::class, 'cashDeposit'])->name('transaction.deposit');
