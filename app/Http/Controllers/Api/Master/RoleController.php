@@ -94,6 +94,8 @@ class RoleController extends Controller
                 'guard_name' => $request->guard_name ?? 'api',
             ]);
 
+            $role->syncPermissions($request->permissions);
+
             return response()->json([
                 'message' => 'Role created successfully',
                 'data' => $role,
@@ -186,6 +188,8 @@ class RoleController extends Controller
                 'name' => $request->name,
                 'guard_name' => $request->guard_name ?? 'api',
             ]);
+
+            $role->syncPermissions($request->permissions);
 
             return response()->json([
                 'message' => 'Role updated successfully',
