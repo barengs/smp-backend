@@ -142,8 +142,13 @@ class RegistrationController extends Controller
                 'photo' => $filePath ?? null,
                 'previous_school' => $request->pendidikan_sekolah_asal,
                 'previous_school_address' => $request->pendidikan_alamat_sekolah,
-                'certificate_number' => $request->nomor_ijazah,
-                'education_level_id' => $request->education_level_id,
+                'certificate_number' => $request->pendidikan_nomor_ijazah,
+                'education_level_id' => $request->pendidikan_jenjang_sebelumnya,
+                'previous_madrasah' => $request->madrasah_sekolah_asal,
+                'previous_madrasah_address' => $request->madrasah_alamat_sekolah,
+                'certificate_madrasah' => $request->madrasah_nomor_ijazah,
+                'madrasah_level_id' => $request->madrasah_jenjang_sebelumnya,
+
             ]);
 
             if ($request->hasFile('dokumen_ijazah')) {
