@@ -19,7 +19,7 @@ class InternshipController extends Controller
         try {
             $internships = Internship::with(['student', 'partner', 'supervisor'])
                 ->orderBy('created_at', 'desc')
-                ->paginate(10);
+                ->get();
             return new InternshipResource('Internships fetched successfully', $internships, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch internships: ' . $e->getMessage()], 500);
