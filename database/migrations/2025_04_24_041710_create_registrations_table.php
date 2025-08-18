@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->string('registration_number')->unique();
             $table->timestamp('registration_date')->nullable();
             $table->enum('status', ['pending', 'verified', 'rejected', 'accepted'])->default('pending');
