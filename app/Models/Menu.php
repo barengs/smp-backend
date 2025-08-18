@@ -35,4 +35,9 @@ class Menu extends Model
     {
         return $this->hasMany(Menu::class, 'parent_id')->orderBy('order', 'asc');
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(\Spatie\Permission\Models\Role::class, 'menu_roles');
+    }
 }

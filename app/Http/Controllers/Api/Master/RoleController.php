@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Master;
 
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use App\Http\Controllers\Controller;
 
 class RoleController extends Controller
@@ -95,6 +95,9 @@ class RoleController extends Controller
             ]);
 
             $role->syncPermissions($request->permissions);
+
+            // mapping role to menu
+            $this->syncMenus($request, $role);
 
             return response()->json([
                 'message' => 'Role created successfully',
@@ -191,6 +194,8 @@ class RoleController extends Controller
 
             $role->syncPermissions($request->permission);
 
+            $this->syncMenus($request, $role);
+
             return response()->json([
                 'message' => 'Role updated successfully',
                 'data' => $role,
@@ -226,5 +231,12 @@ class RoleController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    private function syncMenus(Request $request, Role $role)
+    {
+        if ($request->has('menu_id')) {
+            $role->menus()->sync($request->menu_id);
+        }
     }
 }
