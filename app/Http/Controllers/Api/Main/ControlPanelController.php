@@ -27,15 +27,7 @@ class ControlPanelController extends Controller
         $validatedData = $request->validate([
             'app_name' => 'required|string|max:255',
             'app_version' => 'nullable|string|max:255',
-            'app_description' => 'nullable|string',
             'app_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'app_favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'app_url' => 'nullable|string',
-            'app_email' => 'nullable|email',
-            'app_phone' => 'nullable|string',
-            'app_address' => 'nullable|string',
-            'is_maintenance_mode' => 'boolean',
-            'maintenance_message' => 'nullable|string',
             'app_theme' => 'in:light,dark,system',
             'app_language' => 'in:indonesia,english,arabic',
         ]);
