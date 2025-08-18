@@ -7,6 +7,8 @@ use App\Models\ControlPanel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Imagick\Driver;
 
 class ControlPanelController extends Controller
 {
@@ -120,23 +122,18 @@ class ControlPanelController extends Controller
     }
     private function uploadImage($file, &$validatedData, $columnName)
     {
+        $image = new ImageManager(new Driver());
         $timestamp = now()->timestamp;
         $fileName = $timestamp . '_' . $file->getClientOriginalName();
 
         // Large logo
-        $largeImage = Image::read($file->getRealPath());
-        $largeImage->resize(512, 512, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
+        $largeImage = $image->read($file->getRealPath());
+        $largeImage->cover(512, 512);
         Storage::disk('public')->put('uploads/logos/large/' . $fileName, (string) $largeImage->encode());
 
         // Small logo
-        $smallImage = Image::read($file->getRealPath());
-        $smallImage->resize(128, 128, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
+        $smallImage = $image->read($file->getRealPath());
+        $smallImage->scaleDown(128, 128);
         Storage::disk('public')->put('uploads/logos/small/' . $fileName, (string) $smallImage->encode());
 
         $validatedData[$columnName] = $fileName;
