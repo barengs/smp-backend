@@ -15,6 +15,7 @@ class EducationSeeder extends Seeder
     public function run(): void
     {
         $data = [
+            ['name' => 'TK', 'description' => 'Taman Kanak-Kanak'],
             ["name" => "SD", "description" => "Sekolah Dasar"],
             ["name" => "SMP", "description" => "Sekolah Menengah Pertama"],
             ["name" => "SMA", "description" => "Sekolah Menengah Atas"],
@@ -23,6 +24,10 @@ class EducationSeeder extends Seeder
             ["name" => "MI", "description" => "Madrasah Ibtida'iyah"],
             ["name" => "MTs", "description" => "Madrasah Tsanawiyah"],
             ["name" => "MAK", "description" => "Madrasah Kejuruan"],
+            ["name" => "PKBM", "description" => "Pusat Kegiatan Belajar Masyarakat"],
+            ["name" => "S1", "description" => "Strata 1"],
+            ["name" => "S2", "description" => "Strata 2"],
+            ["name" => "S3", "description" => "Strata 3"],
         ];
 
         foreach ($data as $value) {

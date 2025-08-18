@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             EmployeeSeeder::class,
             ParentProfileSeeder::class,
             StudentSeeder::class,
+            ControlPanelSeeder::class,
         ]);
     }
 }
