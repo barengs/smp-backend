@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Main;
 use App\Http\Controllers\Controller;
 use App\Models\ControlPanel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 
 class ControlPanelController extends Controller
 {
@@ -26,8 +28,8 @@ class ControlPanelController extends Controller
             'app_name' => 'required|string|max:255',
             'app_version' => 'nullable|string|max:255',
             'app_description' => 'nullable|string',
-            'app_logo' => 'nullable|string',
-            'app_favicon' => 'nullable|string',
+            'app_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'app_favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'app_url' => 'nullable|string',
             'app_email' => 'nullable|email',
             'app_phone' => 'nullable|string',
@@ -37,6 +39,14 @@ class ControlPanelController extends Controller
             'app_theme' => 'in:light,dark,system',
             'app_language' => 'in:indonesia,english,arabic',
         ]);
+
+        if ($request->hasFile('app_logo')) {
+            $this->uploadImage($request->file('app_logo'), $validatedData, 'app_logo');
+        }
+
+        if ($request->hasFile('app_favicon')) {
+            $this->uploadImage($request->file('app_favicon'), $validatedData, 'app_favicon');
+        }
 
         $controlPanel = ControlPanel::create($validatedData);
 
@@ -63,8 +73,8 @@ class ControlPanelController extends Controller
             'app_name' => 'required|string|max:255',
             'app_version' => 'nullable|string|max:255',
             'app_description' => 'nullable|string',
-            'app_logo' => 'nullable|string',
-            'app_favicon' => 'nullable|string',
+            'app_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'app_favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'app_url' => 'nullable|string',
             'app_email' => 'nullable|email',
             'app_phone' => 'nullable|string',
@@ -74,6 +84,14 @@ class ControlPanelController extends Controller
             'app_theme' => 'in:light,dark,system',
             'app_language' => 'in:indonesia,english,arabic',
         ]);
+
+        if ($request->hasFile('app_logo')) {
+            $this->uploadImage($request->file('app_logo'), $validatedData, 'app_logo');
+        }
+
+        if ($request->hasFile('app_favicon')) {
+            $this->uploadImage($request->file('app_favicon'), $validatedData, 'app_favicon');
+        }
 
         $controlPanel->update($validatedData);
 
@@ -118,5 +136,28 @@ class ControlPanelController extends Controller
         $controlPanel->save();
 
         return response()->json($controlPanel);
+    }
+    private function uploadImage($file, &$validatedData, $columnName)
+    {
+        $timestamp = now()->timestamp;
+        $fileName = $timestamp . '_' . $file->getClientOriginalName();
+
+        // Large logo
+        $largeImage = Image::read($file->getRealPath());
+        $largeImage->resize(512, 512, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+        Storage::disk('public')->put('uploads/logos/large/' . $fileName, (string) $largeImage->encode());
+
+        // Small logo
+        $smallImage = Image::read($file->getRealPath());
+        $smallImage->resize(128, 128, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+        Storage::disk('public')->put('uploads/logos/small/' . $fileName, (string) $smallImage->encode());
+
+        $validatedData[$columnName] = $fileName;
     }
 }
