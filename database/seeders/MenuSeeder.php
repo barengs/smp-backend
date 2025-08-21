@@ -128,7 +128,7 @@ class MenuSeeder extends Seeder
         $r_guru_kelas = Role::create(['name' => 'guru kelas']);
         $r_asrama = Role::create(['name' => 'kepala asrama']);
         $r_walikelas = Role::create(['name' => 'wali kelas']);
-        $r_orangtua = Role::create(['name' => 'orangtua']);
+        $r_orangtua = Role::where('name', 'orangtua')->first();
         $r_santri = Role::create(['name' => 'santri']);
         // give permission to role
         $r_superadmin->givePermissionTo(Permission::all());
