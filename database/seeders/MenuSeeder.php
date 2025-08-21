@@ -121,7 +121,7 @@ class MenuSeeder extends Seeder
         $p_u_jobdesc = Permission::create(['name' => 'ubah deskripsi pekerjaan']);
         $p_d_jobdesc = Permission::create(['name' => 'hapus deskripsi pekerjaan']);
         // role
-        $r_superadmin = Role::create(['name' => 'superadmin']);
+        $r_superadmin = Role::where('name', 'superadmin')->first();
         $r_admin_bank = Role::create(['name' => 'admin bank']);
         $r_admin_layanan = Role::create(['name' => 'admin layanan']);
         $r_staf = Role::create(['name' => 'staf']);
