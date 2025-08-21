@@ -30,6 +30,7 @@ return new class extends Migration {
             $table->string('postal_code')->nullable();
             $table->string('phone')->nullable();
             $table->string('photo')->nullable();
+            $table->unsignedBigInteger('program_id')->nullable();
             $table->enum('payment_status', ['pending', 'completed', 'failed'])->nullable();
             $table->string('payment_amount')->nullable();
             $table->string('previous_school')->nullable();
