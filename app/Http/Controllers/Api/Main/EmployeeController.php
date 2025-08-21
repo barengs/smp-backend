@@ -15,6 +15,8 @@ use Illuminate\Http\Response;
 use App\Imports\EmployeeImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Validators\ValidationException as ExcelValidationException;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class EmployeeController extends Controller
 {
@@ -81,6 +83,7 @@ class EmployeeController extends Controller
             'nik' => 'required|unique:employees,nik',
             'address' => 'required',
             'phone' => 'required|numeric|min:10',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         // run transaction
         DB::beginTransaction();
@@ -108,6 +111,7 @@ class EmployeeController extends Controller
                 'password' => bcrypt($request->password),
                 'phone' => $request->phone,
                 'zip_code' => $request->zip_code,
+                'photo' => $request->hasFile('photo') ? $this->uploadPhoto($request->file('photo')) : null,
             ]);
             // assign role if any roles are provided
             if ($request->has('roles')) {
@@ -159,6 +163,7 @@ class EmployeeController extends Controller
             'nik' => 'required|unique:employees,nik,' . $id,
             'address' => 'required',
             'phone' => 'required|numeric|min:10',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         // run transaction
         DB::beginTransaction();
@@ -179,9 +184,9 @@ class EmployeeController extends Controller
                 'nik' => $request->nik,
                 'address' => $request->address,
                 'email' => $request->email,
-                'password' => bcrypt($request->password),
                 'phone' => $request->phone,
                 'zip_code' => $request->zip_code,
+                'photo' => $request->hasFile('photo') ? $this->uploadPhoto($request->file('photo')) : $user->employee->photo,
             ]);
             // assign role if any roles are provided
             if ($request->has('roles')) {
@@ -404,5 +409,22 @@ class EmployeeController extends Controller
         }
 
         return $prefix . $currentYear . str_pad($newSequence, $padding, '0', STR_PAD_LEFT);
+    }
+    private function uploadPhoto($photo)
+    {
+        $timestamp = now()->timestamp;
+        $fileName = $timestamp . '_' . $photo->getClientOriginalName();
+
+        // Create new image instance
+        $manager = new ImageManager(Driver::class);
+        $image = $manager->read($photo->getRealPath());
+
+        // Resize and crop the image to 151x227 pixels (approximately 4x6 cm at 96 DPI)
+        $image->cover(151, 227); // This will crop and resize to exactly 151x227
+
+        // Save the image to the storage
+        \Illuminate\Support\Facades\Storage::disk('public')->put('uploads/employees/' . $fileName, (string) $image->encode());
+
+        return $fileName;
     }
 }
