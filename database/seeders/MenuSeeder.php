@@ -126,8 +126,7 @@ class MenuSeeder extends Seeder
         $r_admin_layanan = Role::create(['name' => 'admin layanan']);
         $r_staf = Role::create(['name' => 'staf']);
         $r_guru_kelas = Role::create(['name' => 'guru kelas']);
-        $r_kasir = Role::create(['name' => 'kasir']);
-        $r_asrama = Role::create(['name' => 'asrama']);
+        $r_asrama = Role::create(['name' => 'kepala asrama']);
         $r_walikelas = Role::create(['name' => 'wali kelas']);
         $r_orangtua = Role::create(['name' => 'orangtua']);
         $r_santri = Role::create(['name' => 'santri']);
