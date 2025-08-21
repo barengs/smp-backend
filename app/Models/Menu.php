@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Permission;
 
 class Menu extends Model
 {
@@ -39,5 +40,10 @@ class Menu extends Model
     public function roles()
     {
         return $this->belongsToMany(\Spatie\Permission\Models\Role::class, 'menu_roles');
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'menu_permissions');
     }
 }

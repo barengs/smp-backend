@@ -32,10 +32,10 @@ return new class extends Migration {
             $table->primary(['menu_id', 'role_id']);
         });
         // Create a pivot table for many-to-many relationship between menus and users
-        Schema::create('menu_users', function (Blueprint $table) {
+        Schema::create('menu_permissions', function (Blueprint $table) {
             $table->foreignId('menu_id')->constrained('menus')->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->primary(['menu_id', 'user_id']);
+            $table->foreignId('permission_id')->constrained('permissions')->cascadeOnDelete();
+            $table->primary(['menu_id', 'permission_id']);
         });
     }
 
