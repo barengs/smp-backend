@@ -17,10 +17,10 @@ class MenuSeeder extends Seeder
     {
         // create permissions
         $p_dashboard = Permission::create(['name' => 'lihat dashboard']);
-        $p_c_employee = Permission::create(['name' => 'buat staf']);
-        $p_r_employee = Permission::create(['name' => 'lihat staf']);
-        $p_u_employee = Permission::create(['name' => 'ubah staf']);
-        $p_d_employee = Permission::create(['name' => 'hapus staf']);
+        $p_c_staff = Permission::create(['name' => 'buat staf']);
+        $p_r_staff = Permission::create(['name' => 'lihat staf']);
+        $p_u_staff = Permission::create(['name' => 'ubah staf']);
+        $p_d_staff = Permission::create(['name' => 'hapus staf']);
 
         $p_c_santri = Permission::create(['name' => 'buat santri']);
         $p_r_santri = Permission::create(['name' => 'lihat santri']);
@@ -185,6 +185,7 @@ class MenuSeeder extends Seeder
                 $p_r_santri,
                 $p_u_santri,
                 $p_d_santri,
+                $p_a_santri,
                 $p_c_parent,
                 $p_r_parent,
                 $p_u_parent,
