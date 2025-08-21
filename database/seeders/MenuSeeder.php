@@ -16,17 +16,17 @@ class MenuSeeder extends Seeder
         // Define the menus to be seeded
         $menus = [
             ['title' => 'Dashboard',],
-            ['title' => 'Asatidz'],
-            ['title' => 'Santri'],
-            ['title' => 'Users',],
-            ['title' => 'Roles',],
-            ['title' => 'Permissions',],
-            ['title' => 'Settings',],
-            ['title' => 'Reports',],
-            ['title' => 'Logs',],
-            ['title' => 'Notifications',],
-            ['title' => 'Profile',],
-            ['title' => 'Help',],
+            ['title' => 'Bank Santri'],
+            ['title' => 'Rekening'],
+            ['title' => 'Transaksi',],
+            ['title' => 'Manjemen Santri',],
+            ['title' => 'Santri',],
+            ['title' => 'Pendaftaran',],
+            ['title' => 'Wali Santri',],
+            ['title' => 'Manajemen Staf',],
+            ['title' => 'Staf',],
+            ['title' => 'Hak Akses',],
+            ['title' => 'Peran',],
         ];
 
         // Insert each menu into the database
