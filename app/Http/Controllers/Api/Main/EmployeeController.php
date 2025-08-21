@@ -220,6 +220,24 @@ class EmployeeController extends Controller
     }
 
     /**
+     * Update the specified resource in storage using method spoofing.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateWithSpoofing(Request $request, string $id)
+    {
+        // Validate that the request is intended to be a PUT/PATCH request
+        if ($request->input('_method') !== 'PUT' && $request->input('_method') !== 'PATCH') {
+            return response()->json(['message' => 'Invalid method. Use PUT or PATCH.'], 405);
+        }
+
+        // Call the existing update method
+        return $this->update($request, $id);
+    }
+
+    /**
      * Export employee data to Excel/CSV format
      */
     public function export(Request $request)
