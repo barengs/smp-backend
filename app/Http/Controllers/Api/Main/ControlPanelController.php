@@ -140,7 +140,6 @@ class ControlPanelController extends Controller
 
     private function uploadFavicon($file)
     {
-        $timestamp = now()->timestamp;
         $fileName = $file->getClientOriginalName();
 
         // Store favicon in a separate directory without resizing
