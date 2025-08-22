@@ -29,4 +29,9 @@ class Registration extends Model
     {
         return $this->belongsTo(Occupation::class, 'occupation_id');
     }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class, 'program_id');
+    }
 }

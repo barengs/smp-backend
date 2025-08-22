@@ -66,7 +66,7 @@ class RegistrationController extends Controller
     public function index()
     {
         try {
-            $registrations = Registration::with('parent')
+            $registrations = Registration::with(['parent', 'program'])
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
 
