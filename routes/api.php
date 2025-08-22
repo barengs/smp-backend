@@ -9,6 +9,7 @@ use App\Http\Resources\EducationClassResource;
 use App\Http\Controllers\Api\VillageController;
 use App\Http\Controllers\Api\DistrictController;
 use App\Http\Controllers\Api\ProvinceController;
+use App\Http\Controllers\Api\Main\StaffController;
 use App\Http\Controllers\Api\Master\MenuController;
 use App\Http\Controllers\Api\Master\NewsController;
 use App\Http\Controllers\Api\Master\RoleController;
@@ -62,6 +63,7 @@ Route::get('employee/export', [EmployeeController::class, 'export'])->name('empl
 Route::post('employee/import', [EmployeeController::class, 'import'])->name('employee.import');
 Route::get('employee/import/template', [EmployeeController::class, 'getImportTemplate'])->name('employee.import.template');
 Route::put('employee/photo/{id}/update', [EmployeeController::class, 'updatePhoto'])->name('employee.update-photo');
+Route::apiResource('staff', StaffController::class);
 Route::apiResource('parent', ParentProfileController::class);
 Route::get('parent/nik/{nik}/cek', [ParentProfileController::class, 'getByNik'])
     ->name('parent.getByNik');

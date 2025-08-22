@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\EmployeeResource;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use App\Imports\StaffImport;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException as ExcelValidationException;
 
 class StaffController extends Controller
 {
@@ -315,5 +318,180 @@ class StaffController extends Controller
         }
 
         return $prefix . $currentYear . str_pad($newSequence, $padding, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Export staff data to Excel/CSV format
+     */
+    public function export(Request $request)
+    {
+        try {
+            // Get all staff with their user and role data
+            $staffs = User::whereHas('staff')
+                ->with(['staff', 'roles'])
+                ->get();
+
+            // Prepare headers for CSV
+            $headers = [
+                'ID',
+                'Kode Staff',
+                'Nama Lengkap',
+                'NIK',
+                'Email',
+                'Alamat',
+                'Telepon',
+                'Kode Pos',
+                'Role',
+                'Tanggal Dibuat',
+                'Tanggal Diperbarui'
+            ];
+
+            // Prepare data rows
+            $data = [];
+            foreach ($staffs as $staff) {
+                $roles = $staff->roles->pluck('name')->implode(', ');
+
+                $data[] = [
+                    $staff->id,
+                    $staff->staff->code ?? '',
+                    $staff->staff->first_name . ' ' . ($staff->staff->last_name ?? ''),
+                    $staff->staff->nik ?? '',
+                    $staff->email,
+                    $staff->staff->address ?? '',
+                    $staff->staff->phone ?? '',
+                    $staff->staff->zip_code ?? '',
+                    $roles,
+                    $staff->created_at->format('Y-m-d H:i:s'),
+                    $staff->updated_at->format('Y-m-d H:i:s')
+                ];
+            }
+
+            // Generate filename with timestamp
+            $filename = 'staff_data_' . date('Y-m-d_H-i-s') . '.csv';
+
+            // Create CSV content
+            $csvContent = $this->arrayToCsv($data, $headers);
+
+            // Return CSV file as download
+            return response($csvContent)
+                ->header('Content-Type', 'text/csv; charset=UTF-8')
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
+
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan saat export: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Convert array to CSV format
+     */
+    private function arrayToCsv($data, $headers)
+    {
+        $output = fopen('php://temp', 'r+');
+
+        // Add BOM for UTF-8 encoding
+        fwrite($output, "\xEF\xBB\xBF");
+
+        // Write headers
+        fputcsv($output, $headers);
+
+        // Write data rows
+        foreach ($data as $row) {
+            fputcsv($output, $row);
+        }
+
+        rewind($output);
+        $csv = stream_get_contents($output);
+        fclose($output);
+
+        return $csv;
+    }
+
+    /**
+     * Import staff data from Excel/CSV file
+     */
+    public function import(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                'file' => 'required|file|mimes:xlsx,xls,csv|max:2048',
+            ]);
+
+            $file = $request->file('file');
+            $import = new StaffImport();
+            $import->import($file);
+
+            $failures = $import->failures();
+            $errors = [];
+            if ($failures->isNotEmpty()) {
+                foreach ($failures as $failure) {
+                    $errors[] = "Baris " . $failure->row() . ": " . implode(', ', $failure->errors());
+                }
+                DB::rollBack();
+                return response()->json([
+                    'message' => 'Import gagal. Terdapat kesalahan pada beberapa baris.',
+                    'success' => false,
+                    'errors' => $errors,
+                ], 422);
+            }
+
+            DB::commit();
+            return response()->json([
+                'message' => 'Import selesai.',
+                'success' => true,
+            ], 200);
+        } catch (ExcelValidationException $e) {
+            DB::rollBack();
+            $failures = $e->failures();
+            $errors = [];
+            foreach ($failures as $failure) {
+                $errors[] = "Baris " . $failure->row() . ": " . implode(', ', $failure->errors());
+            }
+            return response()->json([
+                'message' => 'Terjadi kesalahan validasi saat import',
+                'errors' => $errors,
+                'success' => false,
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Terjadi kesalahan saat import: ' . $e->getMessage(),
+                'success' => false,
+            ], 500);
+        }
+    }
+
+    /**
+     * Get import template
+     */
+    public function getImportTemplate()
+    {
+        try {
+            // Create template data
+            $templateData = [
+                ['Kode Staff', 'Nama Depan', 'Nama Belakang', 'NIK', 'Email', 'Alamat', 'Telepon', 'Kode Pos', 'Password', 'Role'],
+                ['AS20240001', 'John', 'Doe', '1234567890123456', 'john.doe@example.com', 'Jl. Contoh No. 123', '081234567890', '12345', 'password123', 'staff'],
+                ['AS20240002', 'Jane', 'Smith', '1234567890123457', 'jane.smith@example.com', 'Jl. Sample No. 456', '081234567891', '12346', 'password123', 'admin,staff'],
+            ];
+
+            // Generate filename
+            $filename = 'staff_import_template_' . date('Y-m-d_H-i-s') . '.csv';
+
+            // Create CSV content
+            $csvContent = $this->arrayToCsv($templateData, []);
+
+            // Return CSV file as download
+            return response($csvContent)
+                ->header('Content-Type', 'text/csv; charset=UTF-8')
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
+
+        } catch (\Exception $e) {
+            return response()->json('Terjadi kesalahan saat membuat template: ' . $e->getMessage(), 500);
+        }
     }
 }
