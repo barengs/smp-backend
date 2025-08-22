@@ -381,6 +381,7 @@ class RegistrationController extends Controller
                 'born_at' => $registration->born_at,
                 'village_id' => $registration->village_id,
                 'photo' => $registration->photo,
+                'program_id' => $registration->program_id,
                 'user_id' => auth()->user()->id,
                 'education_type_id' => $registration->education_level_id,
                 'status' => 'Tidak Aktif', // Default status
