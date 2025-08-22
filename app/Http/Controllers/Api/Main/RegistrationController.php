@@ -403,12 +403,15 @@ class RegistrationController extends Controller
                 return response()->json(['message' => 'Failed to create account', 'errors' => $account], 500);
             }
 
+            // get product
+            $product = Product::findOrFail($request->product_id);
+
             // Create transaction
             $transaction = Transaction::create([
                 'id' => Str::uuid(),
                 'transaction_type_id' => $request->transaction_type_id,
                 'description' => 'Biaya Pendaftaran',
-                'amount' => $request->amount,
+                'amount' => $product->opening_fee,
                 'status' => 'PENDING',
                 'reference_number' => $registration->registration_number,
                 'channel' => $request->channel,
@@ -425,12 +428,12 @@ class RegistrationController extends Controller
             // ]);
 
             // create TrasactionLeadger
-            // TransactionLedger::create([
-            //     'transaction_id' => $transaction->id,
-            //     'account_number' => $account['account_number'],
-            //     'amount' => $request->amount,
-            //     'type' => 'debit',
-            // ]);
+            TransactionLedger::create([
+                'transaction_id' => $transaction->id,
+                'coa_code' => $account['account_number'],
+                'amount' => $product->opening_fee,
+                'type' => 'debit',
+            ]);
 
             $registration->update([
                 'payment_status' => 'pending',

@@ -17,6 +17,7 @@ class ChartOfAccount extends Model
         'account_name',
         'account_type',
         'parent_coa_code',
+        'level',
         'is_postable',
         'is_active',
     ];

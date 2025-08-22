@@ -38,7 +38,7 @@ class ControlPanelController extends Controller
         }
 
         if ($request->hasFile('app_favicon')) {
-            $this->uploadImage($request->file('app_favicon'), $validatedData, 'app_favicon');
+            $validatedData['app_favicon'] = $this->uploadFavicon($request->file('app_favicon'));
         }
 
         $controlPanel = ControlPanel::create($validatedData);
@@ -72,7 +72,7 @@ class ControlPanelController extends Controller
         }
 
         if ($request->hasFile('app_favicon')) {
-            $this->uploadImage($request->file('app_favicon'), $validatedData, 'app_favicon');
+            $validatedData['app_favicon'] = $this->uploadFavicon($request->file('app_favicon'));
         }
 
         $controlPanel->update($validatedData);
@@ -136,5 +136,16 @@ class ControlPanelController extends Controller
         Storage::disk('public')->put('uploads/logos/small/' . $fileName, (string) $smallImage->encode());
 
         $validatedData[$columnName] = $fileName;
+    }
+
+    private function uploadFavicon($file)
+    {
+        $timestamp = now()->timestamp;
+        $fileName = $file->getClientOriginalName();
+
+        // Store favicon in a separate directory without resizing
+        $file->storeAs('public/uploads/favicons', $fileName);
+
+        return $fileName;
     }
 }
