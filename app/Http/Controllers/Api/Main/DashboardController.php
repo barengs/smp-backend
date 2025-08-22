@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Main;
 
 use App\Models\Employee;
+use App\Models\Staff;
 use App\Models\Student;
 use App\Models\Transaction;
 use App\Models\Product;
@@ -61,7 +62,7 @@ class DashboardController extends Controller
         try {
             // Data untuk sistem pesantren (existing)
             $santri = Student::where("status", 'Aktif')->count();
-            $asatidz = Employee::count();
+            $asatidz = Staff::count();
             $tugasan = Student::where("status", 'Tugas')->count();
             $alumni = Student::where("status", 'Alumni')->count();
 

@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             OccupationSeeder::class,
             ProgramSeeder::class,
             MenuSeeder::class,
-            EmployeeSeeder::class,
+            StaffSeeder::class,
             ParentProfileSeeder::class,
             StudentSeeder::class,
             ControlPanelSeeder::class,

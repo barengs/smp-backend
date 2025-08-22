@@ -1,0 +1,319 @@
+<?php
+
+namespace App\Http\Controllers\Api\Main;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\Staff;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Resources\EmployeeResource;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+
+class StaffController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        try {
+            $data = User::whereHas('staff')->with(['staff', 'roles'])->get();
+            return new EmployeeResource('data ditemukan', $data, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        // validate request
+        $validated = $request->validate([
+            'first_name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6',
+            'nik' => 'required|unique:staff,nik',
+            'address' => 'required',
+            'phone' => 'required|numeric|min:10',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        // run transaction
+        DB::beginTransaction();
+
+        try {
+            // check last staff code
+            $lastStaff = Staff::orderBy('created_at', 'desc')->first();
+            $lastCode = $lastStaff ? $lastStaff->code : null;
+            $staffCode = $this->generateCode('AS', $lastCode, 4);
+
+            // create user
+            $user = User::create([
+                'name' => $request->first_name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+            ]);
+
+            // create staff
+            $photoName = null;
+            if ($request->hasFile('photo')) {
+                $photoName = $this->uploadPhoto($request->file('photo'));
+            }
+
+            $user->staff()->create([
+                'code' => $staffCode,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'nik' => $request->nik,
+                'address' => $request->address,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'phone' => $request->phone,
+                'zip_code' => $request->zip_code,
+                'photo' => $photoName,
+            ]);
+
+            // assign role if any roles are provided
+            if ($request->has('roles')) {
+                $user->syncRoles($request->roles);
+            }
+
+            // commit transaction
+            DB::commit();
+
+            return new EmployeeResource('data berhasil disimpan', $user->load(['staff', 'roles']), 201);
+        } catch (ValidationException $e) {
+            // pass the validation error to the response
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Exception $e) {
+            // Rollback the transaction if any error occurs
+            DB::rollBack();
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        try {
+            $data = User::whereHas('staff')->with(['staff', 'roles'])->findOrFail($id);
+            return new EmployeeResource('data ditemukan', $data, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        // validate request
+        $validated = $request->validate([
+            'first_name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'nik' => 'required|unique:staff,nik,' . $id,
+            'address' => 'required',
+            'phone' => 'required|numeric|min:10',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        // run transaction
+        DB::beginTransaction();
+
+        try {
+            // find user
+            $user = User::findOrFail($id);
+
+            // update user
+            $user->update([
+                'name' => $request->first_name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+            ]);
+
+            // upload new photo if provided
+            $photoName = $user->staff->photo;
+            if ($request->hasFile('photo')) {
+                // Delete old photo if exists
+                if ($user->staff->photo) {
+                    Storage::disk('public')->delete('uploads/staff/' . $user->staff->photo);
+                }
+                $photoName = $this->uploadPhoto($request->file('photo'));
+            }
+
+            // update staff
+            $user->staff()->update([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'nik' => $request->nik,
+                'address' => $request->address,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'zip_code' => $request->zip_code,
+                'photo' => $photoName,
+            ]);
+
+            // assign role if any roles are provided
+            if ($request->has('roles')) {
+                $user->syncRoles($request->roles);
+            }
+
+            // commit transaction
+            DB::commit();
+
+            return new EmployeeResource('data berhasil diubah', $user->load(['staff', 'roles']), 200);
+        } catch (ValidationException $e) {
+            // pass the validation error to the response
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Exception $e) {
+            // Rollback the transaction if any error occurs
+            DB::rollBack();
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        try {
+            $user = User::findOrFail($id);
+
+            // Delete photo if exists
+            if ($user->staff->photo) {
+                Storage::disk('public')->delete('uploads/staff/' . $user->staff->photo);
+            }
+
+            // Delete staff record
+            $user->staff()->delete();
+
+            // Delete user record
+            $user->delete();
+
+            return response()->json('data berhasil dihapus', 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage using method spoofing.
+     */
+    public function updateWithSpoofing(Request $request, string $id)
+    {
+        // Validate that the request is intended to be a PUT/PATCH request
+        if ($request->input('_method') !== 'PUT' && $request->input('_method') !== 'PATCH') {
+            return response()->json(['message' => 'Invalid method. Use PUT or PATCH.'], 405);
+        }
+
+        // Call the existing update method
+        return $this->update($request, $id);
+    }
+
+    /**
+     * Update staff photo only.
+     */
+    public function updatePhoto(Request $request, string $id)
+    {
+        // Validate request
+        $validated = $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        try {
+            // Find user
+            $user = User::findOrFail($id);
+
+            // Upload new photo
+            $newPhotoName = $this->uploadPhoto($request->file('photo'));
+
+            // Delete old photo if exists
+            if ($user->staff->photo) {
+                Storage::disk('public')->delete('uploads/staff/' . $user->staff->photo);
+            }
+
+            // Update staff photo
+            $user->staff()->update([
+                'photo' => $newPhotoName,
+            ]);
+
+            return new EmployeeResource('Foto berhasil diubah', $user->load(['staff', 'roles']), 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Upload and crop photo
+     */
+    private function uploadPhoto($photo)
+    {
+        $timestamp = now()->timestamp;
+        $fileName = $timestamp . '_' . $photo->getClientOriginalName();
+
+        // Create new image instance
+        $manager = new ImageManager(Driver::class);
+        $image = $manager->read($photo->getRealPath());
+
+        // Resize and crop the image to 151x227 pixels (approximately 4x6 cm at 96 DPI)
+        $image->cover(151, 227); // This will crop and resize to exactly 151x227
+
+        // Create directory if not exists
+        if (!Storage::disk('public')->exists('uploads/staff')) {
+            Storage::disk('public')->makeDirectory('uploads/staff');
+        }
+
+        // Save the image to the storage
+        Storage::disk('public')->put('uploads/staff/' . $fileName, (string) $image->encode());
+
+        return $fileName;
+    }
+
+    /**
+     * Generate staff code
+     */
+    public function generateCode(string $prefix, ?string $last_code, int $padding = 4)
+    {
+        $currentYear = date('Y');
+        $newSequence = 1;
+
+        if ($last_code) {
+            $lastYear = substr($last_code, strlen($prefix), 4);
+            if ($lastYear == $currentYear) {
+                $lastSequence = (int) substr($last_code, strlen($prefix) + 4);
+                $newSequence = $lastSequence + 1;
+            }
+        }
+
+        return $prefix . $currentYear . str_pad($newSequence, $padding, '0', STR_PAD_LEFT);
+    }
+}

@@ -67,9 +67,9 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function employee()
+    public function staff()
     {
-        return $this->hasOne(Employee::class, 'user_id', 'id');
+        return $this->hasOne(Staff::class, 'user_id', 'id');
     }
 
     public function parent()
@@ -82,7 +82,7 @@ class User extends Authenticatable implements JWTSubject
         if ($this->hasRole('orangtua')) {
             return $this->parent();
         } else {
-            return $this->employee();
+            return $this->staff();
         }
     }
 }

@@ -163,7 +163,7 @@ class AuthController extends Controller
         if ($role[0] == 'orangtua') {
             $user->profile = $user->parent; // Attach parent profile if user is a parent
         } else {
-            $user->profile = $user->employee; // Attach employee profile if user is a teacher
+            $user->profile = $user->staff; // Attach employee profile if user is a teacher
         }
         // $user->profile = $user->profile(); // Attach profile based on role
         return response()->json(['data' => $user]);
