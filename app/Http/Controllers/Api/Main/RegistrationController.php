@@ -417,20 +417,20 @@ class RegistrationController extends Controller
             ]);
 
             // create AccountMovement
-            AccountMovement::create([
-                'transaction_id' => $transaction->id,
-                'account_number' => $account['account_number'],
-                'amount' => $request->amount,
-                'type' => 'credit',
-            ]);
+            // AccountMovement::create([
+            //     'transaction_id' => $transaction->id,
+            //     'account_number' => $account['account_number'],
+            //     'amount' => $request->amount,
+            //     'type' => 'credit',
+            // ]);
 
             // create TrasactionLeadger
-            TransactionLedger::create([
-                'transaction_id' => $transaction->id,
-                'account_number' => $account['account_number'],
-                'amount' => $request->amount,
-                'type' => 'debit',
-            ]);
+            // TransactionLedger::create([
+            //     'transaction_id' => $transaction->id,
+            //     'account_number' => $account['account_number'],
+            //     'amount' => $request->amount,
+            //     'type' => 'debit',
+            // ]);
 
             $registration->update([
                 'payment_status' => 'pending',
