@@ -61,6 +61,7 @@ Route::post('employee/{id}/update-profile', [EmployeeController::class, 'updateW
 Route::get('employee/export', [EmployeeController::class, 'export'])->name('employee.export');
 Route::post('employee/import', [EmployeeController::class, 'import'])->name('employee.import');
 Route::get('employee/import/template', [EmployeeController::class, 'getImportTemplate'])->name('employee.import.template');
+Route::put('employee/photo/{id}/update', [EmployeeController::class, 'updatePhoto'])->name('employee.update-photo');
 Route::apiResource('parent', ParentProfileController::class);
 Route::get('parent/nik/{nik}/cek', [ParentProfileController::class, 'getByNik'])
     ->name('parent.getByNik');

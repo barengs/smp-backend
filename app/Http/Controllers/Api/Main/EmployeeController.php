@@ -238,6 +238,45 @@ class EmployeeController extends Controller
     }
 
     /**
+     * Update employee photo only.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePhoto(Request $request, string $id)
+    {
+        // Validate request
+        $validated = $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        try {
+            // Find user
+            $user = User::findOrFail($id);
+
+            // Upload new photo
+            $newPhotoName = $this->uploadPhoto($request->file('photo'));
+
+            // Delete old photo if exists
+            if ($user->employee->photo) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete('uploads/employees/' . $user->employee->photo);
+            }
+
+            // Update employee photo
+            $user->employee()->update([
+                'photo' => $newPhotoName,
+            ]);
+
+            return new EmployeeResource('Foto berhasil diubah', $user->load(['employee', 'roles']), 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
      * Export employee data to Excel/CSV format
      */
     public function export(Request $request)
