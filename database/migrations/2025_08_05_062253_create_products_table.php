@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->enum('product_type', ['Tabungan', 'Deposito', 'Pinjaman'])->default('Tabungan');
             $table->decimal('interest_rate', 8, 4)->nullable(); // Suku bunga dalam persen
             $table->decimal('admin_fee', 18, 2)->default(0); // Biaya administrasi bulanan
+            $table->decimal('opening_fee', 18, 2)->default(0); // Biaya pembukaan
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

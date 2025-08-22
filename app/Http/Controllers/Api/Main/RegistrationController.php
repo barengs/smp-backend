@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Main;
 
+use Log;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Transaction;
@@ -9,6 +10,8 @@ use Illuminate\Support\Str;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use App\Models\ParentProfile;
+use App\Models\AccountMovement;
+use App\Models\TransactionLedger;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +20,6 @@ use App\Http\Resources\RegistrationResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Api\Main\AccountController;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Log;
 
 class RegistrationController extends Controller
 {
@@ -412,6 +414,26 @@ class RegistrationController extends Controller
                 'channel' => $request->channel,
                 'source_account' => $account['account_number'],
                 'destination_account' => null,
+            ]);
+
+            // create AccountMovement
+            AccountMovement::create([
+                'transaction_id' => $transaction->id,
+                'account_number' => $account['account_number'],
+                'amount' => $request->amount,
+                'type' => 'credit',
+            ]);
+
+            // create TrasactionLeadger
+            TransactionLedger::create([
+                'transaction_id' => $transaction->id,
+                'account_number' => $account['account_number'],
+                'amount' => $request->amount,
+                'type' => 'debit',
+            ]);
+
+            $registration->update([
+                'payment_status' => 'pending',
             ]);
 
             // if (!$transaction) {

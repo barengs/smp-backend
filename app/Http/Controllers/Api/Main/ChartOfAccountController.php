@@ -83,4 +83,66 @@ class ChartOfAccountController extends Controller
 
         return response()->json(null, 204);
     }
+
+    /**
+     * Generate COA code with 6-digit format
+     *
+     * @param string|null $parentCoaCode
+     * @return string
+     */
+    public function generateCoaCode(?string $parentCoaCode = null): string
+    {
+        if ($parentCoaCode === null) {
+            // For root level accounts, find the highest first digit and increment
+            $existingCodes = ChartOfAccount::whereNull('parent_coa_code')
+                ->pluck('coa_code')
+                ->toArray();
+
+            if (empty($existingCodes)) {
+                return '100000';
+            }
+
+            // Extract first digits and find the maximum
+            $firstDigits = array_map(fn($code) => (int) substr($code, 0, 1), $existingCodes);
+            $maxFirstDigit = max($firstDigits);
+
+            // If all first digits are 9, we need to handle this case
+            if ($maxFirstDigit >= 9) {
+                // Find the next available digit
+                for ($i = 1; $i <= 9; $i++) {
+                    if (!in_array($i, $firstDigits)) {
+                        return $i . '00000';
+                    }
+                }
+                // If all digits 1-9 are used, start with 1 again (this is a simplification)
+                return '100000';
+            }
+
+            return ($maxFirstDigit + 1) . '00000';
+        } else {
+            // For child accounts, find the highest code with the same prefix and increment
+            $prefixLength = strlen($parentCoaCode) - 5; // Assuming the last 5 digits are for incrementing
+            $prefix = substr($parentCoaCode, 0, $prefixLength);
+
+            // Find all child codes with the same prefix
+            $childCodes = ChartOfAccount::where('parent_coa_code', $parentCoaCode)
+                ->where('coa_code', 'like', $prefix . '%')
+                ->pluck('coa_code')
+                ->toArray();
+
+            if (empty($childCodes)) {
+                // If no children exist, create the first child code
+                return $prefix . '10000';
+            }
+
+            // Extract the numeric part after the prefix and find the maximum
+            $suffixes = array_map(fn($code) => (int) substr($code, $prefixLength), $childCodes);
+            $maxSuffix = max($suffixes);
+
+            // Increment the suffix and pad with zeros to make it 5 digits
+            $newSuffix = str_pad($maxSuffix + 1, 5, '0', STR_PAD_LEFT);
+
+            return $prefix . $newSuffix;
+        }
+    }
 }

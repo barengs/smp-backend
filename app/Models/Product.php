@@ -15,6 +15,7 @@ class Product extends Model
         'product_type',
         'interest_rate',
         'admin_fee',
+        'opening_fee',
         'is_active',
     ];
 

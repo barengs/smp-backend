@@ -115,6 +115,7 @@ class ProductController extends Controller
                 'product_type' => 'required|in:Tabungan,Deposito,Pinjaman',
                 'interest_rate' => 'nullable|numeric|min:0|max:100',
                 'admin_fee' => 'nullable|numeric|min:0',
+                'opening_fee' => 'required|numeric|min:0',
                 'is_active' => 'boolean',
             ]);
 
