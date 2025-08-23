@@ -14,7 +14,7 @@ class ChartOfAccountController extends Controller
      */
     public function index()
     {
-        $chartOfAccounts = ChartOfAccount::with('children')->whereNull('parent_coa_code')->get();
+        $chartOfAccounts = ChartOfAccount::with('children')->where('level', 'header')->orWhere('level', 'subheader')->get();
         return response()->json($chartOfAccounts);
     }
 
