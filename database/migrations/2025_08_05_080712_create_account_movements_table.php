@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('account_number', 20);
             $table->foreignUuid('transaction_id')->constrained('transactions', 'id')->onDelete('cascade');
-            $table->timestamp('movement_time');
+            $table->timestamp('movement_time')->useCurrent();
             $table->text('description');
             $table->decimal('debit_amount', 18, 2)->default(0);
             $table->decimal('credit_amount', 18, 2)->default(0);

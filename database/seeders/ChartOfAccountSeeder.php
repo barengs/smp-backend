@@ -12,6 +12,62 @@ class ChartOfAccountSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $data_coa = [
+            [
+                'account_number' => '100000',
+                'account_name' => 'ASET',
+                'account_type' => 'Assets',
+                'is_postable' => false,
+                'is_active' => true
+            ],
+            [
+                'account_number' => '200000',
+                'account_name' => 'KEWAJIBAN',
+                'account_type' => 'Liability',
+                'is_postable' => false,
+                'is_active' => true
+            ],
+            [
+                'account_number' => '300000',
+                'account_name' => 'EKUITAS',
+                'account_type' => 'Equity',
+                'is_postable' => false,
+                'is_active' => true
+            ],
+            [
+                'account_number' => '400000',
+                'account_name' => 'PENDAPATAN',
+                'account_type' => 'Revenue',
+                'is_postable' => false,
+                'is_active' => true
+            ],
+            [
+                'account_number' => '500000',
+                'account_name' => 'BEBAN',
+                'account_type' => 'Expense',
+                'is_postable' => false,
+                'is_active' => true
+            ],
+            [
+                'account_number' => '110000',
+                'account_name' => 'Kas dan Setara Kas',
+                'account_type' => 'Assets',
+                'parent_coa_code' => '100000',
+                'is_postable' => false,
+                'is_active' => true
+            ],
+            [
+                'account_number' => '210000',
+                'account_name' => 'Simpanan Nasabah',
+                'account_type' => 'Liability',
+                'parent_coa_code' => '200000',
+                'is_postable' => false,
+                'is_active' => true
+            ]
+        ];
+
+        foreach ($data_coa as $coa) {
+            \App\Models\ChartOfAccount::create($coa);
+        }
     }
 }

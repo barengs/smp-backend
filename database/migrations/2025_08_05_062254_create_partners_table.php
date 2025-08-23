@@ -26,7 +26,7 @@ return new class extends Migration {
             $table->string('bank_name')->nullable(); // Name of the bank associated with the account
             $table->string('bank_branch')->nullable(); // Branch of the bank
             $table->string('bank_account_name')->nullable();
-            $table->string('status')->default('active'); // e.g., active, inactive, suspended
+            $table->enum('status', ['active', 'inactive', 'suspended'])->default('active'); // e.g., active, inactive, suspended
             $table->timestamps();
         });
     }

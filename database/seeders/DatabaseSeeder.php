@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             ParentProfileSeeder::class,
             StudentSeeder::class,
             ControlPanelSeeder::class,
+            ChartOfAccountSeeder::class,
         ]);
     }
 }

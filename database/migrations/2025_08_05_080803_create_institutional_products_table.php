@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('product_name');
             $table->decimal('fixed_amount', 18, 2);
             $table->json('available_schemes')->comment("['FULL_PAYMENT', 'INSTALLMENT']");
-            $table->boolean('is_active')->default(true);
+            $table->enum('is_active', ['true', 'false'])->default(true);
             $table->timestamps();
         });
     }

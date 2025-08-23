@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('hostel_id')->constrained('hostels')->onDelete('cascade')->comment('ID asrama terkait');
             $table->integer('capacity')->default(0)->comment('Kapasitas ruangan');
             $table->text('description')->nullable()->comment('Deskripsi ruangan');
-            $table->boolean('is_active')->default(true)->comment('Status aktif ruangan');
+            $table->enum('is_active', ['true', 'false'])->default(true)->comment('Status aktif ruangan');
             $table->timestamps();
         });
     }
