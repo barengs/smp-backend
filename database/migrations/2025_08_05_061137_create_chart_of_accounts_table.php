@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('chart_of_accounts', function (Blueprint $table) {
             $table->string('coa_code', 20)->primary();
             $table->string('account_name');
-            $table->enum('account_type', ['ASSET', 'LIABILITY', 'EQUITY', 'INCOME', 'EXPENSE']);
+            $table->enum('account_type', ['ASSET', 'LIABILITY', 'EQUITY', 'REVENUE', 'EXPENSE']);
             $table->string('parent_coa_code', 20)->nullable();
             $table->enum('level', ['header', 'subheader', 'detail']);
             $table->boolean('is_postable')->comment('True jika bisa menerima direct entry');
