@@ -54,7 +54,7 @@ class ChartOfAccountController extends Controller
         $validator = Validator::make($request->all(), [
             'coa_code' => 'required|string|unique:chart_of_accounts,coa_code',
             'account_name' => 'required|string',
-            'account_type' => 'required|in:ASSET,LIABILITY,EQUITY,INCOME,EXPENSE',
+            'account_type' => 'required|in:ASSET,LIABILITY,EQUITY,REVENUE,EXPENSE',
             'parent_coa_code' => 'nullable|string|exists:chart_of_accounts,coa_code',
             'is_postable' => 'required|boolean',
         ]);
@@ -86,7 +86,7 @@ class ChartOfAccountController extends Controller
 
         $validator = Validator::make($request->all(), [
             'account_name' => 'required|string',
-            'account_type' => 'required|in:ASSET,LIABILITY,EQUITY,INCOME,EXPENSE',
+            'account_type' => 'required|in:ASSET,LIABILITY,EQUITY,REVENUE,EXPENSE',
             'parent_coa_code' => 'nullable|string|exists:chart_of_accounts,coa_code',
             'is_postable' => 'required|boolean',
             'is_active' => 'boolean',
