@@ -26,7 +26,7 @@ class ChartOfAccountController extends Controller
     {
         try {
             // Simulate some processing that might throw an exception
-            $chartOfAccounts = ChartOfAccount::all();
+            $chartOfAccounts = ChartOfAccount::whereNot('level', 'detail')->get();
             return response()->json($chartOfAccounts);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to retrieve header accounts'], 500);
