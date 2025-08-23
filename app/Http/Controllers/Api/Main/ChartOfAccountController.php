@@ -32,6 +32,19 @@ class ChartOfAccountController extends Controller
             return response()->json(['error' => 'Failed to retrieve header accounts'], 500);
         }
     }
+    /**
+     * Display a listing of detail accounts.
+     */
+    public function detailAccounts()
+    {
+        try {
+            // Simulate some processing that might throw an exception
+            $chartOfAccounts = ChartOfAccount::where('level', 'detail')->get();
+            return response()->json($chartOfAccounts);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve detail accounts'], 500);
+        }
+    }
 
     /**
      * Store a newly created resource in storage.
