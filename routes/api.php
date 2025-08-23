@@ -106,6 +106,7 @@ Route::get('account-movement/account/{account_number}/history', [AccountMovement
 Route::get('account-movement/daily-summary', [AccountMovementController::class, 'dailySummary'])->name('account-movement.daily-summary');
 
 Route::apiResource('chart-of-account', ChartOfAccountController::class);
+Route::get('chart-of-account/header-accounts', [ChartOfAccountController::class, 'headerAccounts'])->name('chart-of-account.header-accounts');
 
 Route::group(['prefix' => 'master'], function () {
     Route::apiResource('study', StudyController::class);
