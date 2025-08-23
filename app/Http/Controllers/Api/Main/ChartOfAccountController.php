@@ -21,13 +21,12 @@ class ChartOfAccountController extends Controller
 
     /**
      * Display a listing of header accounts.
-     * This method retrieves all header and subheader accounts.
      */
-    public function accountHeader()
+    public function headerAccounts()
     {
         try {
             // Simulate some processing that might throw an exception
-            $chartOfAccounts = ChartOfAccount::whereNot('level', 'detail')->get();
+            $chartOfAccounts = ChartOfAccount::all();
             return response()->json($chartOfAccounts);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to retrieve header accounts'], 500);
