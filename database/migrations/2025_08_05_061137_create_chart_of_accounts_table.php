@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->enum('account_type', ['ASSET', 'LIABILITY', 'EQUITY', 'REVENUE', 'EXPENSE']);
             $table->string('parent_coa_code', 20)->nullable();
             $table->enum('level', ['header', 'subheader', 'detail']);
-            $table->enum('is_postable', [true, false])->default(false)->comment('True jika bisa menerima direct entry');
+            $table->enum('is_postable', [true, false])->default(false);
             $table->enum('is_active', [true, false])->default(true);
             $table->timestamps();
 
