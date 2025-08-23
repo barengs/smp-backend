@@ -20,6 +20,16 @@ class ChartOfAccountController extends Controller
     }
 
     /**
+     * Display a listing of header accounts.
+     * This method retrieves all header and subheader accounts.
+     */
+    public function headerAccounts()
+    {
+        $chartOfAccounts = ChartOfAccount::where('level', 'header')->orWhere('level', 'subheader')->get();
+        return response()->json($chartOfAccounts);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
