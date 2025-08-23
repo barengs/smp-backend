@@ -16,7 +16,7 @@ class ChartOfAccountSeeder extends Seeder
             [
                 'coa_code' => '100000',
                 'account_name' => 'ASET',
-                'account_type' => 'Assets',
+                'account_type' => 'Asset',
                 'is_postable' => false,
                 'is_active' => true
             ],
