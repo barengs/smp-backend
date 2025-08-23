@@ -23,7 +23,7 @@ class ChartOfAccountController extends Controller
      * Display a listing of header accounts.
      * This method retrieves all header and subheader accounts.
      */
-    public function headerAccounts()
+    public function accountHeader()
     {
         try {
             // Simulate some processing that might throw an exception
