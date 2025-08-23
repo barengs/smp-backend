@@ -14,8 +14,9 @@ class ChartOfAccountController extends Controller
      */
     public function index()
     {
-        $chartOfAccounts = ChartOfAccount::with('children')->where('level', 'header')->orWhere('level', 'subheader')->get();
-        return response()->json($chartOfAccounts);
+        $chartOfAccounts = ChartOfAccount::with('children')->get();
+        $tree = $this->buildTree($chartOfAccounts->toArray());
+        return response()->json($tree);
     }
 
     /**
@@ -144,5 +145,29 @@ class ChartOfAccountController extends Controller
 
             return $prefix . $newSuffix;
         }
+    }
+
+    /**
+     * Build a tree structure from chart of accounts data
+     *
+     * @param array $data
+     * @param string|null $parentCoaCode
+     * @return array
+     */
+    private function buildTree(array $data, ?string $parentCoaCode = null): array
+    {
+        $tree = [];
+
+        foreach ($data as $item) {
+            if ($item['parent_coa_code'] === $parentCoaCode) {
+                $children = $this->buildTree($data, $item['coa_code']);
+                if (!empty($children)) {
+                    $item['children'] = $children;
+                }
+                $tree[] = $item;
+            }
+        }
+
+        return $tree;
     }
 }
