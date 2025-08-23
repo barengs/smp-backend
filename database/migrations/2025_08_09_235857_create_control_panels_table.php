@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->string('app_email')->nullable();
             $table->string('app_phone')->nullable();
             $table->string('app_address')->nullable();
-            $table->boolean('is_maintenance_mode')->default(false);
+            $table->enum('is_maintenance_mode', ['true', 'false'])->default('false');
             $table->text('maintenance_message')->nullable();
             $table->enum('app_theme', ['light', 'dark', 'system'])->default('system');
             $table->enum('app_language', ['indonesia', 'english', 'arabic'])->default('indonesia');

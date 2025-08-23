@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('title');
             $table->text('content');
             $table->string('image')->nullable();
-            $table->boolean('is_published')->default(false);
+            $table->enum('is_published', ['true', 'false'])->default('false');
             $table->timestamps();
         });
     }

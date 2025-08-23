@@ -16,11 +16,11 @@ return new class extends Migration {
             $table->string('name');
             $table->text('description')->nullable();
             $table->enum('category', ['transfer', 'payment', 'cash_operation', 'fee'])->default('payment');
-            $table->enum('is_debit', [true, false])->default(false);
-            $table->enum('is_credit', [true, false])->default(false);
+            $table->enum('is_debit', ['true', 'false'])->default('false');
+            $table->enum('is_credit', ['true', 'false'])->default('false');
             $table->string('default_debit_coa');
             $table->string('default_credit_coa');
-            $table->enum('is_active', [true, false])->default(true);
+            $table->enum('is_active', ['true', 'false'])->default('true');
             $table->timestamps();
         });
 

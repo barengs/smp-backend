@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->decimal('interest_rate', 8, 4)->nullable(); // Suku bunga dalam persen
             $table->decimal('admin_fee', 18, 2)->default(0); // Biaya administrasi bulanan
             $table->decimal('opening_fee', 18, 2)->default(0); // Biaya pembukaan
-            $table->enum('is_active', [true, false])->default(true);
+            $table->enum('is_active', ['true', 'false'])->default('true');
             $table->timestamps();
         });
     }
