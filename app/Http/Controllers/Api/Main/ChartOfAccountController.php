@@ -25,8 +25,13 @@ class ChartOfAccountController extends Controller
      */
     public function headerAccounts()
     {
-        $chartOfAccounts = ChartOfAccount::where('level', 'header')->orWhere('level', 'subheader')->get();
-        return response()->json($chartOfAccounts);
+        try {
+            // Simulate some processing that might throw an exception
+            $chartOfAccounts = ChartOfAccount::whereNot('level', 'detail')->get();
+            return response()->json($chartOfAccounts);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve header accounts'], 500);
+        }
     }
 
     /**
