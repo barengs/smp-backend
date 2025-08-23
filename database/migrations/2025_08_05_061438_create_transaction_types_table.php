@@ -16,10 +16,17 @@ return new class extends Migration {
             $table->string('name');
             $table->text('description')->nullable();
             $table->enum('category', ['transfer', 'payment', 'cash_operation', 'fee'])->default('payment');
-            $table->boolean('is_debit');
-            $table->boolean('is_credit');
+            $table->boolean('is_debit')->default(false);
+            $table->boolean('is_credit')->default(false);
+            $table->string('default_debit_coa');
+            $table->string('default_credit_coa');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+        });
+
+        Schema::table('transaction_types', function (Blueprint $table) {
+            $table->foreign('default_debit_coa')->references('coa_code')->on('chart_of_accounts')->onDelete('restrict');
+            $table->foreign('default_credit_coa')->references('coa_code')->on('chart_of_accounts')->onDelete('restrict');
         });
     }
 
