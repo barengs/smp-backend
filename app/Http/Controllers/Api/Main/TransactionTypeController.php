@@ -38,8 +38,8 @@ class TransactionTypeController extends Controller
             'code' => 'required|unique:transaction_types|max:255',
             'name' => 'required|max:255',
             'category' => 'required|in:transfer,payment,cash_operation,fee',
-            'is_debit' => 'required|in:true,false',
-            'is_credit' => 'required|in:true,false',
+            'is_debit' => 'required',
+            'is_credit' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -85,8 +85,8 @@ class TransactionTypeController extends Controller
             'code' => 'required|max:255|unique:transaction_types,code,' . $id,
             'name' => 'required|max:255',
             'category' => 'required|in:transfer,payment,cash_operation,fee',
-            'is_debit' => 'required|in:true,false',
-            'is_credit' => 'required|in:true,false',
+            'is_debit' => 'required',
+            'is_credit' => 'required',
             'is_active' => 'boolean',
         ]);
 
