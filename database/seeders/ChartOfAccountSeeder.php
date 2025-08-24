@@ -18,32 +18,32 @@ class ChartOfAccountSeeder extends Seeder
                 'account_name' => 'ASET',
                 'account_type' => 'Asset',
                 'level' => 'header',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '200000',
                 'account_name' => 'KEWAJIBAN',
                 'account_type' => 'Liability',
                 'level' => 'header',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '300000',
                 'account_name' => 'EKUITAS',
                 'account_type' => 'Equity',
                 'level' => 'header',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '400000',
                 'account_name' => 'PENDAPATAN',
                 'account_type' => 'Revenue',
                 'level' => 'header',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '420000',
@@ -51,8 +51,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Revenue',
                 'level' => 'subheader',
                 'parent_coa_code' => '400000',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '421000',
@@ -60,8 +60,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Revenue',
                 'level' => 'subheader',
                 'parent_coa_code' => '420000',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '421100',
@@ -69,8 +69,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Revenue',
                 'level' => 'subheader',
                 'parent_coa_code' => '421000',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '421101',
@@ -78,16 +78,16 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Revenue',
                 'level' => 'detail',
                 'parent_coa_code' => '421100',
-                'is_postable' => 1,
-                'is_active' => 1
+                'is_postable' => 'True',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '500000',
                 'account_name' => 'BEBAN',
                 'account_type' => 'Expense',
                 'level' => 'header',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '110000',
@@ -95,8 +95,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Assets',
                 'level' => 'subheader',
                 'parent_coa_code' => '100000',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '111000',
@@ -104,8 +104,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Assets',
                 'level' => 'subheader',
                 'parent_coa_code' => '110000',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '111100',
@@ -113,8 +113,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Assets',
                 'level' => 'subheader',
                 'parent_coa_code' => '111000',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '111101',
@@ -122,8 +122,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Assets',
                 'level' => 'detail',
                 'parent_coa_code' => '111100',
-                'is_postable' => 1,
-                'is_active' => 1
+                'is_postable' => 'True',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '111102',
@@ -131,8 +131,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Assets',
                 'level' => 'detail',
                 'parent_coa_code' => '111100',
-                'is_postable' => 1,
-                'is_active' => 1
+                'is_postable' => 'True',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '210000',
@@ -140,8 +140,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Liability',
                 'level' => 'subheader',
                 'parent_coa_code' => '200000',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '211000',
@@ -149,8 +149,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Liability',
                 'level' => 'subheader',
                 'parent_coa_code' => '210000',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '211100',
@@ -158,8 +158,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Liability',
                 'level' => 'subheader',
                 'parent_coa_code' => '211000',
-                'is_postable' => 0,
-                'is_active' => 1
+                'is_postable' => 'False',
+                'is_active' => 'True'
             ],
             [
                 'coa_code' => '211101',
@@ -167,8 +167,8 @@ class ChartOfAccountSeeder extends Seeder
                 'account_type' => 'Liability',
                 'level' => 'detail',
                 'parent_coa_code' => '211100',
-                'is_postable' => 1,
-                'is_active' => 1
+                'is_postable' => 'True',
+                'is_active' => 'True'
             ],
         ];
 
