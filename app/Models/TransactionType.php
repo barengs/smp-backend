@@ -13,6 +13,8 @@ class TransactionType extends Model
         'name',
         'description',
         'category',
+        'default_credit_coa',
+        'default_debit_coa',
         'is_debit',
         'is_credit',
         'is_active',
