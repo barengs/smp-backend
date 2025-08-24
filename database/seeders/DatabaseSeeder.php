@@ -30,11 +30,12 @@ class DatabaseSeeder extends Seeder
             OccupationSeeder::class,
             ProgramSeeder::class,
             MenuSeeder::class,
+            ControlPanelSeeder::class,
+            ChartOfAccountSeeder::class,
+            ProductSeeder::class,
             StaffSeeder::class,
             ParentProfileSeeder::class,
             StudentSeeder::class,
-            ControlPanelSeeder::class,
-            ChartOfAccountSeeder::class,
         ]);
     }
 }
