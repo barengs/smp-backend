@@ -20,7 +20,7 @@ class ProductSeeder extends Seeder
             'interest_rate' => 0,
             'admin_fee' => 0,
             'opening_fee' => 50000,
-            'is_active' => 'true',
+            'is_active' => true,
         ]);
         Product::create([
             'product_code' => 'TAB002',
@@ -29,7 +29,7 @@ class ProductSeeder extends Seeder
             'interest_rate' => 0,
             'admin_fee' => 0,
             'opening_fee' => 50000,
-            'is_active' => 'true',
+            'is_active' => true,
         ]);
     }
 }
