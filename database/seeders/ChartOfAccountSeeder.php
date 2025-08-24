@@ -17,53 +17,159 @@ class ChartOfAccountSeeder extends Seeder
                 'coa_code' => '100000',
                 'account_name' => 'ASET',
                 'account_type' => 'Asset',
-                'is_postable' => false,
-                'is_active' => true
+                'level' => 'header',
+                'is_postable' => 0,
+                'is_active' => 1
             ],
             [
                 'coa_code' => '200000',
                 'account_name' => 'KEWAJIBAN',
                 'account_type' => 'Liability',
-                'is_postable' => false,
-                'is_active' => true
+                'level' => 'header',
+                'is_postable' => 0,
+                'is_active' => 1
             ],
             [
                 'coa_code' => '300000',
                 'account_name' => 'EKUITAS',
                 'account_type' => 'Equity',
-                'is_postable' => false,
-                'is_active' => true
+                'level' => 'header',
+                'is_postable' => 0,
+                'is_active' => 1
             ],
             [
                 'coa_code' => '400000',
                 'account_name' => 'PENDAPATAN',
                 'account_type' => 'Revenue',
-                'is_postable' => false,
-                'is_active' => true
+                'level' => 'header',
+                'is_postable' => 0,
+                'is_active' => 1
+            ],
+            [
+                'coa_code' => '420000',
+                'account_name' => 'Pendapatan Operasional Selain Bunga',
+                'account_type' => 'Revenue',
+                'level' => 'subheader',
+                'parent_coa_code' => '400000',
+                'is_postable' => 0,
+                'is_active' => 1
+            ],
+            [
+                'coa_code' => '421000',
+                'account_name' => 'Pendapatan Jasa dan Administrasi',
+                'account_type' => 'Revenue',
+                'level' => 'subheader',
+                'parent_coa_code' => '420000',
+                'is_postable' => 0,
+                'is_active' => 1
+            ],
+            [
+                'coa_code' => '421100',
+                'account_name' => 'Pendapatan Terkait Rekening',
+                'account_type' => 'Revenue',
+                'level' => 'subheader',
+                'parent_coa_code' => '421000',
+                'is_postable' => 0,
+                'is_active' => 1
+            ],
+            [
+                'coa_code' => '421101',
+                'account_name' => 'Pendapatan Biaya Pendaftaran',
+                'account_type' => 'Revenue',
+                'level' => 'detail',
+                'parent_coa_code' => '421100',
+                'is_postable' => 1,
+                'is_active' => 1
             ],
             [
                 'coa_code' => '500000',
                 'account_name' => 'BEBAN',
                 'account_type' => 'Expense',
-                'is_postable' => false,
-                'is_active' => true
+                'level' => 'header',
+                'is_postable' => 0,
+                'is_active' => 1
             ],
             [
                 'coa_code' => '110000',
                 'account_name' => 'Kas dan Setara Kas',
                 'account_type' => 'Assets',
+                'level' => 'subheader',
                 'parent_coa_code' => '100000',
-                'is_postable' => false,
-                'is_active' => true
+                'is_postable' => 0,
+                'is_active' => 1
+            ],
+            [
+                'coa_code' => '111000',
+                'account_name' => 'Kas',
+                'account_type' => 'Assets',
+                'level' => 'subheader',
+                'parent_coa_code' => '110000',
+                'is_postable' => 0,
+                'is_active' => 1
+            ],
+            [
+                'coa_code' => '111100',
+                'account_name' => 'Kas di Khazanah',
+                'account_type' => 'Assets',
+                'level' => 'subheader',
+                'parent_coa_code' => '111000',
+                'is_postable' => 0,
+                'is_active' => 1
+            ],
+            [
+                'coa_code' => '111101',
+                'account_name' => 'Kas di Teller',
+                'account_type' => 'Assets',
+                'level' => 'detail',
+                'parent_coa_code' => '111100',
+                'is_postable' => 1,
+                'is_active' => 1
+            ],
+            [
+                'coa_code' => '111102',
+                'account_name' => 'Kas di ATM',
+                'account_type' => 'Assets',
+                'level' => 'detail',
+                'parent_coa_code' => '111100',
+                'is_postable' => 1,
+                'is_active' => 1
             ],
             [
                 'coa_code' => '210000',
                 'account_name' => 'Simpanan Nasabah',
                 'account_type' => 'Liability',
+                'level' => 'subheader',
                 'parent_coa_code' => '200000',
-                'is_postable' => false,
-                'is_active' => true
-            ]
+                'is_postable' => 0,
+                'is_active' => 1
+            ],
+            [
+                'coa_code' => '211000',
+                'account_name' => 'Simpanan Bentuk Tabungan',
+                'account_type' => 'Liability',
+                'level' => 'subheader',
+                'parent_coa_code' => '210000',
+                'is_postable' => 0,
+                'is_active' => 1
+            ],
+            [
+                'coa_code' => '211100',
+                'account_name' => 'Tabungan Rupiah',
+                'account_type' => 'Liability',
+                'level' => 'subheader',
+                'parent_coa_code' => '211000',
+                'is_postable' => 0,
+                'is_active' => 1
+            ],
+            [
+                'coa_code' => '211101',
+                'account_name' => 'Simpanan Tabungan',
+                'account_type' => 'Liability',
+                'level' => 'detail',
+                'parent_coa_code' => '211100',
+                'is_postable' => 1,
+                'is_active' => 1
+            ],
         ];
 
         foreach ($data_coa as $coa) {
