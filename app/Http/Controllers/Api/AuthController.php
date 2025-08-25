@@ -392,7 +392,7 @@ class AuthController extends Controller
     {
         $user = auth()->user();
         $user->role = $user->getRoleNames();
-        $user->profile = $this->profile();
+        $user->profile = $user->role[0] == 'orangtua' ? $user->parent : $user->staff;
         return response()->json([
             'user' => $user,
             // 'role' => $user->getRoleNames(),
