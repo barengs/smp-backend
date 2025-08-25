@@ -392,7 +392,7 @@ class AuthController extends Controller
     {
         $user = auth()->user();
         $user->role = $user->getRoleNames();
-        $user->profile = $user->userProfile();
+        $user->profile = $this->profile();
         return response()->json([
             'user' => $user,
             // 'role' => $user->getRoleNames(),
