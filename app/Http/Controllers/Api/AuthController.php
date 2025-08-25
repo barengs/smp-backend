@@ -392,7 +392,7 @@ class AuthController extends Controller
     {
         $user = auth()->user();
         $user->role = $user->getRoleNames();
-        $user->profile = $user->hasRole('orangtua') ? $user->parent : $user->employee; // Attach parent profile if user is a parent) // Attach profile based on role
+        $user->profile = $user->hasRole('orangtua') ? $user->parent : $user->staff(); // Attach parent profile if user is a parent) // Attach profile based on role
         return response()->json([
             'user' => $user,
             // 'role' => $user->getRoleNames(),

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Main;
 
 use Log;
 use App\Models\User;
+use App\Models\Product;
+use App\Models\Program;
 use App\Models\Student;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
@@ -11,6 +13,7 @@ use App\Models\Registration;
 use Illuminate\Http\Request;
 use App\Models\ParentProfile;
 use App\Models\AccountMovement;
+use App\Models\TransactionType;
 use App\Models\TransactionLedger;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -403,9 +406,13 @@ class RegistrationController extends Controller
                 return response()->json(['message' => 'Failed to create account', 'errors' => $account], 500);
             }
 
-            // get product
+            // get product | front-end harus mengirim id product
             $product = Product::findOrFail($request->product_id);
-
+            // get program
+            $program = Program::findOrFail($registration->program_id);
+            // get transaction type | front-end harus mengirim id transaction type
+            // di gunakan untuk membuat transaction ledger
+            $transactionType = TransactionType::findOrFail($request->transaction_type_id);
             // Create transaction
             $transaction = Transaction::create([
                 'id' => Str::uuid(),
