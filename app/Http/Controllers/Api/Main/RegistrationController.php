@@ -428,22 +428,32 @@ class RegistrationController extends Controller
 
             // create AccountMovement
             // AccountMovement::create([
-            //     'transaction_id' => $transaction->id,
             //     'account_number' => $account['account_number'],
-            //     'amount' => $request->amount,
-            //     'type' => 'credit',
+            //     'transaction_id' => $transaction->id,
+            //     'description' => 'Biaya Pendaftaran',
+            //     'debit_amount' => $product->opening_fee,
+            //     'credit_amount' => 0,
+            //     'balance_after_movement' => $product->opening_fee
             // ]);
 
             // create TrasactionLeadger
             TransactionLedger::create([
                 'transaction_id' => $transaction->id,
-                'coa_code' => $account['account_number'],
+                'coa_code' => $transactionType->debit_coa_code,
                 'amount' => $product->opening_fee,
                 'type' => 'debit',
             ]);
 
+            TransactionLedger::create([
+                'transaction_id' => $transaction->id,
+                'coa_code' => $transactionType->credit_coa_code,
+                'amount' => $product->opening_fee,
+                'type' => 'credit',
+            ]);
+
             $registration->update([
                 'payment_status' => 'pending',
+                'payment_amount' => $product->opening_fee
             ]);
 
             // if (!$transaction) {
