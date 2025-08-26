@@ -439,14 +439,14 @@ class RegistrationController extends Controller
             // create TrasactionLeadger
             TransactionLedger::create([
                 'transaction_id' => $transaction->id,
-                'coa_code' => $transactionType->debit_coa_code,
+                'coa_code' => $transactionType->default_debit_coa,
                 'amount' => $product->opening_fee,
                 'type' => 'debit',
             ]);
 
             TransactionLedger::create([
                 'transaction_id' => $transaction->id,
-                'coa_code' => $transactionType->credit_coa_code,
+                'coa_code' => $transactionType->default_credit_coa,
                 'amount' => $product->opening_fee,
                 'type' => 'credit',
             ]);
