@@ -375,7 +375,7 @@ class RegistrationController extends Controller
 
             // Create student
             $student = Student::create([
-                'parent_id' => $registration->parent()->nik,
+                'parent_id' => $registration->parent_id,
                 'nis' => $this->generateNis($request->hijri_year),
                 'period' => $request->hijri_year,
                 'first_name' => $registration->first_name,
