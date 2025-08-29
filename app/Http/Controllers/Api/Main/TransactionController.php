@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\Student;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
+use App\Models\Registration;
 use Illuminate\Http\Request;
 use App\Models\TransactionLedger;
 use PhpParser\Node\Stmt\TryCatch;
@@ -888,6 +889,16 @@ class TransactionController extends Controller
 
             $student->status = 'AKTIF';
             $student->save();
+
+            $registration = Registration::where('registration_number', $transaction->reference_number)->first();
+
+            if (!$registration) {
+                return response()->json(['message' => 'Registration not found'], 404);
+            }
+
+            $registration->status = 'accepted';
+            $registration->payment_status = 'completed';
+            $registration->save();
 
             DB::commit();
 
