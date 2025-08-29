@@ -868,7 +868,7 @@ class TransactionController extends Controller
                 return response()->json(['message' => 'Transaction not found'], 404);
             }
 
-            $transaction->status = 'ACTIVE';
+            $transaction->status = 'SUCCESS';
             $transaction->save();
 
             $account = Account::where('account_number', $transaction->source_account)->first();
