@@ -133,7 +133,7 @@ class RegistrationController extends Controller
 
             $registration = Registration::create([
                 'registration_number' => $this->createRegistNumber(),
-                'parent_id' => $checkParent ? $checkParent->nik : $parent->nik,
+                'parent_id' => $checkParent ? $checkParent->nik : $request->wali_nik,
                 'nis' => $request->santri_nisn,
                 'first_name' => $request->santri_nama_depan,
                 'last_name' => $request->santri_nama_belakang,
@@ -375,13 +375,15 @@ class RegistrationController extends Controller
 
             // Create student
             $student = Student::create([
-                'parent_id' => $registration->nik,
+                'parent_id' => $registration->parent()->nik,
                 'nis' => $this->generateNis($request->hijri_year),
                 'period' => $request->hijri_year,
                 'first_name' => $registration->first_name,
                 'last_name' => $registration->last_name,
                 'gender' => $registration->gender,
                 'address' => $registration->address,
+                'nik' => $registration->nik,
+                'kk' => $registration->kk,
                 'born_in' => $registration->born_in,
                 'born_at' => $registration->born_at,
                 'village_id' => $registration->village_id,
