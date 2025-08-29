@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Api\Main;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\TransactionResource;
-use App\Models\Transaction;
 use App\Models\Account;
-use App\Models\TransactionLedger;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
+use App\Models\Student;
+use App\Models\Transaction;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\TransactionLedger;
+use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\TransactionResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TransactionController extends Controller
 {
@@ -855,4 +857,67 @@ class TransactionController extends Controller
             return response()->json(['message' => 'Failed to create registration payment', 'error' => $e->getMessage()], 500);
         }
     }
+
+    public function activateTransaction(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $transaction = Transaction::find($id);
+
+            if (!$transaction) {
+                return response()->json(['message' => 'Transaction not found'], 404);
+            }
+
+            $transaction->status = 'ACTIVE';
+            $transaction->save();
+
+            $account = Account::where('account_number', $transaction->source_account)->first();
+
+            if (!$account) {
+                return response()->json(['message' => 'Account not found'], 404);
+            }
+
+            $account->status = 'AKTIF';
+            $account->save();
+            // customer_id merupakan id siswa
+            $student = Student::where('id', $account->customer_id)->first();
+
+            if (!$student) {
+                return response()->json(['message' => 'Student not found'], 404);
+            }
+
+            $student->status = 'AKTIF';
+            $student->save();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Transaction activated successfully'], 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::error('Failed to activate transaction', [
+                'error' => $th->getMessage(),
+                'request' => $request->all(),
+            ]);
+            return response()->json(['message' => 'Failed to activate transaction', 'error' => $th->getMessage()], 500);
+        }
+    }
+
+    public function deactivateTransaction(Request $request, $id)
+    {
+        try {
+            $transaction = Transaction::find($id);
+
+            if (!$transaction) {
+                return response()->json(['message' => 'Transaction not found'], 404);
+            }
+
+            $transaction->status = 'INACTIVE';
+            $transaction->save();
+
+            return response()->json(['message' => 'Transaction deactivated successfully'], 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
 }

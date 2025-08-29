@@ -96,6 +96,7 @@ Route::get('transaction/get-by-status', [TransactionController::class, 'getBySta
 Route::get('transaction/get-by-date', [TransactionController::class, 'getByDateRange'])->name('transaction.get-by-date');
 Route::post('transaction/reverse-transaction', [TransactionController::class, 'reverseTransaction'])->name('transaction.reverse-transaction');
 Route::get('transaction/report-transaction', [TransactionController::class, 'getTransactionSummary'])->name('transaction.report-transaction');
+Route::put('transaction/{id}/activate', [TransactionController::class, 'activateTransaction'])->name('transaction.activate');
 Route::apiResource('transaction-type', TransactionTypeController::class);
 Route::post('transaction-type/{id}/toggle-active', [TransactionTypeController::class, 'toggleActiveStatus'])->name('transaction-type.toggle-active');
 Route::apiResource('account', AccountController::class);
