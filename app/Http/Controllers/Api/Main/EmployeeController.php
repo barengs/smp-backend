@@ -277,6 +277,59 @@ class EmployeeController extends Controller
     }
 
     /**
+     * Display a listing of teachers and class advisors.
+     *
+     * @group Employees
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "data ditemukan",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Ahmad Guru",
+     *       "email": "ahmad@example.com",
+     *       "employee": {
+     *         "id": 1,
+     *         "code": "EMP0001",
+     *         "first_name": "Ahmad",
+     *         "last_name": "Guru",
+     *         "nik": "1234567890123456",
+     *         "phone": "081234567890"
+     *       },
+     *       "roles": [
+     *         {
+     *           "name": "asatidz"
+     *         }
+     *       ]
+     *     }
+     *   ]
+     * }
+     *
+     * @response 404 {
+     *   "message": "data tidak ditemukan"
+     * }
+     */
+    public function getTeachersAndAdvisors()
+    {
+        try {
+            $data = User::whereHas('employee')
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('name', ['asatidz', 'walikelas']);
+                })
+                ->with(['employee', 'roles'])
+                ->get();
+
+            return new EmployeeResource('data ditemukan', $data, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
      * Export employee data to Excel/CSV format
      */
     public function export(Request $request)

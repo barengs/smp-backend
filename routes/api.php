@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\Master\JobDesController;
 use App\Http\Controllers\Api\Main\DashboardController;
 use App\Http\Controllers\Api\Master\ProgramController;
 use App\Http\Controllers\Api\Main\InternshipController;
+use App\Http\Controllers\Api\Main\LessonHourController;
 use App\Http\Controllers\Api\Main\TransactionController;
 use App\Http\Controllers\Api\Master\ClassroomController;
 use App\Http\Controllers\Api\Master\EducationController;
@@ -63,6 +64,7 @@ Route::get('employee/export', [EmployeeController::class, 'export'])->name('empl
 Route::post('employee/import', [EmployeeController::class, 'import'])->name('employee.import');
 Route::get('employee/import/template', [EmployeeController::class, 'getImportTemplate'])->name('employee.import.template');
 Route::put('employee/photo/{id}/update', [EmployeeController::class, 'updatePhoto'])->name('employee.update-photo');
+Route::get('employee/teachers-advisors', [EmployeeController::class, 'getTeachersAndAdvisors'])->name('employee.teachers-advisors');
 Route::apiResource('staff', StaffController::class);
 Route::get('staff/export', [StaffController::class, 'export'])->name('staff.export');
 Route::post('staff/import', [StaffController::class, 'import'])->name('staff.import');
@@ -146,3 +148,6 @@ Route::group(['prefix' => 'region'], function () {
 });
 
 Route::get('village/nik/{nik}', [VillageController::class, 'villageByNik']);
+
+/* Lesson Hours */
+Route::apiResource('lesson-hour', LessonHourController::class);

@@ -43,6 +43,7 @@ SMP Backend adalah sistem informasi manajemen pesantren yang dirancang untuk men
 -   **Program Studi**: Manajemen program pendidikan
 -   **Kelas dan Kelompok**: Pengelolaan kelas dan kelompok belajar
 -   **Jadwal Pelajaran**: Penjadwalan kegiatan belajar
+-   **Jam Pelajaran**: Manajemen jam pelajaran
 -   **Evaluasi**: Sistem evaluasi dan penilaian
 
 #### 🔐 Manajemen Keamanan
@@ -180,6 +181,15 @@ Authorization: Bearer {token}
 -   `POST /api/student-status` - Update status santri
 -   `GET /api/student/program/{programId}` - Santri berdasarkan program
 
+#### Employees
+
+-   `GET /api/employee` - Daftar pegawai
+-   `POST /api/employee` - Tambah pegawai baru
+-   `GET /api/employee/{id}` - Detail pegawai
+-   `PUT /api/employee/{id}` - Update data pegawai
+-   `DELETE /api/employee/{id}` - Hapus data pegawai
+-   `GET /api/employee/teachers-advisors` - Daftar guru dan wali kelas
+
 #### Bank Santri
 
 -   `GET /api/product` - Daftar produk keuangan
@@ -198,141 +208,11 @@ Authorization: Bearer {token}
 -   `GET /api/transaction/{id}` - Detail transaksi
 -   `PUT /api/transaction/{id}` - Update transaksi
 -   `DELETE /api/transaction/{id}` - Hapus transaksi
--   `POST /api/transaction/cash-deposit` - Setoran tunai santri
--   `POST /api/transaction/cash-withdrawal` - Penarikan tunai santri
--   `POST /api/transaction/fund-transfer` - Transfer dana santri
--   `GET /api/transaction/account/{accountNumber}` - Transaksi per rekening
--   `GET /api/transaction/status/{status}` - Transaksi berdasarkan status
--   `GET /api/transaction/date-range` - Transaksi berdasarkan rentang tanggal
--   `POST /api/transaction/{id}/reverse` - Balikkan transaksi
--   `GET /api/transaction/summary` - Ringkasan transaksi
 
-#### Education
+#### Lesson Hours
 
--   `GET /api/master/program` - Program studi
--   `GET /api/master/education` - Data pendidikan
--   `GET /api/master/education-class` - Kelas pendidikan
--   `GET /api/master/classroom` - Ruang kelas
--   `GET /api/master/class-group` - Kelompok kelas
--   `GET /api/master/academic-year` - Tahun akademik
-
-#### Security
-
--   `GET /api/master/role` - Role dan permission
--   `GET /api/master/permission` - Permission system
--   `GET /api/master/menu` - Menu management
-
-#### Master Data
-
--   `GET /api/region/province` - Data provinsi
--   `GET /api/region/city` - Data kota
--   `GET /api/region/district` - Data kecamatan
--   `GET /api/region/village` - Data desa
--   `GET /api/master/occupation` - Data pekerjaan
--   `GET /api/master/profession` - Data profesi
-
-## Struktur Database
-
-### Tabel Utama
-
-#### Pesantren System
-
--   `students` - Data santri
--   `employees` - Data asatidz
--   `parent_profiles` - Data orang tua
--   `registrations` - Pendaftaran santri
--   `activities` - Kegiatan pesantren
--   `news` - Berita dan pengumuman
-
-#### Bank Santri System
-
--   `products` - Produk keuangan santri
--   `accounts` - Rekening santri
--   `transactions` - Transaksi keuangan
--   `transaction_ledger` - Buku besar transaksi
--   `account_movements` - Pergerakan rekening
-
-#### Education System
-
--   `programs` - Program studi
--   `educations` - Data pendidikan
--   `education_classes` - Kelas pendidikan
--   `classrooms` - Ruang kelas
--   `class_groups` - Kelompok kelas
--   `academic_years` - Tahun akademik
-
-#### Master Data
-
--   `provinces` - Data provinsi
--   `cities` - Data kota
--   `districts` - Data kecamatan
--   `villages` - Data desa
--   `occupations` - Data pekerjaan
--   `professions` - Data profesi
-
-## Testing
-
-```bash
-# Run all tests
-php artisan test
-
-# Run specific test
-php artisan test --filter=StudentTest
-
-# Run with coverage
-php artisan test --coverage
-```
-
-## Deployment
-
-### Production Setup
-
-1. **Environment Configuration**
-
-```bash
-# Set production environment
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://your-domain.com
-```
-
-2. **Database Migration**
-
-```bash
-php artisan migrate --force
-```
-
-3. **Cache Configuration**
-
-```bash
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
-4. **Queue Setup**
-
-```bash
-# Start queue worker
-php artisan queue:work
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-Untuk bantuan teknis atau pertanyaan, silakan hubungi tim development.
-
----
-
-**Sistem Informasi Manajemen Pesantren (SMP)** - Built with ❤️ using Laravel
+-   `GET /api/lesson-hour` - Daftar jam pelajaran
+-   `POST /api/lesson-hour` - Buat jam pelajaran baru
+-   `GET /api/lesson-hour/{id}` - Detail jam pelajaran
+-   `PUT /api/lesson-hour/{id}` - Update jam pelajaran
+-   `DELETE /api/lesson-hour/{id}` - Hapus jam pelajaran
