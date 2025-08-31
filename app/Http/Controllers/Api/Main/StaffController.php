@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\EmployeeResource;
+use App\Http\Resources\StaffResource;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Imports\StaffImport;
@@ -365,7 +366,7 @@ class StaffController extends Controller
                 ->with(['staff', 'roles'])
                 ->get();
 
-            return new EmployeeResource('data ditemukan', $data, 200);
+            return new StaffResource($data);
         } catch (ModelNotFoundException $e) {
             return response()->json('data tidak ditemukan', 404);
         } catch (\Exception $e) {
