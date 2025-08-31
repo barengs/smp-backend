@@ -11,7 +11,6 @@ use App\Http\Controllers\Controller;
 use Intervention\Image\ImageManager;
 use App\Http\Resources\StaffResource;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Resources\EmployeeResource;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -358,9 +357,7 @@ class StaffController extends Controller
     {
         try {
             $data = User::whereHas('staff')
-                ->whereHas('roles', function ($query) {
-                    $query->whereIn('name', ['asatidz', 'walikelas']);
-                })
+                ->role(['asatidz', 'walikelas'])
                 ->with(['staff', 'roles'])
                 ->get();
 
@@ -368,7 +365,7 @@ class StaffController extends Controller
                 return response()->json(['message' => 'data tidak ditemukan'], 404);
             }
 
-            return new EmployeeResource('data ditemukan', $data, 200);
+            return new StaffResource('data ditemukan', $data, 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'terjadi kesalahan: ' . $e->getMessage()], 500);
         }
