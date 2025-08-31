@@ -356,7 +356,7 @@ class StaffController extends Controller
     public function getTeachersAndAdvisors()
     {
         try {
-            $data = User::role(['asatidz', 'walikelas'])
+            $data = User::role('asatidz')
                 ->get();
 
             if ($data->isEmpty()) {
