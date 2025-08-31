@@ -492,4 +492,27 @@ class StaffController extends Controller
             return response()->json('Terjadi kesalahan saat membuat template: ' . $e->getMessage(), 500);
         }
     }
+
+    /**
+     * Get staff with specific roles (asatidz and walikelas only).
+     */
+    public function getStaffByRoles()
+    {
+        try {
+            $data = User::whereHas('staff')
+                ->where(function ($query) {
+                    $query->whereHas('roles', function ($subQuery) {
+                        $subQuery->where('name', 'asatidz');
+                    })->orWhereHas('roles', function ($subQuery) {
+                        $subQuery->where('name', 'walikelas');
+                    });
+                })
+                ->with(['staff', 'roles'])
+                ->get();
+
+            return new StaffResource('data ditemukan', $data, 200);
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+        }
+    }
 }
