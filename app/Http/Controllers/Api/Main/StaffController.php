@@ -321,6 +321,59 @@ class StaffController extends Controller
     }
 
     /**
+     * Display a listing of teachers and class advisors.
+     *
+     * @group Staff
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "data ditemukan",
+     *   "status": 200,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Ahmad Guru",
+     *       "email": "ahmad@example.com",
+     *       "staff": {
+     *         "id": 1,
+     *         "code": "AS0001",
+     *         "first_name": "Ahmad",
+     *         "last_name": "Guru",
+     *         "nik": "1234567890123456",
+     *         "phone": "081234567890"
+     *       },
+     *       "roles": [
+     *         {
+     *           "name": "asatidz"
+     *         }
+     *       ]
+     *     }
+     *   ]
+     * }
+     *
+     * @response 404 {
+     *   "message": "data tidak ditemukan"
+     * }
+     */
+    public function getTeachersAndAdvisors()
+    {
+        try {
+            $data = User::whereHas('staff')
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('name', ['asatidz', 'walikelas']);
+                })
+                ->with(['staff', 'roles'])
+                ->get();
+
+            return new EmployeeResource('data ditemukan', $data, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
      * Export staff data to Excel/CSV format
      */
     public function export(Request $request)

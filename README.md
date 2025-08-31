@@ -190,6 +190,15 @@ Authorization: Bearer {token}
 -   `DELETE /api/employee/{id}` - Hapus data pegawai
 -   `GET /api/employee/teachers-advisors` - Daftar guru dan wali kelas
 
+#### Staff
+
+-   `GET /api/staff` - Daftar staff
+-   `POST /api/staff` - Tambah staff baru
+-   `GET /api/staff/{id}` - Detail staff
+-   `PUT /api/staff/{id}` - Update data staff
+-   `DELETE /api/staff/{id}` - Hapus data staff
+-   `GET /api/staff/teachers-advisors` - Daftar guru dan wali kelas
+
 #### Bank Santri
 
 -   `GET /api/product` - Daftar produk keuangan
