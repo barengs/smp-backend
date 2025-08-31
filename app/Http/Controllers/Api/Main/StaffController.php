@@ -355,14 +355,37 @@ class StaffController extends Controller
     public function getTeachersAndAdvisors()
     {
         try {
+            // Let's break this down step by step to see where the issue is
+
+            // Step 1: Get all users with staff relationship
+            $usersWithStaff = User::whereHas('staff')->get();
+
+            // Step 2: Get all users with the target roles
+            $usersWithTargetRoles = User::whereHas('roles', function ($query) {
+                $query->whereIn('name', ['asatidz', 'walikelas']);
+            })->get();
+
+            // Step 3: Get users with both staff and target roles
             $data = User::whereHas('staff')
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('name', ['asatidz', 'walikelas']);
                 })
+                ->with(['staff', 'roles'])
                 ->get();
 
+            // If no data found, provide detailed debug information
             if ($data->isEmpty()) {
-                return response()->json(['message' => 'data tidak ditemukan'], 404);
+                $debugInfo = [
+                    'total_users_with_staff' => $usersWithStaff->count(),
+                    'total_users_with_target_roles' => $usersWithTargetRoles->count(),
+                    'users_with_staff_ids' => $usersWithStaff->pluck('id')->toArray(),
+                    'users_with_target_role_ids' => $usersWithTargetRoles->pluck('id')->toArray(),
+                ];
+
+                return response()->json([
+                    'message' => 'data tidak ditemukan',
+                    'debug_info' => $debugInfo
+                ], 404);
             }
 
             return new EmployeeResource('data ditemukan', $data, 200);
