@@ -71,7 +71,7 @@ Route::get('staff/export', [StaffController::class, 'export'])->name('staff.expo
 Route::post('staff/import', [StaffController::class, 'import'])->name('staff.import');
 Route::get('staff/import/template', [StaffController::class, 'getImportTemplate'])->name('staff.import.template');
 Route::put('staff/photo/{id}/update', [StaffController::class, 'updatePhoto'])->name('staff.update-photo');
-Route::get('staff/teachers-advisors', [StaffController::class, 'getTeachersAndAdvisors'])->name('staff.teachers-advisors');
+Route::get('staff/teachers', [StaffController::class, 'getTeachers'])->name('staff.teachers');
 Route::apiResource('parent', ParentProfileController::class);
 Route::get('parent/nik/{nik}/cek', [ParentProfileController::class, 'getByNik'])
     ->name('parent.getByNik');

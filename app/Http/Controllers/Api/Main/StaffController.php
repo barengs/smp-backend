@@ -353,7 +353,7 @@ class StaffController extends Controller
      *   "message": "data tidak ditemukan"
      * }
      */
-    public function getTeachersAndAdvisors()
+    public function getTeachers()
     {
         try {
             $data = User::role('asatidz')
