@@ -3,20 +3,16 @@
 namespace App\Http\Controllers\Api\Main;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Staff;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\EmployeeResource;
 use App\Http\Resources\StaffResource;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
-use App\Imports\StaffImport;
-use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\Validators\ValidationException as ExcelValidationException;
 
 class StaffController extends Controller
 {
@@ -361,16 +357,18 @@ class StaffController extends Controller
         try {
             $data = User::whereHas('staff')
                 ->whereHas('roles', function ($query) {
-                    $query->whereHas('name', ['asatidz', 'walikelas']);
+                    $query->whereIn('name', ['asatidz', 'walikelas']);
                 })
                 ->with(['staff', 'roles'])
                 ->get();
 
-            return new StaffResource($data);
-        } catch (ModelNotFoundException $e) {
-            return response()->json('data tidak ditemukan', 404);
+            if ($data->isEmpty()) {
+                return response()->json(['message' => 'data tidak ditemukan'], 404);
+            }
+
+            return new EmployeeResource('data ditemukan', $data, 200);
         } catch (\Exception $e) {
-            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+            return response()->json(['message' => 'terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
 
