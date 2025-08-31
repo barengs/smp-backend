@@ -67,11 +67,11 @@ Route::post('registration/transaction', [RegistrationController::class, 'createR
 // Route::put('employee/photo/{id}/update', [EmployeeController::class, 'updatePhoto'])->name('employee.update-photo');
 // Route::get('employee/teachers-advisors', [EmployeeController::class, 'getTeachersAndAdvisors'])->name('employee.teachers-advisors');
 Route::apiResource('staff', StaffController::class);
+Route::get('staff/teachers/roles', [StaffController::class, 'getStaffByRoles'])->name('staff.by-roles');
 Route::get('staff/export', [StaffController::class, 'export'])->name('staff.export');
 Route::post('staff/import', [StaffController::class, 'import'])->name('staff.import');
 Route::get('staff/import/template', [StaffController::class, 'getImportTemplate'])->name('staff.import.template');
 Route::put('staff/photo/{id}/update', [StaffController::class, 'updatePhoto'])->name('staff.update-photo');
-Route::get('staff/by-roles', [StaffController::class, 'getStaffByRoles'])->name('staff.by-roles');
 Route::apiResource('parent', ParentProfileController::class);
 Route::get('parent/nik/{nik}/cek', [ParentProfileController::class, 'getByNik'])
     ->name('parent.getByNik');
