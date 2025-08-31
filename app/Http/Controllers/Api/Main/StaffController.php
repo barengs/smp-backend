@@ -360,7 +360,7 @@ class StaffController extends Controller
         try {
             $data = User::whereHas('staff')
                 ->whereHas('roles', function ($query) {
-                    $query->whereIn('name', ['asatidz', 'walikelas']);
+                    $query->whereHas('name', ['asatidz', 'walikelas']);
                 })
                 ->with(['staff', 'roles'])
                 ->get();
