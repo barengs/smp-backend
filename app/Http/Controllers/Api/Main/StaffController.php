@@ -359,7 +359,6 @@ class StaffController extends Controller
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('name', ['asatidz', 'walikelas']);
                 })
-                ->with(['staff', 'roles'])
                 ->get();
 
             if ($data->isEmpty()) {
