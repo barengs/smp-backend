@@ -27,4 +27,14 @@ class Staff extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function studies()
+    {
+        return $this->belongsToMany(Study::class, 'staff_study', 'staff_id', 'study_id');
+    }
+
+    public function staffStudies()
+    {
+        return $this->hasMany(StaffStudy::class);
+    }
 }

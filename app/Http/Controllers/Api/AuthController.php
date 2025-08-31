@@ -121,7 +121,7 @@ class AuthController extends Controller
             'password' => request('password')
         ];
 
-        if (!$token = auth()->attempt($credentials)) {
+        if (!$token = Auth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 

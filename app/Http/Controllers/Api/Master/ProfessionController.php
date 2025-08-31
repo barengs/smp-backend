@@ -61,7 +61,7 @@ class ProfessionController extends Controller
                 'errors' => $e->errors(),
             ], 422);
         } catch (\Throwable $th) {
-            return response()->json('An error occurred: ' . $e->getMessage(), 500);
+            return response()->json('An error occurred: ' . $th->getMessage(), 500);
         }
     }
 

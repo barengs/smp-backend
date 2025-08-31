@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             StaffSeeder::class,
             ParentProfileSeeder::class,
             StudentSeeder::class,
+            StaffStudySeeder::class,
         ]);
     }
 }

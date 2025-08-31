@@ -42,6 +42,7 @@ use App\Http\Controllers\Api\Main\AccountMovementController;
 use App\Http\Controllers\Api\Main\TransactionTypeController;
 use App\Http\Controllers\Api\Master\EducationTypeController;
 use App\Http\Controllers\Api\Master\EducationClassController;
+use App\Http\Controllers\Api\Master\StaffStudyController;
 use App\Http\Controllers\Api\Main\InternshipSupervisorController;
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -138,6 +139,10 @@ Route::group(['prefix' => 'master'], function () {
     Route::apiResource('class-group', ClassGroupController::class);
     Route::apiResource('academic-year', AcademicYearController::class);
     Route::apiResource('room', RoomController::class);
+    // Staff-Study mapping routes
+    Route::apiResource('staff-study', StaffStudyController::class);
+    Route::get('staff-study/studies/all', [StaffStudyController::class, 'getAllStudies'])->name('staff-study.studies.all');
+    Route::get('staff-study/teachers/all', [StaffStudyController::class, 'getAllTeachers'])->name('staff-study.teachers.all');
 });
 
 Route::group(['prefix' => 'region'], function () {

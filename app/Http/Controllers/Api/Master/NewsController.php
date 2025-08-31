@@ -48,8 +48,6 @@ class NewsController extends Controller
             return new NewsResource('Error fetching news', null, 500);
         } catch (\Exception $e) {
             return new NewsResource('An unexpected error occurred', null, 500);
-        } catch (\Throwable $th) {
-            return new NewsResource($th->getMessage(), null, 404);
         }
     }
 
@@ -65,16 +63,14 @@ class NewsController extends Controller
                 'image' => 'nullable|image|max:2048',
             ]);
 
+            $data = $request->only(['title', 'content']);
+
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('images', 'public');
-                $request->merge(['image' => $imagePath]);
+                $data['image'] = $imagePath;
             }
 
-            $news = News::create([
-                'title' => $request->title,
-                'content' => $request->content,
-                'image' => $imagePath ?? null,
-            ]);
+            $news = News::create($data);
 
             return new NewsResource('News created successfully', $news, 201);
         } catch (\Throwable $th) {
@@ -110,11 +106,15 @@ class NewsController extends Controller
             ]);
 
             $news = News::findOrFail($id);
-            $news->update([
-                'title' => $request->title,
-                'content' => $request->content,
-                'image' => $request->image,
-            ]);
+
+            $data = $request->only(['title', 'content']);
+
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('images', 'public');
+                $data['image'] = $imagePath;
+            }
+
+            $news->update($data);
 
             return new NewsResource('News updated successfully', $news, 200);
         } catch (\Throwable $th) {
