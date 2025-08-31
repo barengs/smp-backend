@@ -356,8 +356,8 @@ class StaffController extends Controller
     public function getTeachersAndAdvisors()
     {
         try {
-            $data = User::whereHas('staff')
-                ->role(['asatidz', 'walikelas'])
+            $data = User::role(['asatidz', 'walikelas'])
+                ->whereHas('staff')
                 ->with(['staff', 'roles'])
                 ->get();
 
