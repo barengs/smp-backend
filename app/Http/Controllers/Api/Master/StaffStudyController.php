@@ -17,7 +17,7 @@ class StaffStudyController extends Controller
         try {
             $staffWithStudies = Staff::with('studies', 'user')
                 ->whereHas('user', function ($query) {
-                    $query->role('guru');
+                    $query->role('asatidz');
                 })
                 ->get();
 
@@ -83,7 +83,7 @@ class StaffStudyController extends Controller
         try {
             $staff = Staff::with('studies', 'user')
                 ->whereHas('user', function ($query) {
-                    $query->role('guru');
+                    $query->role('asatidz');
                 })
                 ->findOrFail($id);
 
@@ -114,8 +114,8 @@ class StaffStudyController extends Controller
 
             $staff = Staff::findOrFail($id);
 
-            // Check if the staff member has the 'guru' role
-            if (!$staff->user || !$staff->user->hasRole('guru')) {
+            // Check if the staff member has the 'asatidz' role
+            if (!$staff->user || !$staff->user->hasRole('asatidz')) {
                 return response()->json([
                     'message' => 'Staff member does not have the teacher role',
                     'status' => 400,
@@ -149,7 +149,7 @@ class StaffStudyController extends Controller
             $staff = Staff::findOrFail($id);
 
             // Check if the staff member has the 'guru' role
-            if (!$staff->user || !$staff->user->hasRole('guru')) {
+            if (!$staff->user || !$staff->user->hasRole('asatidz')) {
                 return response()->json([
                     'message' => 'Staff member does not have the teacher role',
                     'status' => 400,
@@ -204,7 +204,7 @@ class StaffStudyController extends Controller
         try {
             $teachers = Staff::with('user')
                 ->whereHas('user', function ($query) {
-                    $query->role('guru');
+                    $query->role('asatidz');
                 })
                 ->get();
 
