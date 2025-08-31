@@ -18,7 +18,9 @@ class StaffStudyResource extends JsonResource
             'id' => $this->id,
             'staff_id' => $this->staff_id,
             'study_id' => $this->study_id,
-            'staff' => new StaffResource($this->whenLoaded('staff')),
+            'staff' => $this->whenLoaded('staff', function () {
+                return new StaffResource('Staff data', $this->staff, 200);
+            }),
             'study' => new SimpleStudyResource($this->whenLoaded('study')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

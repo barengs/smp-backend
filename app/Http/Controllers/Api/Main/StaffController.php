@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Api\Main;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\EmployeeResource;
-use App\Http\Resources\StaffResource;
 use App\Models\User;
+use App\Models\Staff;
+use App\Imports\StaffImport;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Intervention\Image\ImageManager;
+use App\Http\Resources\StaffResource;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\EmployeeResource;
+use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 
 class StaffController extends Controller
 {
@@ -23,7 +25,7 @@ class StaffController extends Controller
     {
         try {
             $data = User::whereHas('staff')->with(['staff', 'roles'])->get();
-            return new EmployeeResource('data ditemukan', $data, 200);
+            return new StaffResource('data ditemukan', $data, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json('data tidak ditemukan', 404);
         } catch (\Exception $e) {
@@ -90,7 +92,7 @@ class StaffController extends Controller
             // commit transaction
             DB::commit();
 
-            return new EmployeeResource('data berhasil disimpan', $user->load(['staff', 'roles']), 201);
+            return new StaffResource('data berhasil disimpan', $user->load(['staff', 'roles']), 201);
         } catch (ValidationException $e) {
             // pass the validation error to the response
             return response()->json([
@@ -113,7 +115,7 @@ class StaffController extends Controller
     {
         try {
             $data = User::whereHas('staff')->with(['staff', 'roles'])->findOrFail($id);
-            return new EmployeeResource('data ditemukan', $data, 200);
+            return new StaffResource('data ditemukan', $data, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json('data tidak ditemukan', 404);
         } catch (\Exception $e) {
@@ -180,7 +182,7 @@ class StaffController extends Controller
             // commit transaction
             DB::commit();
 
-            return new EmployeeResource('data berhasil diubah', $user->load(['staff', 'roles']), 200);
+            return new StaffResource('data berhasil diubah', $user->load(['staff', 'roles']), 200);
         } catch (ValidationException $e) {
             // pass the validation error to the response
             return response()->json([
@@ -264,7 +266,7 @@ class StaffController extends Controller
                 'photo' => $newPhotoName,
             ]);
 
-            return new EmployeeResource('Foto berhasil diubah', $user->load(['staff', 'roles']), 200);
+            return new StaffResource('Foto berhasil diubah', $user->load(['staff', 'roles']), 200);
         } catch (ModelNotFoundException $e) {
             return response()->json('data tidak ditemukan', 404);
         } catch (\Exception $e) {
@@ -355,17 +357,6 @@ class StaffController extends Controller
     public function getTeachersAndAdvisors()
     {
         try {
-            // Let's break this down step by step to see where the issue is
-
-            // Step 1: Get all users with staff relationship
-            $usersWithStaff = User::whereHas('staff')->get();
-
-            // Step 2: Get all users with the target roles
-            $usersWithTargetRoles = User::whereHas('roles', function ($query) {
-                $query->whereIn('name', ['asatidz', 'walikelas']);
-            })->get();
-
-            // Step 3: Get users with both staff and target roles
             $data = User::whereHas('staff')
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('name', ['asatidz', 'walikelas']);
@@ -373,19 +364,8 @@ class StaffController extends Controller
                 ->with(['staff', 'roles'])
                 ->get();
 
-            // If no data found, provide detailed debug information
             if ($data->isEmpty()) {
-                $debugInfo = [
-                    'total_users_with_staff' => $usersWithStaff->count(),
-                    'total_users_with_target_roles' => $usersWithTargetRoles->count(),
-                    'users_with_staff_ids' => $usersWithStaff->pluck('id')->toArray(),
-                    'users_with_target_role_ids' => $usersWithTargetRoles->pluck('id')->toArray(),
-                ];
-
-                return response()->json([
-                    'message' => 'data tidak ditemukan',
-                    'debug_info' => $debugInfo
-                ], 404);
+                return response()->json(['message' => 'data tidak ditemukan'], 404);
             }
 
             return new EmployeeResource('data ditemukan', $data, 200);
