@@ -515,4 +515,30 @@ class StaffController extends Controller
             return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
         }
     }
+
+    /**
+     * Get a single staff member by ID with specific roles (asatidz and walikelas only).
+     */
+    public function getStaffByRolesById(string $id)
+    {
+        try {
+            $data = User::whereHas('staff')
+                ->where('id', $id)
+                ->where(function ($query) {
+                    $query->whereHas('roles', function ($subQuery) {
+                        $subQuery->where('name', 'asatidz');
+                    })->orWhereHas('roles', function ($subQuery) {
+                        $subQuery->where('name', 'walikelas');
+                    });
+                })
+                ->with(['staff', 'roles'])
+                ->firstOrFail();
+
+            return new StaffResource('data ditemukan', $data, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json('data tidak ditemukan', 404);
+        } catch (\Exception $e) {
+            return response()->json('terjadi kesalahan: ' . $e->getMessage(), 500);
+        }
+    }
 }
