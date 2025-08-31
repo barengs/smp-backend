@@ -357,8 +357,6 @@ class StaffController extends Controller
     {
         try {
             $data = User::role(['asatidz', 'walikelas'])
-                ->whereHas('staff')
-                ->with(['staff', 'roles'])
                 ->get();
 
             if ($data->isEmpty()) {
