@@ -134,19 +134,99 @@ class MenuSeeder extends Seeder
         $r_superadmin->givePermissionTo(Permission::all());
         $r_admin_bank->givePermissionTo([$p_dashboard, $p_c_transaction, $p_r_transaction, $p_u_transaction, $p_d_transaction, $p_a_transaction]);
         // Define the menus to be seeded
+
+        // menu menggunakan Licude icon
         $menus = [
-            ['title' => 'Dashboard', 'description' => 'Halaman utama dashboard', 'icon' => 'fas fa-tachometer-alt', 'route' => '/dashboard', 'parent_id' => null, 'type' => 'main', 'position' => 'sidebar', 'status' => 'active', 'order' => 1],
-            ['title' => 'Bank Santri', 'description' => 'Manajemen bank santri', 'icon' => 'fas fa-university', 'route' => '/bank-santri', 'parent_id' => null, 'type' => 'main', 'position' => 'sidebar', 'status' => 'active', 'order' => 2],
-            ['title' => 'Rekening'],
-            ['title' => 'Transaksi',],
-            ['title' => 'Manjemen Santri',],
-            ['title' => 'Santri',],
-            ['title' => 'Pendaftaran',],
-            ['title' => 'Wali Santri',],
-            ['title' => 'Manajemen Staf',],
-            ['title' => 'Staf',],
-            ['title' => 'Hak Akses',],
-            ['title' => 'Peran',],
+            [
+                'id_title' => 'Dasbor',
+                'en_title' => 'Dashboard',
+                'ar_title' => 'لوحة القيادة',
+                'description' => 'Halaman utama dashboard',
+                'icon' => 'layout-dashboard',
+                'route' => '/dashboard',
+                'parent_id' => null,
+                'type' => 'main',
+                'position' => 'sidebar',
+                'status' => 'active',
+                'order' => 1
+            ],
+            [
+                'id_title' => 'Bank Santri',
+                'en_title' => 'Bank Santri',
+                'ar_title' => 'إدارة بنك الطلاب',
+                'icon' => 'landmark',
+                'route' => '#',
+                'parent_id' => null,
+                'type' => 'main',
+                'position' => 'sidebar',
+                'status' => 'active',
+                'order' => 2
+            ],
+            [
+                'id_title' => 'Rekening',
+                'en_title' => 'Bank Account',
+                'ar_title' => 'حساب بنك',
+                'icon' => 'landmark',
+                'route' => '/dashboard/bank-santri/rekening',
+                'parent_id' => 2,
+                'type' => 'submenu',
+                'position' => 'sidebar',
+                'status' => 'active',
+                'order' => 3
+            ],
+            [
+                'id_title' => 'Transaksi',
+                'en_title' => 'Transaction',
+                'ar_title' => 'معاملة',
+                'icon' => 'money-bill-wave',
+                'route' => '/dashboard/bank-santri/transaksi',
+                'parent_id' => 2,
+                'type' => 'submenu',
+                'position' => 'sidebar',
+                'status' => 'active',
+                'order' => 4
+            ],
+            [
+                'id_title' => 'Laporan',
+                'en_title' => 'Report',
+                'ar_title' => 'تقرير',
+                'icon' => '',
+                'route' => '/dashboard/bank-santri/laporan',
+                'parent_id' => 2,
+                'type' => 'submenu',
+                'position' => 'sidebar',
+                'status' => 'active',
+                'order' => 5
+            ],
+            [
+                'id_title' => 'Manajemen Santri',
+                'en_title' => 'Santri Management',
+                'ar_title' => 'إدارة Santri',
+                'route' => '/dashboard/santri',
+                'parent_id' => null,
+                'type' => 'main',
+                'position' => 'sidebar',
+                'status' => 'active',
+                'order' => 6
+            ],
+            [
+                'id_title' => 'Pendaftaran',
+            ],
+            [
+                'id_title' => 'Wali Santri',
+            ],
+            [
+                'id_title' => 'Manajemen Staf',
+            ],
+            [
+                'id_title' => 'Staf',
+            ],
+            [
+                'id_title' => 'Hak Akses',
+            ],
+            [
+                'id_title' => 'Peran',
+            ],
         ];
 
         // Insert each menu into the database
